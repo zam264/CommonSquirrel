@@ -1,5 +1,6 @@
 local composer = require( "composer" )
 require('ObstacleClass')
+require('PlayerClass')
 local scene = composer.newScene()
 --display.setStatusBar( display.HiddenStatusBar )
 
@@ -22,15 +23,16 @@ local function newRect(yPos)
 	return obj
 end
 local function moveRight() 
-	if (player.x < display.contentWidth * .75) then
-		player.x = player.x + display.contentWidth*0.25
+	if (player.model.x < display.contentWidth * .75) then
+		player.model.x = player.model.x + display.contentWidth*0.25
 	end
 end
 local function moveLeft() 
-	if (player.x > display.contentWidth * .25) then
-		player.x = player.x - display.contentWidth*0.25	
+	if (player.model.x > display.contentWidth * .25) then
+		player.model.x = player.model.x - display.contentWidth*0.25	
 	end
 end
+
 local function printTouch(event)
 	print("event: " .. event.phase .. "\n x: " .. event.x .. "\n y: " .. event.y)
 	if(event.phase == "began")then
@@ -41,9 +43,6 @@ local function printTouch(event)
 		end	
 	end	
 end
-
-
-
 
 local collection = {}
 
@@ -59,7 +58,8 @@ function scene:create( event )
 		table.insert(collection , newRect(-1 *n*display.contentHeight*.2))
 	end
 	
-	player = display.newRect( display.contentWidth*.5, display.contentHeight*.75, display.contentWidth*.1, display.contentWidth*.125 )
+	--player = display.newRect( display.contentWidth*.5, display.contentHeight*.75, display.contentWidth*.1, display.contentWidth*.125 )
+	player = Player(display.contentWidth*.5, display.contentHeight*.75)
 end
 
 function collection:enterFrame(event)
@@ -76,7 +76,7 @@ function collection:enterFrame(event)
 		collection[x].model.y = collection[x].model.y + 10 + collection[x].speedModifier
 		if (collection[x].model.y > display.contentHeight +200) then
 			-- kill rectangle
-			--collection[x].delete()
+			collection[x].delete()
 			-- spawn new one
 			--newRect(params)
 			
@@ -85,11 +85,9 @@ function collection:enterFrame(event)
 			x = x-1
 		end
 		--collection[x]:translate(0,)
-		
-		
 	end
 	
-	print (#collection)
+	--print (#collection)
 end
 
 
