@@ -7,19 +7,13 @@ local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local playBtn, optionsBtn
-local titleText1, titleText2, highScoreText, box
+local titleText1
+local backBtnBtn
 
 
 
-local function onPlayBtn()
-	composer.gotoScene( "game")
-
-	return true	-- indicates successful touch
-end
-local function onOptionsBtn()
-	composer.gotoScene( "gamecredits")
-
+local function onBackBtn()
+	composer.gotoScene("menu")
 	return true	-- indicates successful touch
 end
 
@@ -28,54 +22,28 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-    sceneGroup = self.view
+	--composer.getScene("menu"):destroy()
 
-	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
-	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
+   local sceneGroup = self.view
+
+	titleText1 = display.newText( "Credits", display.contentWidth * .5, display.contentHeight*.1, native.systemFont ,display.contentHeight * .065)
 	sceneGroup:insert(titleText1)
-	sceneGroup:insert(titleText2)
-   
-   highScoreText = display.newText( "HighScores", display.contentWidth*.5, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
-   highScoreText.anchorX = .5
-   highScoreText.anchorY = .5
-   sceneGroup:insert(highScoreText)
-   
-   box = display.newRect( display.contentWidth*.5, display.contentHeight*.475, display.contentWidth*.5, display.contentHeight*.275 )
-   box:setFillColor( 0 )
-   box.strokeWidth = 3
-   box:setStrokeColor(255,0,0)
-   sceneGroup:insert(box)
    
    -- Initialize the scene here.
-	playBtn = widget.newButton{
-		label="Play",
+	backBtn = widget.newButton{
+		label="Back",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
 		width=display.contentWidth * .50, height=display.contentHeight * .1,
-		onRelease = onPlayBtn
+		onRelease = onBackBtn
 	}
-	playBtn.anchorX = .5
-	playBtn.anchorY = .5
-	playBtn.x = display.contentWidth * .50
-	playBtn.y = display.contentHeight * .7
-	sceneGroup:insert(playBtn)
-	
-	optionsBtn = widget.newButton{
-		label="Credits",
-		fontSize = display.contentWidth * .05,
-		labelColor = { default={255}, over={128} },
-		defaultFile="imgs/button.png",
-		overFile="imgs/button-over.png",
-		width=display.contentWidth * .5, height=display.contentHeight * .1,
-		onRelease = onOptionsBtn
-	}
-	playBtn.anchorX = .5
-	playBtn.anchorY = .5
-	optionsBtn.x = display.contentWidth * .50
-	optionsBtn.y = display.contentHeight * .85
-	sceneGroup:insert(optionsBtn)
+	backBtn.anchorX = .5
+	backBtn.anchorY = .5
+	backBtn.x = display.contentWidth * .50
+	backBtn.y = display.contentHeight * .85
+	sceneGroup:insert(backBtn)
 	
 	
    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
@@ -116,19 +84,10 @@ function scene:destroy( event )
 
    local sceneGroup = self.view
 
-	titleText1:removeSelf()
-	titleText1 = nil
-	titleText2:removeSelf()
-	titleText2 = nil
-	highScoreText:removeSelf()
-	highScoreText = nil
-	box:removeSelf()
-	box = nil
-	playBtn:removeSelf()
-	playBtn = nil
-	optionsBtn:removeSelf()
-    optionsBtn = nil
-	
+   titleText1:removeSelf()
+   titleText1 = nil
+   backBtn:removeSelf()
+   backBtn = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.
