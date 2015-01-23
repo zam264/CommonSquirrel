@@ -8,13 +8,17 @@ local scene = composer.newScene()
 --Variables
 local screenTop, screenBottom, screenLeft, screenRight
 local player
-
-local bg = display.newImageRect( "imgs/bg1.jpg", 1080, 1920 )
+local bgImg = "imgs/bg1.jpg"
+local bg = display.newImageRect( bgImg, display.contentWidth, display.contentHeight )
 bg.x = display.contentCenterX
 bg.y = display.contentHeight
-local bg1 = display.newImageRect( "imgs/bg1.jpg", 1080, 1920 )
+local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHeight )
 bg1.x = display.contentCenterX
 bg1.y = 0
+
+local tutorial tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
+tut.x = display.contentCenterX
+tut.y = display.contentHeight-50
 
 
 local function newRect(yPos)
@@ -24,21 +28,23 @@ local function newRect(yPos)
 end
 local function moveRight() 
 	if (player.model.x < display.contentWidth * .75) then
-		player.model.x = player.model.x + display.contentWidth*0.25
+		transition.to(player.model, {time=200, x=player.model.x + display.contentWidth*0.25})
+		--player.model.x = player.model.x + display.contentWidth*0.25
 	end
 end
 local function moveLeft() 
 	if (player.model.x > display.contentWidth * .25) then
-		player.model.x = player.model.x - display.contentWidth*0.25	
+		transition.to(player.model, {time=200, x=player.model.x - display.contentWidth*0.25})
+		--player.model.x = player.model.x - display.contentWidth*0.25	
 	end
 end
 
 local function printTouch(event)
 	print("event: " .. event.phase .. "\n x: " .. event.x .. "\n y: " .. event.y)
 	if(event.phase == "began")then
-		if(event.x > display.contentWidth*0.55)then
+		if(event.x > display.contentWidth*0.5)then
 			moveRight()
-		elseif(event.x < display.contentWidth*0.45)then
+		elseif(event.x < display.contentWidth*0.5)then
 			moveLeft()
 		end	
 	end	
@@ -63,10 +69,11 @@ function scene:create( event )
 end
 
 function collection:enterFrame(event)
-	if(bg.y-960 > display.contentHeight)then 
-		bg.y = -960
-	elseif(bg1.y-960 > display.contentHeight)then	
-		bg1.y = -960
+	--Scrolling background
+	if(bg.y > display.contentHeight*1.5)then 
+		bg.y = display.contentHeight*-0.5
+	elseif(bg1.y > display.contentHeight*1.5)then	
+		bg1.y = display.contentHeight*-0.5
 	else
 		bg:translate(0, 3)
 		bg1:translate(0, 3)
@@ -76,10 +83,9 @@ function collection:enterFrame(event)
 		collection[x].model.y = collection[x].model.y + 10 + collection[x].speedModifier
 		if (collection[x].model.y > display.contentHeight +200) then
 			-- kill rectangle
-			collection[x].delete()
+			--collection[x].delete()
 			-- spawn new one
 			--newRect(params)
-			
 			table.insert(collection , newRect(-100))
 			table.remove(collection, x)
 			x = x-1
