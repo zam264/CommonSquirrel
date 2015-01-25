@@ -28,14 +28,20 @@ local function newRect(yPos)
 end
 local function moveRight() 
 	if (player.model.x < display.contentWidth * .75) then
-		transition.to(player.model, {time=200, x=player.model.x + display.contentWidth*0.25})
-		--player.model.x = player.model.x + display.contentWidth*0.25
+		if (player.model.x < display.contentWidth * .5) then
+			transition.to(player.model, {time=200, x=display.contentWidth*0.5})
+		else
+			transition.to(player.model, {time=200, x=display.contentWidth*0.75})
+		end
 	end
 end
 local function moveLeft() 
 	if (player.model.x > display.contentWidth * .25) then
-		transition.to(player.model, {time=200, x=player.model.x - display.contentWidth*0.25})
-		--player.model.x = player.model.x - display.contentWidth*0.25	
+		if (player.model.x > display.contentWidth * .5) then
+			transition.to(player.model, {time=200, x=display.contentWidth*0.5})
+		else
+			transition.to(player.model, {time=200, x=display.contentWidth*0.25})
+		end
 	end
 end
 
