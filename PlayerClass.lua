@@ -5,7 +5,7 @@ Player = LCS.class({health, spriteOptions, mySheet ,model})
 
 function Player:init(posX, posY)
 	-- Initialize creatures base attributes
-	self.health = 3; --Scale heath based on level? [easy = 5, medium = 4, hard = 3] or something like that
+	self.health = 3; 
 
 	--Declare and set up Sprite Image Sheet and sequence data
 	--[[
@@ -39,6 +39,14 @@ function Player:init(posX, posY)
 	self.model.y = posY
 	
 --[[*****************    Methods    ******************]]--
+	function Player:damage(amt)
+		self.health = self.health - amt
+		--Dont let health drop below 0 
+		if self.health < 0 then 
+			self.health = 0 
+		end
+	end
+
 	function Player:delete()
 		print ("teeth")
 		self.model:removeSelf()

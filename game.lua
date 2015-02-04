@@ -1,4 +1,5 @@
 local composer = require( "composer" )
+local physics = require("physics")
 require('ObstacleClass')
 require('PlayerClass')
 local scene = composer.newScene()
@@ -23,6 +24,7 @@ tut.y = display.contentHeight-50
 
 local function newRect(yPos)
 	local obj = Obstacle( display.contentWidth * math.random(3)*.25, yPos-math.random(display.contentHeight*.2))
+	physics.addBody(obj.model, "dynamic", {isSensor=true})
 	
 	return obj
 end
@@ -46,7 +48,7 @@ local function moveLeft()
 end
 
 local function printTouch(event)
-	print("event: " .. event.phase .. "\n x: " .. event.x .. "\n y: " .. event.y)
+	--print("event: " .. event.phase .. "\n x: " .. event.x .. "\n y: " .. event.y)
 	if(event.phase == "began")then
 		if(event.x > display.contentWidth*0.5)then
 			moveRight()
@@ -58,9 +60,24 @@ end
 
 local collection = {}
 
+--Function handles player collision
+--When the player collides with an "obstacle" they should lose health 
+local function hitObstacle(self, event)
+	if event.phase == "began" then
+		--print(player.health)
+		player:damage(1)
+		if player.health == 0 then 
+			print("Dead") 
+			--Do Death stuff here 
+		end
+	end
+end
+
 -- "scene:create()"
 function scene:create( event )
    local sceneGroup = self.view
+   	physics.start()
+   	physics.setGravity(0,0)
 	screenTop = display.screenOriginY
 	screenBottom = display.viewableContentHeight + display.screenOriginY
 	screenLeft = display.screenOriginX
@@ -72,6 +89,10 @@ function scene:create( event )
 	
 	--player = display.newRect( display.contentWidth*.5, display.contentHeight*.75, display.contentWidth*.1, display.contentWidth*.125 )
 	player = Player(display.contentWidth*.5, display.contentHeight*.75)
+	--Add collision detection to player object
+	player.model.collision = hitObstacle
+	player.model:addEventListener("collision", player.model)
+	physics.addBody(player.model, "dynamic",{isSensor=true})
 end
 
 function collection:enterFrame(event)
