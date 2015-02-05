@@ -18,7 +18,7 @@ local function onPlayBtn()
 	return true	-- indicates successful touch
 end
 local function onOptionsBtn()
-	composer.gotoScene( "gamecredits")
+	composer.gotoScene( "options")
 
 	return true	-- indicates successful touch
 end
@@ -63,7 +63,7 @@ function scene:create( event )
 	sceneGroup:insert(playBtn)
 	
 	optionsBtn = widget.newButton{
-		label="Credits",
+		label="Options",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",

@@ -1,6 +1,6 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
-local widget = require "widget"		-- include Corona's "widget" library
+local widget = require ("widget")		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE
 -- unless "composer.removeScene()" is called.
@@ -8,20 +8,28 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText, difficultyText, easyText, normalText, hardText
-local creditsBtn, backBtn
+local creditsBtn, backBtn, effectsSlider, musicSlider
+local effectsVolume, musicVolume
 
 
+
+-- Slider listener
+local function effectsListener( event )
+	effectsVolume = event.value
+    print( "Effects Slider at " .. event.value .. "%" )
+end
+local function musicListener ( event )
+	musicVolume = event.value
+	print( "Music Slider at " .. event.value .. "%" )
+end
 
 
 local function onCreditsBtn()
-
 	composer.gotoScene( "gamecredits")
-	
 	return true	-- indicates successful touch
 end
 local function onBackBtn()
 	composer.gotoScene( "menu")
-	
 	return true	-- indicates successful touch
 end
 
@@ -31,28 +39,48 @@ end
 -- "scene:create()"
 function scene:create( event )
 	--composer.getScene("menu"):destroy()
-
    local sceneGroup = self.view
 
-	titleText = display.newText( "Options", display.contentWidth * .5, display.contentHeight*.1, native.systemFont ,display.contentHeight * .065)
+	titleText = display.newText( "Options", 0, 0, native.systemFont ,display.contentHeight * .065)
+	titleText.anchorX = 0
+	titleText.anchorY = 0
 	sceneGroup:insert(titleText)
    
-   difficultyText = display.newText( "Difficulty", display.contentWidth*.5, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
-   difficultyText.anchorX = .5
-   difficultyText.anchorY = .5
-   sceneGroup:insert(difficultyText)
+	difficultyText = display.newText( "Volume", display.contentWidth * .15, display.contentHeight*.125, native.systemFont,  display.contentHeight * .04)
+	difficultyText.anchorX = 0
+	difficultyText.anchorY = 0
+	sceneGroup:insert(difficultyText)
 
    
-   easyText = display.newText( "Easy", display.contentWidth * .5, display.contentHeight*.375, native.systemFont ,display.contentHeight * .045)
-   normalText = display.newText( "Normal", display.contentWidth * .5, display.contentHeight*.45, native.systemFont ,display.contentHeight * .045)
-   hardText = display.newText( "Hard", display.contentWidth * .5, display.contentHeight*.525, native.systemFont ,display.contentHeight * .045)
-   easyText:setFillColor(.25, 1, .25)
-   normalText:setFillColor(.25, .25, 1)
-   hardText:setFillColor(1, .25, .25)
-   sceneGroup:insert(easyText)
-   sceneGroup:insert(normalText)
-   sceneGroup:insert(hardText)
+	effectsText = display.newText( "Sound Effects", display.contentWidth * .25, display.contentHeight*.175, native.systemFont ,display.contentHeight * .035)
+	effectsText.anchorX = 0
+	effectsText.anchorY = 0
+	sceneGroup:insert(effectsText)
+	
+	effectsSlider = widget.newSlider
+	{
+		top = display.contentHeight * .225,
+		left = display.contentWidth * .25,
+		width = display.contentWidth * .5,
+		value = 50,
+		listener = effectsListener
+	}
+	sceneGroup:insert(effectsSlider)
+
+	musicText = display.newText( "Music", display.contentWidth * .25, display.contentHeight*.275, native.systemFont ,display.contentHeight * .035)
+	musicText.anchorX = 0
+	musicText.anchorY = 0
+	sceneGroup:insert(musicText)
    
+   musicSlider = widget.newSlider
+	{
+		top = display.contentHeight * .325,
+		left = display.contentWidth * .25,
+		width = display.contentWidth * .5,
+		value = 50,
+		listener = musicListener
+	}
+	sceneGroup:insert(musicSlider)
    
    -- Initialize the scene here.
 	creditsBtn = widget.newButton{
@@ -124,9 +152,17 @@ function scene:destroy( event )
    local sceneGroup = self.view
 
 	titleText:removeSelf()
-	titleText1 = nil
+	titleText = nil
 	difficultyText:removeSelf()
 	difficultyText = nil
+	effectsText:removeSelf()
+	effectsText = nil
+	effectsSlider:removeSelf()
+	effectsSlider = nil
+	musicText:removeSelf()
+	musicText = nil
+	musicSlider:removeSelf()
+	musicSlider = nil
 	creditsBtn:removeSelf()
 	creditsBtn = nil
 	backBtn:removeSelf()

@@ -13,7 +13,7 @@ local backBtnBtn
 
 
 local function onBackBtn()
-	composer.gotoScene("menu")
+	composer.gotoScene("options")
 	return true	-- indicates successful touch
 end
 
@@ -26,8 +26,29 @@ function scene:create( event )
 
    local sceneGroup = self.view
 
-	titleText1 = display.newText( "Credits", display.contentWidth * .5, display.contentHeight*.1, native.systemFont ,display.contentHeight * .065)
+	titleText1 = display.newText( "Credits", 0, 0, native.systemFont ,display.contentHeight * .065)
+	titleText1.anchorX = 0
+	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
+	
+	
+	local scrollableCredits = widget.newScrollView {
+		left = 0, top = display.contentHeight*.065,
+		width = display.contentWidth,
+		height = display.contentHeight*.73,
+		topPadding = display.contentHeight * .1,
+		bottomPadding = display.contentHeight * .1,
+		horizontalScrollDisabled = true,
+		verticalScrollDisabled = false,
+		backgroundColor = {.1,.1,.1}
+	}
+	sceneGroup:insert(scrollableCredits)
+	local creditsText = "Creators:\nWilliamBotzer, Zachary Petrusch, Steven Zamborsky\n" 
+	local creditsTextObject = display.newText(creditsText, 0, 0, native.systemFont ,display.contentHeight * .025)
+	creditsTextObject.anchorX = 0
+	creditsTextObject.anchorY = 0
+	creditsTextObject:setTextColor(1,1,1)
+	scrollableCredits:insert(creditsTextObject)
    
    -- Initialize the scene here.
 	backBtn = widget.newButton{
