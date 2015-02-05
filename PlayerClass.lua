@@ -48,10 +48,9 @@ function Player:init(posX, posY)
 	end
 
 	function Player:delete()
-		print ("teeth")
 		self.model:removeSelf()
-		print ("teeth")
 		self.model = nil
+		self = nil
 	end
 		
 end -- End CreatureClass

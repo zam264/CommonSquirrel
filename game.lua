@@ -110,9 +110,10 @@ function collection:enterFrame(event)
 		collection[x].model.y = collection[x].model.y + 10 + collection[x].speedModifier
 		if (collection[x].model.y > display.contentHeight +200) then
 			-- kill rectangle
-			--collection[x].delete()
+			collection[x]:delete()
 			-- spawn new one
 			--newRect(params)
+			print("Exiting stage")
 			table.insert(collection , newRect(-100))
 			table.remove(collection, x)
 			x = x-1
@@ -159,7 +160,13 @@ end
 function scene:destroy( event )
 
    local sceneGroup = self.view
-
+   --[[
+   for x=1,  #collection do
+   		collection[x]:delete()
+   end
+	
+   player:delete()
+   ]]
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.

@@ -40,10 +40,9 @@ function Obstacle:init(posX, posY)
 	
 --[[*****************    Methods    ******************]]--
 	function Obstacle:delete()
-		print ("teeth")
 		self.model:removeSelf()
-		print ("teeth")
 		self.model = nil
+		self = nil 
 	end
 		
 end -- End CreatureClass
