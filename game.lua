@@ -25,7 +25,7 @@ tut.y = display.contentHeight-50
 local obstacles = {} --Holds obstacles 
 
 
-local function newRect(yPos)
+function newRect(yPos)
 	local obj = Obstacle( display.contentWidth * math.random(3)*.25, yPos-math.random(display.contentHeight*.2))
 	physics.addBody(obj.model, "dynamic", {isSensor=true})
 	
