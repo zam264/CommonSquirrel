@@ -1,9 +1,11 @@
 local composer = require( "composer" )
 local physics = require("physics")
+local score = require( "score" )
 require('ObstacleClass')
 require('PlayerClass')
 require('obstacleGeneration')
 local scene = composer.newScene()
+
 --display.setStatusBar( display.HiddenStatusBar )
 
 
@@ -17,6 +19,8 @@ bg.y = display.contentHeight
 local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHeight )
 bg1.x = display.contentCenterX
 bg1.y = 0
+
+local score, distance, scoreText, timePassed
 
 local tutorial tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
 tut.x = display.contentCenterX
@@ -51,7 +55,6 @@ local function moveLeft()
 end
 
 local function printTouch(event)
-	--print("event: " .. event.phase .. "\n x: " .. event.x .. "\n y: " .. event.y)
 	if(event.phase == "began")then
 		if(event.x > display.contentWidth*0.5)then
 			moveRight()
@@ -70,6 +73,8 @@ local function hitObstacle(self, event)
 		if player.health == 0 then 
 			print("Dead") 
 			--Do Death stuff here 
+			saveScore(score)
+			addToDistance(distance)
 		end
 	end
 end
@@ -77,6 +82,10 @@ end
 -- "scene:create()"
 function scene:create( event )
    local sceneGroup = self.view
+   score = 0
+   distance = 0
+   timePassed = 0
+   
    	physics.start()
    	physics.setGravity(0,0)
 	screenTop = display.screenOriginY
@@ -94,9 +103,24 @@ function scene:create( event )
 	player.model.collision = hitObstacle
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
+	
+	scoreText = display.newText( tostring(score), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
 end
 
+<<<<<<< HEAD
 function obstacles:enterFrame(event)
+=======
+function collection:enterFrame(event)
+
+	if (event.time - timePassed > 250 and player.health > 0) then
+		timePassed = event.time
+		score = score + 1
+		scoreText.text = score
+		distance = distance + 2.64
+	end	
+	
+	
+>>>>>>> origin/Scores
 	--Scrolling background
 	if(bg.y > display.contentHeight*1.5)then 
 		bg.y = display.contentHeight*-0.5
@@ -109,7 +133,12 @@ function obstacles:enterFrame(event)
 
 	generateObstacles(obstacles)
 	
+<<<<<<< HEAD
 	--print (#obstacles)
+=======
+	--print (#collection)
+	
+>>>>>>> origin/Scores
 end
 
 -- "scene:show()"

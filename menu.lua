@@ -1,4 +1,5 @@
 local composer = require( "composer" )
+local score = require( "score" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
@@ -8,8 +9,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local playBtn, optionsBtn
-local titleText1, titleText2, highScoreText, box
-
+local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
 
 
 local function onPlayBtn()
@@ -30,21 +30,38 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
+	
+	
+	
 	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
 	sceneGroup:insert(titleText1)
 	sceneGroup:insert(titleText2)
    
-   highScoreText = display.newText( "HighScores", display.contentWidth*.5, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+   highScoreText = display.newText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
    highScoreText.anchorX = .5
    highScoreText.anchorY = .5
    sceneGroup:insert(highScoreText)
+
+   highScore = display.newText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, native.systemFont,  display.contentHeight * .04)
+   highScore.anchorX = .5
+   highScore.anchorY = .5
+   sceneGroup:insert(highScore)
    
-   box = display.newRect( display.contentWidth*.5, display.contentHeight*.475, display.contentWidth*.5, display.contentHeight*.275 )
-   box:setFillColor( 0 )
-   box.strokeWidth = 3
-   box:setStrokeColor(255,0,0)
-   sceneGroup:insert(box)
+   
+   
+   totalDistanceText = display.newText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, native.systemFont,  display.contentHeight * .05)
+   totalDistanceText.anchorX = .5
+   totalDistanceText.anchorY = .5
+   sceneGroup:insert(totalDistanceText)
+
+   totalDistance = display.newText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, native.systemFont,  display.contentHeight * .04)
+   totalDistance.anchorX = .5
+   totalDistance.anchorY = .5
+   sceneGroup:insert(totalDistance)
+   
+   
+   
    
    -- Initialize the scene here.
 	playBtn = widget.newButton{
