@@ -10,6 +10,7 @@ local scene = composer.newScene()
 
 
 --Variables
+local highScore
 local screenTop, screenBottom, screenLeft, screenRight
 local player
 local bgImg = "imgs/bg1.jpg"
@@ -20,7 +21,7 @@ local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHe
 bg1.x = display.contentCenterX
 bg1.y = 0
 
-local score, distance, scoreText, timePassed
+local playerScore, distance, scoreText, timePassed
 
 local tutorial tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
 tut.x = display.contentCenterX
@@ -73,7 +74,8 @@ local function hitObstacle(self, event)
 		if player.health == 0 then 
 			print("Dead") 
 			--Do Death stuff here 
-			saveScore(score)
+			
+			saveScore(playerScore)
 			addToDistance(distance)
 		end
 	end
@@ -82,10 +84,10 @@ end
 -- "scene:create()"
 function scene:create( event )
    local sceneGroup = self.view
-   score = 0
+   playerScore = 0
    distance = 0
    timePassed = 0
-   
+   highScore = loadScore()
 
    	physics.start()
    	physics.setGravity(0,0)
@@ -105,7 +107,7 @@ function scene:create( event )
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
-	scoreText = display.newText( tostring(score), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
+	scoreText = display.newText( tostring(playerScore), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
 end
 
 
@@ -113,11 +115,10 @@ end
 end]]
 
 function obstacles:enterFrame(event)
-
 	if (event.time - timePassed > 250 and player.health > 0) then
 		timePassed = event.time
-		score = score + 1
-		scoreText.text = score
+		playerScore = playerScore + 1
+		scoreText.text = playerScore
 		distance = distance + 2.64
 	end	
 	

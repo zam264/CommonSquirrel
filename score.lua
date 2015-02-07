@@ -1,22 +1,21 @@
 function loadScore ()
-   local path = system.pathForFile( "scorefile.txt", system.DocumentsDirectory )
-   local contents = ""
-   local file = io.open( path, "r" )
-   if ( file ) then
-		print("read open")
-      -- read all contents of file into a string
-      local contents = file:read( "*a" )
-      local score = tonumber(contents)
-      io.close( file )
-	return score
-   else
-      print( "Error: could not read scores")
-   end
-   return nil
+	local path = system.pathForFile( "scorefile.txt", system.DocumentsDirectory )
+	local contents = ""
+	local file = io.open( path, "r" )
+	if ( file ) then
+		-- read all contents of file into a string
+		local contents = file:read( "*a" )
+		local score = tonumber(contents)
+		io.close( file )
+		return score
+	else
+		print( "Error: could not read scores")
+	end
+	return 0
 end
 
 function saveScore (score)
-	if (score > loadScore()) then
+	if (tonumber(score) > tonumber(loadScore())) then
 		local path = system.pathForFile( "scorefile.txt", system.DocumentsDirectory )
 		local file = io.open(path, "w")
 		if ( file ) then
@@ -48,7 +47,7 @@ function loadDistance()
 	else
 		print( "Error: could not read scores")
 	end
-	return nil
+	return 0
 end
 
 
