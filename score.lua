@@ -1,73 +1,70 @@
---[[
-
-
-
-]]--
-
-local Score = {}
-
-function Score.save(score)
-   local path = system.pathForFile( scorefile.txt, system.DocumentsDirectory )
-   local file = io.open(path, "w")
-   if ( file ) then
-      local contents = tostring(score)
-      file:write( contents )
-      io.close( file )
-      return true
-   else
-      print( "Error: could not record highscore ", M.filename, "." )
-      return false
-   end
-end
-
-
-function Score.load()
-	sortScores()
-
-   local path = system.pathForFile( M.filename, system.DocumentsDirectory )
+function loadScore ()
+   local path = system.pathForFile( "scorefile.txt", system.DocumentsDirectory )
+   local contents = ""
    local file = io.open( path, "r" )
    if ( file ) then
-		local scores = {}
-		for line in file:lines() do
-			scores[line] = tostring(line)
-		end
-		io.close( file )
-		return scores
-      -- read all contents of file into a string  
-	  --[[
+		print("read open")
+      -- read all contents of file into a string
       local contents = file:read( "*a" )
-      local score = tonumber(contents);
+      local score = tonumber(contents)
       io.close( file )
-      return score--]]
+	return score
    else
-      print( "Error: could not read scores from ", M.filename, "." )
+      print( "Error: could not read scores")
    end
    return nil
 end
 
-function Score.sortScores()
-	local path = system.pathForFile( M.filename, system.DocumentsDirectory )
-   local file = io.open( path, "r" )
-   if ( file ) then
-		local scores = {}
-		for line in file:lines() do
-			scores[line] = tostring(line)
+function saveScore (score)
+	if (score > loadScore()) then
+		local path = system.pathForFile( "scorefile.txt", system.DocumentsDirectory )
+		local file = io.open(path, "w")
+		if ( file ) then
+			local contents = tostring( score )
+			file:write( contents )
+			io.close( file )
+			return true
+		else
+			print( "Error: could not read " )
+			return false
 		end
-		io.close( file )
-   else
-      print( "Error: could not read scores from ", M.filename, "." )
-   end
+	end
+end
 
-   table.sort(scores)
-   
-   local path = system.pathForFile( scorefile.txt, system.DocumentsDirectory )
-   local file = io.open(path, "w")
-   if ( file ) then
-		for file:lines(), file:lines()-5 do
-			file:write( scores[x] )
-		end
+
+
+
+function loadDistance()
+	local path = system.pathForFile( "distancefile.txt", system.DocumentsDirectory )
+	local contents = ""
+	local file = io.open( path, "r" )
+	if ( file ) then
+		print("read open")
+		-- read all contents of file into a string
+		local contents = file:read( "*a" )
+		local distance = tonumber(contents)
 		io.close( file )
-   else
-      print( "Error: could not record highscore ", M.filename, "." )
-   end
+		return distance
+	else
+		print( "Error: could not read scores")
+	end
+	return nil
+end
+
+
+function addToDistance(dist)
+	local currentTotal = loadDistance() or 0
+	local newTotal = currentTotal + dist
+	
+	local path = system.pathForFile( "distancefile.txt", system.DocumentsDirectory )
+	local file = io.open(path, "w")
+	if ( file ) then
+		local contents = tostring( newTotal )
+		file:write( contents )
+		io.close( file )
+		return true
+	else
+		print( "Error: could not read " )
+		return false
+	end
 end
