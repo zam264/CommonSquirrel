@@ -2,6 +2,7 @@ local composer = require( "composer" )
 local physics = require("physics")
 require('ObstacleClass')
 require('PlayerClass')
+require('obstacleGeneration')
 local scene = composer.newScene()
 --display.setStatusBar( display.HiddenStatusBar )
 
@@ -20,6 +21,8 @@ bg1.y = 0
 local tutorial tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
 tut.x = display.contentCenterX
 tut.y = display.contentHeight-50
+
+local obstacles = {} --Holds obstacles 
 
 
 local function newRect(yPos)
@@ -58,8 +61,6 @@ local function printTouch(event)
 	end	
 end
 
-local collection = {}
-
 --Function handles player collision
 --When the player collides with an "obstacle" they should lose health 
 local function hitObstacle(self, event)
@@ -84,7 +85,7 @@ function scene:create( event )
 	screenRight = display.viewableContentWidth + display.screenOriginX
 	
 	for n=1, 9 do
-		table.insert(collection , newRect(-1 *n*display.contentHeight*.2))
+		table.insert(obstacles , newRect(-1 *n*display.contentHeight*.2))
 	end
 	
 	--player = display.newRect( display.contentWidth*.5, display.contentHeight*.75, display.contentWidth*.1, display.contentWidth*.125 )
@@ -95,7 +96,7 @@ function scene:create( event )
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 end
 
-function collection:enterFrame(event)
+function obstacles:enterFrame(event)
 	--Scrolling background
 	if(bg.y > display.contentHeight*1.5)then 
 		bg.y = display.contentHeight*-0.5
@@ -106,25 +107,10 @@ function collection:enterFrame(event)
 		bg1:translate(0, 3)
 	end
 
-	for x=1,  #collection do
-		collection[x].model.y = collection[x].model.y + 10 + collection[x].speedModifier
-		if (collection[x].model.y > display.contentHeight +200) then
-			-- kill rectangle
-			collection[x]:delete()
-			-- spawn new one
-			--newRect(params)
-			print("Exiting stage")
-			table.insert(collection , newRect(-100))
-			table.remove(collection, x)
-			x = x-1
-		end
-		--collection[x]:translate(0,)
-	end
+	generateObstacles(obstacles)
 	
-	--print (#collection)
+	--print (#obstacles)
 end
-
-
 
 -- "scene:show()"
 function scene:show( event )
@@ -161,8 +147,8 @@ function scene:destroy( event )
 
    local sceneGroup = self.view
    --[[
-   for x=1,  #collection do
-   		collection[x]:delete()
+   for x=1,  #obstacles do
+   		obstacles[x]:delete()
    end
 	
    player:delete()
@@ -179,7 +165,7 @@ scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
-Runtime:addEventListener( "enterFrame", collection )
+Runtime:addEventListener( "enterFrame", obstacles )
 Runtime:addEventListener( "touch", printTouch)
 
 ---------------------------------------------------------------------------------
