@@ -86,6 +86,7 @@ function scene:create( event )
    distance = 0
    timePassed = 0
    
+
    	physics.start()
    	physics.setGravity(0,0)
 	screenTop = display.screenOriginY
@@ -107,10 +108,11 @@ function scene:create( event )
 	scoreText = display.newText( tostring(score), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
 end
 
-<<<<<<< HEAD
+
+--[[function obstacles:enterFrame(event)
+end]]
+
 function obstacles:enterFrame(event)
-=======
-function collection:enterFrame(event)
 
 	if (event.time - timePassed > 250 and player.health > 0) then
 		timePassed = event.time
@@ -120,7 +122,7 @@ function collection:enterFrame(event)
 	end	
 	
 	
->>>>>>> origin/Scores
+
 	--Scrolling background
 	if(bg.y > display.contentHeight*1.5)then 
 		bg.y = display.contentHeight*-0.5
@@ -133,12 +135,11 @@ function collection:enterFrame(event)
 
 	generateObstacles(obstacles)
 	
-<<<<<<< HEAD
+
 	--print (#obstacles)
-=======
+
 	--print (#collection)
-	
->>>>>>> origin/Scores
+
 end
 
 -- "scene:show()"
@@ -200,5 +201,3 @@ Runtime:addEventListener( "touch", printTouch)
 ---------------------------------------------------------------------------------
 
 return scene
-
-
