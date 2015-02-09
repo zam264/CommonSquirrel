@@ -21,11 +21,15 @@ local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHe
 bg1.x = display.contentCenterX
 bg1.y = 0
 
-local playerScore, distance, scoreText, timePassed
+local  scoreText, timePassed
+playerScore = 0
+distance = 0
 
-local tutorial tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
+local tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
 tut.x = display.contentCenterX
 tut.y = display.contentHeight-50
+
+local obstacles = {} --Holds obstacles 
 
 --Health sprite variables
 local options = {
@@ -103,6 +107,11 @@ local function hitObstacle(self, event)
 			
 			saveScore(playerScore)
 			addToDistance(distance)
+			for x=1,  #obstacles do
+				--obstacles[x]:delete()
+				sceneGroup:insert(obstacles[x].model)
+			end
+			composer.gotoScene( "loseScreen", fromTop)
 		end
 	end
 end
@@ -135,6 +144,13 @@ function scene:create( event )
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
 	scoreText = display.newText( tostring(playerScore), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
+
+	sceneGroup:insert(bg1)
+	sceneGroup:insert(bg)
+	sceneGroup:insert(tut)
+	sceneGroup:insert(player.model)
+	sceneGroup:insert(scoreText)
+	sceneGroup:insert(healthSprite)
 end
 
 
@@ -142,32 +158,33 @@ end
 end]]
 
 function obstacles:enterFrame(event)
-	if (event.time - timePassed > 250 and player.health > 0) then
-		timePassed = event.time
-		playerScore = playerScore + 1
-		scoreText.text = playerScore
-		distance = distance + 2.64
-	end	
-	
-	
+	if (player.health > 0) then
+		if (event.time - timePassed > 250 and player.health > 0) then
+			timePassed = event.time
+			playerScore = playerScore + 1
+			scoreText.text = playerScore
+			distance = distance + 2.64
+		end	
+		
+		
 
-	--Scrolling background
-	if(bg.y > display.contentHeight*1.5)then 
-		bg.y = display.contentHeight*-0.5
-	elseif(bg1.y > display.contentHeight*1.5)then	
-		bg1.y = display.contentHeight*-0.5
-	else
-		bg:translate(0, 3)
-		bg1:translate(0, 3)
+		--Scrolling background
+		if(bg.y > display.contentHeight*1.5)then 
+			bg.y = display.contentHeight*-0.5
+		elseif(bg1.y > display.contentHeight*1.5)then	
+			bg1.y = display.contentHeight*-0.5
+		else
+			bg:translate(0, 3)
+			bg1:translate(0, 3)
+		end
+
+		generateObstacles(obstacles)
+		
+
+		--print (#obstacles)
+
+		--print (#collection)
 	end
-
-	generateObstacles(obstacles)
-	
-
-	--print (#obstacles)
-
-	--print (#collection)
-
 end
 
 -- "scene:show()"
@@ -204,13 +221,26 @@ end
 function scene:destroy( event )
 
    local sceneGroup = self.view
-   --[[
+  tut:removeSelf()
+	tut = nil
+	bg:removeSelf()
+	bg = nil
+	bg1:removeSelf()
+	bg1 = nil
+   
+	scoreText:removeSelf()
+	scoreText = nil
+   
    for x=1,  #obstacles do
    		obstacles[x]:delete()
    end
+	--obstacles:removeSelf()
+	--obstacles = nil
 	
    player:delete()
-   ]]
+   
+   Runtime:removeEventListener( "enterFrame", obstacles )
+   Runtime:removeEventListener( "touch", printTouch )
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.

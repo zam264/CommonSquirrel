@@ -16,10 +16,12 @@ local titleText, scoreText, highScore, distanceText, scoreT, distanceT
 local function onReplayBtn()
 	composer.removeScene( "game" )
 	composer.gotoScene( "game")
+	composer.removeScene( "loseScreen" )
 	return true	-- indicates successful touch
 end
 local function onQuitBtn()
 	composer.removeScene( "game" )
+	composer.removeScene( "menu" )
 	composer.gotoScene( "menu")
 	composer.removeScene( "loseScreen" )
 	return true	-- indicates successful touch
