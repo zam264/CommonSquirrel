@@ -43,7 +43,7 @@ function scene:create( event )
 		backgroundColor = {.1,.1,.1}
 	}
 	sceneGroup:insert(scrollableCredits)
-	local creditsText = "Creators:\nWilliam Botzer\nZachary Petrusch\nSteven Zamborsky\n" 
+	local creditsText = "Creators:\nWilliam Botzer\nZachary Petrusch\nSteven Zamborsky\n\nArtwork:\nCasey Squires" 
 	local creditsTextObject = display.newText(creditsText, 0, 0, native.systemFont ,display.contentHeight * .025)
 	creditsTextObject.anchorX = 0
 	creditsTextObject.anchorY = 0

@@ -27,6 +27,26 @@ local tutorial tut = display.newImageRect("imgs/tutorial.png", display.contentWi
 tut.x = display.contentCenterX
 tut.y = display.contentHeight-50
 
+--Health sprite variables
+local options = {
+	width = 192,
+	height = 64,
+	numFrames = 4
+}
+local healthSheet = graphics.newImageSheet("imgs/acornSprites.png", options)
+local sequenceData = {
+	{name = "health3", start=1, count=1, time=0, loopCount=1},
+	{name = "health2", start=2, count=1, time=0, loopCount=1},
+	{name = "health1", start=3, count=1, time=0, loopCount=1},
+	{name = "health0", start=4, count=1, time=0, loopCount=1}
+}
+local healthSprite = display.newSprite( healthSheet, sequenceData )
+healthSprite.x = 100
+healthSprite.y = 32
+healthSprite:setSequence( "health" .. 3 )
+healthSprite:play()
+--Health sprite variables
+
 local obstacles = {} --Holds obstacles 
 
 
@@ -71,6 +91,12 @@ local function hitObstacle(self, event)
 	if event.phase == "began" then
 		--print(player.health)
 		player:damage(1)
+
+		--Health sprites
+		healthSprite:setSequence("health" .. player.health)
+		healthSprite:play()
+		--Health sprites
+
 		if player.health == 0 then 
 			print("Dead") 
 			--Do Death stuff here 
@@ -80,6 +106,7 @@ local function hitObstacle(self, event)
 		end
 	end
 end
+
 
 -- "scene:create()"
 function scene:create( event )
