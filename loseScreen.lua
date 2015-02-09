@@ -1,5 +1,6 @@
 local composer = require( "composer" )
 local score = require( "score" )
+local game = require( "game" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
@@ -8,18 +9,19 @@ local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local playBtn, optionsBtn
-local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
+local replayBtn, quitBtn
+local titleText, scoreText, highScore, distanceText, scoreT, distanceT
 
 
-local function onPlayBtn()
+local function onReplayBtn()
+	composer.removeScene( "game" )
 	composer.gotoScene( "game")
-
 	return true	-- indicates successful touch
 end
-local function onOptionsBtn()
-	composer.gotoScene( "options")
-
+local function onQuitBtn()
+	composer.removeScene( "game" )
+	composer.gotoScene( "menu")
+	composer.removeScene( "loseScreen" )
 	return true	-- indicates successful touch
 end
 
@@ -30,69 +32,69 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
+	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.125, native.systemFont,  display.contentHeight * .1)
+	titleText.anchorX = .5
+	titleText.anchorY = .5
+	sceneGroup:insert(titleText)
+	
+	if (loadScore() <= playerScore) then	--new highscore has been set
+		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+		scoreText.anchorX = 0
+		scoreText.anchorY = 0
+		sceneGroup:insert(scoreText)
+	else
+		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+		scoreText.anchorX = 0
+		scoreText.anchorY = 0
+		sceneGroup:insert(scoreText)
+	end
+	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.365, native.systemFont,  display.contentHeight * .05)
+	scoreT.anchorX = 1
+	scoreT.anchorY = 0
+	sceneGroup:insert(scoreT)
+	
+	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.455, native.systemFont,  display.contentHeight * .05)
+	distanceText.anchorX = 0
+	distanceText.anchorY = 0
+	sceneGroup:insert(distanceText)
+	
+	distanceT = display.newText (distance, display.contentWidth*.95, display.contentHeight *.52, native.systemFont,  display.contentHeight * .05)
+	distanceT.anchorX = 1
+	distanceT.anchorY = 0
+	sceneGroup:insert(distanceT)
 	
 	
 	
-	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
-	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
-	sceneGroup:insert(titleText1)
-	sceneGroup:insert(titleText2)
-   
-   highScoreText = display.newText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
-   highScoreText.anchorX = .5
-   highScoreText.anchorY = .5
-   sceneGroup:insert(highScoreText)
-
-   highScore = display.newText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, native.systemFont,  display.contentHeight * .04)
-   highScore.anchorX = .5
-   highScore.anchorY = .5
-   sceneGroup:insert(highScore)
-   
-   
-   
-   totalDistanceText = display.newText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, native.systemFont,  display.contentHeight * .05)
-   totalDistanceText.anchorX = .5
-   totalDistanceText.anchorY = .5
-   sceneGroup:insert(totalDistanceText)
-
-   totalDistance = display.newText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, native.systemFont,  display.contentHeight * .04)
-   totalDistance.anchorX = .5
-   totalDistance.anchorY = .5
-   sceneGroup:insert(totalDistance)
-   
-   
-   
-   
-   -- Initialize the scene here.
-	playBtn = widget.newButton{
-		label="Play",
+	replayBtn = widget.newButton{
+		label="Play Again",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
 		width=display.contentWidth * .50, height=display.contentHeight * .1,
-		onRelease = onPlayBtn
+		onRelease = onReplayBtn
 	}
-	playBtn.anchorX = .5
-	playBtn.anchorY = .5
-	playBtn.x = display.contentWidth * .50
-	playBtn.y = display.contentHeight * .7
-	sceneGroup:insert(playBtn)
+	replayBtn.anchorX = .5
+	replayBtn.anchorY = .5
+	replayBtn.x = display.contentWidth * .50
+	replayBtn.y = display.contentHeight * .7
+	sceneGroup:insert(replayBtn)
 	
-	optionsBtn = widget.newButton{
-		label="Options",
+	
+	quitBtn = widget.newButton{
+		label="Give up...",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
 		width=display.contentWidth * .5, height=display.contentHeight * .1,
-		onRelease = onOptionsBtn
+		onRelease = onQuitBtn
 	}
-	optionsBtn.anchorX = .5
-	optionsBtn.anchorY = .5
-	optionsBtn.x = display.contentWidth * .50
-	optionsBtn.y = display.contentHeight * .85
-	sceneGroup:insert(optionsBtn)
+	quitBtn.anchorX = .5
+	quitBtn.anchorY = .5
+	quitBtn.x = display.contentWidth * .50
+	quitBtn.y = display.contentHeight * .85
+	sceneGroup:insert(quitBtn)
 	
 	
    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
@@ -133,22 +135,20 @@ function scene:destroy( event )
 
    local sceneGroup = self.view
 
-	titleText1:removeSelf()
-	titleText1 = nil
-	titleText2:removeSelf()
-	titleText2 = nil
-	highScoreText:removeSelf()
-	highScoreText = nil
-	highScore:removeSelf()
-	highScore = nil
-	totalDistanceText:removeSelf()
-	totalDistanceText = nil
-	totalDistance:removeSelf()
-	totalDistance = nil
-	playBtn:removeSelf()
-	playBtn = nil
-	optionsBtn:removeSelf()
-    optionsBtn = nil
+	titleText:removeSelf()
+	titleText = nil
+	scoreText:removeSelf()
+	scoreText = nil
+	scoreT:removeSelf()
+	scoreT = nil
+	distanceText:removeSelf()
+	distanceText = nil
+	distanceT:removeSelf()
+	distanceT = nil
+	replayBtn:removeSelf()
+	replayBtn = nil
+	quitBtn:removeSelf()
+    quitBtn = nil
 	
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
