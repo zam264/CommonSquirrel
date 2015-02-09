@@ -108,9 +108,9 @@ local function hitObstacle(self, event)
 			saveScore(playerScore)
 			addToDistance(distance)
 			for x=1,  #obstacles do
-				--obstacles[x]:delete()
-				sceneGroup:insert(obstacles[x].model)
+				obstacles[x]:delete()
 			end
+			obstacles = {}
 			composer.gotoScene( "loseScreen", fromTop)
 		end
 	end
