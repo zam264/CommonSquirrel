@@ -1,6 +1,7 @@
 local composer = require( "composer" )
 local physics = require("physics")
 local score = require( "score" )
+local widget = require "widget"		-- include Corona's "widget" library
 require('ObstacleClass')
 require('PlayerClass')
 require('obstacleGeneration')
@@ -21,7 +22,8 @@ local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHe
 bg1.x = display.contentCenterX
 bg1.y = 0
 
-local  scoreText, timePassed
+local  scoreText, timePassedBetweenEvents, timePassed
+paused = false
 playerScore = 0
 distance = 0
 
@@ -89,6 +91,12 @@ local function printTouch(event)
 	end	
 end
 
+local function pauseGame ()
+	paused = true;
+	composer.hideOverlay("game")
+	composer.gotoScene("pause")
+end
+
 --Function handles player collision
 --When the player collides with an "obstacle" they should lose health 
 local function hitObstacle(self, event)
@@ -124,6 +132,21 @@ function scene:create( event )
    distance = 0
    timePassed = 0
    highScore = loadScore()
+   
+   
+   pauseBtn = widget.newButton{
+		label="",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/pauseBtn.png",
+		overFile="imgs/pauseBtn.png",
+		width=display.contentHeight * .05, height=display.contentHeight * .05,
+		onRelease = pauseGame
+	}
+	pauseBtn.anchorX = .5
+	pauseBtn.anchorY = .5
+	pauseBtn.x = display.contentWidth * .93
+	pauseBtn.y = display.contentHeight * .05
 
    	physics.start()
    	physics.setGravity(0,0)
@@ -147,6 +170,7 @@ function scene:create( event )
 
 	sceneGroup:insert(bg1)
 	sceneGroup:insert(bg)
+	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(tut)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
@@ -158,14 +182,15 @@ end
 end]]
 
 function obstacles:enterFrame(event)
-	if (player.health > 0) then
-		if (event.time - timePassed > 250 and player.health > 0) then
+	if  ( paused ) then
+		timePassed = timePassed + (event.time - timePassedBetweenEvents)
+	elseif (player.health > 0) then
+		if (event.time - timePassed > 250) then
 			timePassed = event.time
 			playerScore = playerScore + 1
 			scoreText.text = playerScore
 			distance = distance + 2.64
 		end	
-		
 		
 
 		--Scrolling background
@@ -185,6 +210,7 @@ function obstacles:enterFrame(event)
 
 		--print (#collection)
 	end
+	timePassedBetweenEvents = event.time
 end
 
 -- "scene:show()"
@@ -193,6 +219,8 @@ function scene:show( event )
    local sceneGroup = self.view
    local phase = event.phase
 
+   paused = false
+   
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
@@ -208,6 +236,10 @@ function scene:hide( event )
    local sceneGroup = self.view
    local phase = event.phase
 
+   for x=1,  #obstacles do
+		sceneGroup:insert(obstacles[x].model)
+	end
+   
    if ( phase == "will" ) then
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
