@@ -8,7 +8,7 @@ local widget = require ("widget")		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText, difficultyText, easyText, normalText, hardText
-local creditsBtn, backBtn, effectsSlider, musicSlider
+local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn
 local effectsVolume, musicVolume
 
 
@@ -23,7 +23,10 @@ local function musicListener ( event )
 	print( "Music Slider at " .. event.value .. "%" )
 end
 
-
+local function onAchievmentsBtn()
+	composer.gotoScene( "achievements")
+	return true	-- indicates successful touch
+end
 local function onCreditsBtn()
 	composer.gotoScene( "gamecredits")
 	return true	-- indicates successful touch
@@ -83,6 +86,22 @@ function scene:create( event )
 	sceneGroup:insert(musicSlider)
    
    -- Initialize the scene here.
+	achievmentsBtn = widget.newButton{
+		label="Achievments",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=display.contentWidth * .50, height=display.contentHeight * .1,
+		onRelease = onAchievmentsBtn
+	}
+	achievmentsBtn.anchorX = .5
+	achievmentsBtn.anchorY = .5
+	achievmentsBtn.x = display.contentWidth * .50
+	achievmentsBtn.y = display.contentHeight * .55
+	sceneGroup:insert(achievmentsBtn)
+
+
 	creditsBtn = widget.newButton{
 		label="Credits",
 		fontSize = display.contentWidth * .05,
@@ -167,6 +186,8 @@ function scene:destroy( event )
 	creditsBtn = nil
 	backBtn:removeSelf()
 	backBtn = nil
+	achievmentsBtn:removeSelf()
+	achievmentsBtn = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.
