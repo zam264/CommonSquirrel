@@ -77,11 +77,22 @@ function scene:show( event )
 
 	local distance = {500, 1000, 1500, 5000, 10000, 15000, 999999999} --'unachievable' score necessary to avoid out of bounds error when testing
 	local achievementNames = {"First", "Second", "Third", "Fourth", "Fifth"}
-	local i = 1
-	while distance[i] < loadDistance() do
-		
+	local i = 1  --used for achievement index
+	local j = 1  --used for achievement placement
+	while distance[i] < loadDistance()do --find the next unlockable achievement
+		i = i+1
+	end
+	local achievementsText = "LOCKED until " .. distance[i] .. "ft+"
+	local achievementsTextObject = display.newText(achievementsText, 225, (250*(j-1)), native.systemFont ,display.contentHeight * .025)
+	achievementsTextObject.anchorX = 0	
+	achievementsTextObject.anchorY = 0
+	achievementsTextObject:setTextColor(1,1,1)
+	scrollableachievements:insert(achievementsTextObject)
+	i = i-1
+	j = j+1
+	while i>=1 do
 		local achievementsText = achievementNames[i] .. " " .. distance[i] .. "ft+"
-		local achievementsTextObject = display.newText(achievementsText, 225, (250*(i-1)), native.systemFont ,display.contentHeight * .025)
+		local achievementsTextObject = display.newText(achievementsText, 225, (250*(j-1)), native.systemFont ,display.contentHeight * .025)
 		achievementsTextObject.anchorX = 0	
 		achievementsTextObject.anchorY = 0
 		achievementsTextObject:setTextColor(1,1,1)
@@ -90,16 +101,12 @@ function scene:show( event )
 
 		background = display.newImageRect( "imgs/achievement" .. i ..".png", 200, 200 )
 		background.x = 100
-		background.y = 100+(250*(i-1))
+		background.y = 100+(250*(j-1))
 		scrollableachievements:insert( background )
-		i = i+1
+		i = i-1
+		j = j+1
    	end
-	local achievementsText = "LOCKED until " .. distance[i] .. "ft+"
-	local achievementsTextObject = display.newText(achievementsText, 225, (250*(i-1)), native.systemFont ,display.contentHeight * .025)
-	achievementsTextObject.anchorX = 0	
-	achievementsTextObject.anchorY = 0
-	achievementsTextObject:setTextColor(1,1,1)
-	scrollableachievements:insert(achievementsTextObject)
+
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
