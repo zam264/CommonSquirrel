@@ -6,7 +6,7 @@ Obstacle = LCS.class({speedModifier, damage, spriteOptions, mySheet ,model})
 function Obstacle:init(posX, posY)
 	-- Initialize creatures base attributes
 	self.damage = 1
-	self.speedModifier = math.random(10)/10 
+	self.speedModifier = 0
 
 
 	--Declare and set up Sprite Image Sheet and sequence data
@@ -17,7 +17,8 @@ function Obstacle:init(posX, posY)
 		sheetContentWidth = 832, 
 		sheetContentHeight = 1344 
 	}
-	mySheet = graphics.newImageSheet("skeleton_3.png", spriteOptions, 50, 50)
+
+	mySheet = graphics.newImageSheet("skeleton_3.png", spriteOptions, 2000, 2000)
 	sequenceData = {
 		{name = "forward", frames={105,106,107,108,109,110,111,112}, time = 500, loopCount = 1},
 		{name = "right", frames={144,145,146,147,148,149,150,151,152}, time = 500, loopCount = 1}, 
@@ -35,6 +36,8 @@ function Obstacle:init(posX, posY)
 	self.model:setSequence("forward")
 	self.model.x = posX
 	self.model.y = posY
+	self.model.width = display.contentWidth*.15
+	self.model.height = display.contentWidth*.15
 
 	
 	

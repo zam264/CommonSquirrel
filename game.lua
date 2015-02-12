@@ -22,7 +22,7 @@ local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHe
 bg1.x = display.contentCenterX
 bg1.y = 0
 
-local  scoreText, timePassedBetweenEvents, timePassed
+local  scoreText, timePassedBetweenEvents, timePassed, stageTimer
 paused = false
 playerScore = 0
 distance = 0
@@ -55,13 +55,6 @@ healthSprite:play()
 
 local obstacles = {} --Holds obstacles 
 
-
-function newRect(yPos)
-	local obj = Obstacle( display.contentWidth * math.random(3)*.25, yPos-math.random(display.contentHeight*.2))
-	physics.addBody(obj.model, "dynamic", {isSensor=true})
-	
-	return obj
-end
 local function moveRight() 
 	if (player.model.x < display.contentWidth * .75) then
 		if (player.model.x < display.contentWidth * .5) then
@@ -131,6 +124,7 @@ function scene:create( event )
    playerScore = 0
    distance = 0
    timePassed = 0
+   stageTimer = 0
    highScore = loadScore()
    
    
@@ -154,10 +148,6 @@ function scene:create( event )
 	screenBottom = display.viewableContentHeight + display.screenOriginY
 	screenLeft = display.screenOriginX
 	screenRight = display.viewableContentWidth + display.screenOriginX
-	
-	for n=1, 9 do
-		table.insert(obstacles , newRect(-1 *n*display.contentHeight*.2))
-	end
 	
 	--player = display.newRect( display.contentWidth*.5, display.contentHeight*.75, display.contentWidth*.1, display.contentWidth*.125 )
 	player = Player(display.contentWidth*.5, display.contentHeight*.75)
@@ -184,6 +174,7 @@ end]]
 function obstacles:enterFrame(event)
 	if  ( paused ) then
 		timePassed = timePassed + (event.time - timePassedBetweenEvents)
+		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
 	elseif (player.health > 0) then
 		if (event.time - timePassed > 250) then
 			timePassed = event.time
@@ -191,7 +182,10 @@ function obstacles:enterFrame(event)
 			scoreText.text = playerScore
 			distance = distance + 2.64
 		end	
-		
+		if ( event.time - stageTimer > 1250 ) then
+			stageTimer = event.time
+			generateObstacles(obstacles)
+		end	
 
 		--Scrolling background
 		if(bg.y > display.contentHeight*1.5)then 
@@ -203,7 +197,17 @@ function obstacles:enterFrame(event)
 			bg1:translate(0, 3)
 		end
 
-		generateObstacles(obstacles)
+		for x=1, #obstacles do
+			obstacles[x].model:translate(0,20)
+			if (obstacles[x].model.y > display.contentHeight +200) then
+				-- kill rectangle
+				--obstacles[x]:delete()
+				--table.remove(obstacles, x)
+				--x = x-1
+				--print(#obstacles)
+			end
+		end
+
 		
 
 		--print (#obstacles)
