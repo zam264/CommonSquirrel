@@ -49,6 +49,8 @@ local sequenceData = {
 local healthSprite = display.newSprite( healthSheet, sequenceData )
 healthSprite.x = 100
 healthSprite.y = 32
+healthSprite.xScale = display.contentWidth * .001
+healthSprite.yScale = display.contentWidth * .001
 healthSprite:setSequence( "health" .. 3 )
 healthSprite:play()
 --Health sprite variables

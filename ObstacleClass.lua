@@ -36,8 +36,8 @@ function Obstacle:init(posX, posY)
 	self.model:setSequence("forward")
 	self.model.x = posX
 	self.model.y = posY
-	self.model.width = display.contentWidth*.15
-	self.model.height = display.contentWidth*.15
+	self.model.xScale = display.contentWidth * .0025
+	self.model.yScale = display.contentWidth * .0025
 
 	
 	

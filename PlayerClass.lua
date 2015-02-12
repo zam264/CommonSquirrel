@@ -24,10 +24,10 @@ function Player:init(posX, posY)
 	-- Display the new sprite at the coordinates passed
 	self.model = display.newSprite(mySheet, sequenceData)
 	self.model:setSequence("forward")
-	
-	self.model.width = display.contentWidth * .25
-	self.model.height = display.contentWidth * .25
 	self.model:play()
+	self.model.xScale = display.contentWidth * .003
+	self.model.yScale = display.contentWidth * .003
+	
 	self.model.x = posX
 	self.model.y = posY
 
