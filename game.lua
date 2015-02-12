@@ -96,7 +96,6 @@ local function hitObstacle(self, event)
 	if event.phase == "began" then
 		--print(player.health)
 		player:damage(1)
-
 		--Health sprites
 		healthSprite:setSequence("health" .. player.health)
 		healthSprite:play()
