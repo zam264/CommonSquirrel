@@ -45,6 +45,13 @@ function Player:init(posX, posY)
 		end
 	end
 
+	function Player:heal(amg)
+		self.health = 3
+		if self.health > 3 
+			self.health = 3 
+		end
+	end
+
 	function Player:delete()
 		self.model:removeSelf()
 		self.model = nil
