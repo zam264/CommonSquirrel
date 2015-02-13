@@ -75,33 +75,125 @@ function scene:show( event )
 	}
 	sceneGroup:insert(scrollableachievements)
 
-	local distance = {500, 1000, 1500, 5000, 10000, 15000, 999999999} --'unachievable' score necessary to avoid out of bounds error when testing
-	local achievementNames = {"First", "Second", "Third", "Fourth", "Fifth"}
+	local distance = {
+	2,		8,
+	26,		60,
+	100,	141,
+	176,	286,
+	305,	316,
+	360,	379,
+	455,	555,
+	841,	986,
+	1250,	1451,
+	2717,	3000,
+	5280,	9001,
+	10663,	28000,
+	29029,	35000,
+	327000,	1360000,
+	5443680, 1200000000,
+	9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
+	local achievementNames = {
+	"Tree Sapling",
+	"Tallest Man",
+	"Great WAll of China",
+	"Average Oak Tree",
+	"Rockefellar Xmas Tree",
+	"New Years Eve Ball",
+	"Pine Tree",
+	"Giant Sequoia Tree",
+	"Statue of Liberty",
+	"Big Ben",
+	"Football Field",
+	"Record Breaking Redwood",
+	"Great Pyramid of Giza",
+	"Washington Monument",
+	"U.S. Steel Tower",
+	"Eiffel Tower",
+	"Empire State Building",
+	"Sears Tower",
+	"Burj Khalifa",
+	"Cumulus Cloud",
+	"1 Mile Up",
+	"Power Level",
+	"Mt. Botzer",
+	"Lost Balloon",
+	"Mt. Everest",
+	"Boeing 757",
+	"Space",
+	"International Space Station",
+	"Sputnik 2",
+	"Moon",
+	"Good Luck..."
+	}
+	local achievementDescriptions = {
+	"Just a sapling",
+	"High five, mate",
+	"Squirrels > Mongols",
+	"I AM GROOT!",
+	"Rockin' Around the Christmas Tree",
+	"Dropping the Ball",
+	"Pine cones aren't enough",
+	"Neighborhood has really gone downhill",
+	"Emancipate the squirrels",
+	"Up high, wanker!",
+	"The whole 100 yards",
+	"Big Red",
+	"On your way to Ra",
+	"The rent at the top is too dang high",
+	"Developers! Developers!",
+	"Do squirrels like cheese?",
+	"More like Empire Squirrel Building",
+	"Wish I had brought my windbreaker",
+	"Are there even squirrels in Dubai?",
+	"Into the Clouds",
+	"Mile High Club",
+	"What does the scouter say?",
+	"Developers!",
+	"Super Squirrel will retrieve it",
+	"I should be hibernating right now",
+	"Now seating squirrels",
+	"No racoons allowed",
+	"Squilnit the Soviet Squirrel",
+	"One small step for man, one giant leap for a squirrel",
+	"I think you cheated..."}
 	local i = 1  --used for achievement index
 	local j = 1  --used for achievement placement
 	while distance[i] < loadDistance()do --find the next unlockable achievement
 		i = i+1
 	end
-	local achievementsText = "LOCKED until " .. distance[i] .. "ft+"
-	local achievementsTextObject = display.newText(achievementsText, 225, (250*(j-1)), native.systemFont ,display.contentHeight * .025)
+	background = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.175 )
+	background.anchorX = 0
+	background.anchorY = 0
+	scrollableachievements:insert( background )
+	
+	local achievementsText = "LOCKED until " .. distance[i] .. "ft"
+	local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.2, (display.contentHeight*.2*(j-1)), native.systemFont ,display.contentHeight * .025)
 	achievementsTextObject.anchorX = 0	
 	achievementsTextObject.anchorY = 0
 	achievementsTextObject:setTextColor(1,1,1)
 	scrollableachievements:insert(achievementsTextObject)
 	i = i-1
 	j = j+1
+	print(i)
+	print("j="..j)
 	while i>=1 do
-		local achievementsText = achievementNames[i] .. " " .. distance[i] .. "ft+"
-		local achievementsTextObject = display.newText(achievementsText, 225, (250*(j-1)), native.systemFont ,display.contentHeight * .025)
+		local achievementsText = achievementNames[i] .. " " .. distance[i] .. "ft"
+		local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), native.systemFont ,display.contentHeight * .025)
 		achievementsTextObject.anchorX = 0	
 		achievementsTextObject.anchorY = 0
 		achievementsTextObject:setTextColor(1,1,1)
 		scrollableachievements:insert(achievementsTextObject)
+		
+		local achievementDescriptionTextObject = display.newText(achievementDescriptions[i], display.contentHeight*.2, display.contentHeight*.2*(j-1)+display.contentHeight*.05, native.systemFont, display.contentHeight * .02)
+		achievementDescriptionTextObject.anchorX = 0
+		achievementDescriptionTextObject.anchorY = 0
+		scrollableachievements:insert(achievementDescriptionTextObject)
 
-
-		background = display.newImageRect( "imgs/achievement" .. i ..".png", 200, 200 )
-		background.x = 100
-		background.y = 100+(250*(j-1))
+		background = display.newImageRect( "imgs/achievement1.png", display.contentHeight*.175, display.contentHeight*.175 )
+		background.anchorX = 0
+		background.anchorY = 0
+		background.x = 0
+		background.y = (display.contentHeight*.2*(j-1))
 		scrollableachievements:insert( background )
 		i = i-1
 		j = j+1
