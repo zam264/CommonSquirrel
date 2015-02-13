@@ -198,22 +198,14 @@ function obstacles:enterFrame(event)
 			bg1:translate(0, 3)
 		end
 
-		for x=1, #obstacles do
+		for x=#obstacles, 1, -1 do
 			obstacles[x].model:translate(0,20)
-			if (obstacles[x].model.y > display.contentHeight +200) then
-				-- kill rectangle
-				--obstacles[x]:delete()
-				--table.remove(obstacles, x)
-				--x = x-1
-				--print(#obstacles)
+			if (obstacles[x].model.y > display.contentHeight + 200) then
+				-- kill obstacle that is now off the screen
+				obstacles[x]:delete()
+				table.remove(obstacles, x)
 			end
 		end
-
-		
-
-		--print (#obstacles)
-
-		--print (#collection)
 	end
 	timePassedBetweenEvents = event.time
 end
