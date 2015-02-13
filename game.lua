@@ -11,6 +11,7 @@ local scene = composer.newScene()
 
 
 --Variables
+local bgSpeed = 5	--Change the speed of the background (orig. 3)
 local highScore
 local screenTop, screenBottom, screenLeft, screenRight
 local player
@@ -194,8 +195,8 @@ function obstacles:enterFrame(event)
 		elseif(bg1.y > display.contentHeight*1.5)then	
 			bg1.y = display.contentHeight*-0.5
 		else
-			bg:translate(0, 3)
-			bg1:translate(0, 3)
+			bg:translate(0, bgSpeed)
+			bg1:translate(0, bgSpeed)
 		end
 
 		for x=#obstacles, 1, -1 do

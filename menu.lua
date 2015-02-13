@@ -7,6 +7,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 -- unless "composer.removeScene()" is called.
 ---------------------------------------------------------------------------------
 
+
 -- local forward references should go here
 local playBtn, optionsBtn
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText

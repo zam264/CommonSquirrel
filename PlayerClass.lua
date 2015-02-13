@@ -11,8 +11,8 @@ function Player:init(posX, posY)
 	spriteOptions = {	
 		height = 64, 
 		width = 64, 
-		numFrames = 6, 
-		sheetContentWidth = 384, 
+		numFrames = 7, 
+		sheetContentWidth = 448, 
 		sheetContentHeight = 64 
 	}
 	mySheet = graphics.newImageSheet("imgs/squirrelSprite.png", spriteOptions, 50, 50)
