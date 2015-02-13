@@ -59,7 +59,8 @@ healthSprite:play()
 local obstacles = {} --Holds obstacles 
 
 local function moveRight() 
-	if (player.model.x < display.contentWidth * .75) then
+	--if (player.model.x < display.contentWidth * .75) then
+	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .25) then
 		if (player.model.x < display.contentWidth * .5) then
 			transition.to(player.model, {time=200, x=display.contentWidth*0.5})
 		else
@@ -68,7 +69,8 @@ local function moveRight()
 	end
 end
 local function moveLeft() 
-	if (player.model.x > display.contentWidth * .25) then
+	--if (player.model.x > display.contentWidth * .25) then
+	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .75) then
 		if (player.model.x > display.contentWidth * .5) then
 			transition.to(player.model, {time=200, x=display.contentWidth*0.5})
 		else
