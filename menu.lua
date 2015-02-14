@@ -6,7 +6,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 -- All code outside of the listener functions will only be executed ONCE
 -- unless "composer.removeScene()" is called.
 ---------------------------------------------------------------------------------
-
+display.setDefault( "background", 0/255, 120/255, 171/255 )
 
 -- local forward references should go here
 local playBtn, optionsBtn

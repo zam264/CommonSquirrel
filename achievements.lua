@@ -31,10 +31,6 @@ function scene:create( event )
 	titleText1.anchorX = 0
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
-	
-	
-	 
-
 
    -- Initialize the scene here.
 	backBtn = widget.newButton{
@@ -49,7 +45,7 @@ function scene:create( event )
 	backBtn.anchorX = .5
 	backBtn.anchorY = .5
 	backBtn.x = display.contentWidth * .50
-	backBtn.y = display.contentHeight * .85
+	backBtn.y = display.contentHeight * .95
 	sceneGroup:insert(backBtn)
 	
 	
@@ -64,14 +60,14 @@ function scene:show( event )
 
    if ( phase == "will" ) then
    	scrollableachievements = widget.newScrollView {
-		left = 0, top = display.contentHeight*.065,
+		left = 0, top = display.contentHeight*.08, --display.contentHeight*.065,
 		width = display.contentWidth,
-		height = display.contentHeight*.73,
+		height = display.contentHeight*.80,
 		--topPadding = display.contentHeight * .1,
 		bottomPadding = display.contentHeight * .1,
 		horizontalScrollDisabled = true,
 		verticalScrollDisabled = false,
-		backgroundColor = {.1,.1,.1}
+		backgroundColor = {0/255, 120/255, 171/255}
 	}
 	sceneGroup:insert(scrollableachievements)
 

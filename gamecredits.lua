@@ -40,7 +40,7 @@ function scene:create( event )
 		bottomPadding = display.contentHeight * .1,
 		horizontalScrollDisabled = true,
 		verticalScrollDisabled = false,
-		backgroundColor = {.1,.1,.1}
+		backgroundColor = {0/255, 120/255, 171/255}
 	}
 	sceneGroup:insert(scrollableCredits)
 	local creditsText = "Creators:\nWilliam Botzer\nZachary Petrusch\nSteven Zamborsky\n\nArtwork:\nCasey Squires" 

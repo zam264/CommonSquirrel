@@ -8,32 +8,37 @@ require('AcornClass')
 require('obstacleGeneration')
 local scene = composer.newScene()
 
---display.setStatusBar( display.HiddenStatusBar )
-
-
 --Variables
-local bgSpeed = 5	--Change the speed of the background (orig. 3)
+local scoreText, timePassedBetweenEvents, timePassed, stageTimer
+local bgSpeed = 10	--Change the speed of the background (orig. 3) 
 local highScore
 local screenTop, screenBottom, screenLeft, screenRight
 local player
 local bgImg = "imgs/bg1.jpg"
-local bg = display.newImageRect( bgImg, display.contentWidth, display.contentHeight )
-bg.x = display.contentCenterX
-bg.y = display.contentHeight
-local bg1 = display.newImageRect( bgImg, display.contentWidth, display.contentHeight )
-bg1.x = display.contentCenterX
-bg1.y = 0
-
-local  scoreText, timePassedBetweenEvents, timePassed, stageTimer
+local bgTree1 = "imgs/tree1xl.png"
+local bgTree2 = "imgs/tree2xl.png"
+local bgTree3 = "imgs/tree3xl.png"
+local obstacles = {} --Holds obstacles
 paused = false
 playerScore = 0
 distance = 0
 
+--Images and sprite setup
+--Background
+display.setDefault( "background", 0/255, 120/255, 171/255 )
+local tree1 = display.newImageRect(bgTree1, display.contentWidth*.1, display.contentHeight*2)
+local tree2 = display.newImageRect(bgTree2, display.contentWidth*.1, display.contentHeight*2)
+local tree3 = display.newImageRect(bgTree3, display.contentWidth*.1, display.contentHeight*2)
+tree1.x = display.contentWidth*.25
+tree1.y = 0
+tree2.x = display.contentWidth*.5
+tree2.y = 0
+tree3.x = display.contentWidth*.75
+tree3.y = 0
+
 local tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
 tut.x = display.contentCenterX
 tut.y = display.contentHeight-50
-
-local obstacles = {} --Holds obstacles 
 
 --Health sprite variables
 local options = {
@@ -55,9 +60,6 @@ healthSprite.xScale = display.contentWidth * .001
 healthSprite.yScale = display.contentWidth * .001
 healthSprite:setSequence( "health" .. 3 )
 healthSprite:play()
---Health sprite variables
-
-local obstacles = {} --Holds obstacles 
 
 local function moveRight() 
 	--if (player.model.x < display.contentWidth * .75) then
@@ -69,6 +71,7 @@ local function moveRight()
 		end
 	end
 end
+
 local function moveLeft() 
 	--if (player.model.x > display.contentWidth * .25) then
 	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .75) then
@@ -100,17 +103,12 @@ end
 --When the player collides with an "obstacle" they should lose health 
 local function hitObstacle(self, event)
 	if event.phase == "began" then
-		--print(player.health)
 		player:damage(1)
-		--Health sprites
-		healthSprite:setSequence("health" .. player.health)
+		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
 		healthSprite:play()
-		--Health sprites
 
 		if player.health == 0 then 
 			print("Dead") 
-			--Do Death stuff here 
-			
 			saveScore(playerScore)
 			addToDistance(distance)
 			for x=1,  #obstacles do
@@ -121,7 +119,6 @@ local function hitObstacle(self, event)
 		end
 	end
 end
-
 
 -- "scene:create()"
 function scene:create( event )
@@ -141,11 +138,13 @@ function scene:create( event )
 		width=display.contentHeight * .05, height=display.contentHeight * .05,
 		onRelease = pauseGame
 	}
+	--Pause button
 	pauseBtn.anchorX = .5
 	pauseBtn.anchorY = .5
 	pauseBtn.x = display.contentWidth * .93
 	pauseBtn.y = display.contentHeight * .05
 
+	--Physics and physics vars
    	physics.start()
    	physics.setGravity(0,0)
 	screenTop = display.screenOriginY
@@ -153,27 +152,23 @@ function scene:create( event )
 	screenLeft = display.screenOriginX
 	screenRight = display.viewableContentWidth + display.screenOriginX
 	
-	--player = display.newRect( display.contentWidth*.5, display.contentHeight*.75, display.contentWidth*.1, display.contentWidth*.125 )
+	--Collision detection
 	player = Player(display.contentWidth*.5, display.contentHeight*.75)
-	--Add collision detection to player object
 	player.model.collision = hitObstacle
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
 	scoreText = display.newText( tostring(playerScore), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
 
-	sceneGroup:insert(bg1)
-	sceneGroup:insert(bg)
+	sceneGroup:insert(tree1)
+	sceneGroup:insert(tree2)
+	sceneGroup:insert(tree3)
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(tut)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
 	sceneGroup:insert(healthSprite)
 end
-
-
---[[function obstacles:enterFrame(event)
-end]]
 
 function obstacles:enterFrame(event)
 	if  ( paused ) then
@@ -191,14 +186,15 @@ function obstacles:enterFrame(event)
 			generateObstacles(obstacles)
 		end	
 
-		--Scrolling background
-		if(bg.y > display.contentHeight*1.5)then 
-			bg.y = display.contentHeight*-0.5
-		elseif(bg1.y > display.contentHeight*1.5)then	
-			bg1.y = display.contentHeight*-0.5
+
+		if(tree1.y >= display.contentHeight)then 
+			tree1.y = 0
+			tree2.y = 0
+			tree3.y = 0
 		else
-			bg:translate(0, bgSpeed)
-			bg1:translate(0, bgSpeed)
+			tree1:translate(0, bgSpeed)
+			tree2:translate(0, bgSpeed)
+			tree3:translate(0, bgSpeed)
 		end
 
 		for x=#obstacles, 1, -1 do
@@ -251,31 +247,32 @@ end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
-   local sceneGroup = self.view
-  tut:removeSelf()
+	local sceneGroup = self.view
+	tut:removeSelf()
 	tut = nil
-	bg:removeSelf()
-	bg = nil
-	bg1:removeSelf()
-	bg1 = nil
-   
+	tree1:removeSelf()
+	tree1 = nil
+	tree2:removeSelf()
+	tree2 = nil
+	tree3:removeSelf()
+	tree3 = nil
+
 	scoreText:removeSelf()
 	scoreText = nil
-   
-   for x=1,  #obstacles do
-   		obstacles[x]:delete()
-   end
+
+	for x=1,  #obstacles do
+		obstacles[x]:delete()
+	end
 	--obstacles:removeSelf()
 	--obstacles = nil
-	
-   player:delete()
-   
-   Runtime:removeEventListener( "enterFrame", obstacles )
-   Runtime:removeEventListener( "touch", printTouch )
-   -- Called prior to the removal of scene's view ("sceneGroup").
-   -- Insert code here to clean up the scene.
-   -- Example: remove display objects, save state, etc.
+
+	player:delete()
+
+	Runtime:removeEventListener( "enterFrame", obstacles )
+	Runtime:removeEventListener( "touch", printTouch )
+	-- Called prior to the removal of scene's view ("sceneGroup").
+	-- Insert code here to clean up the scene.
+	-- Example: remove display objects, save state, etc.
 end
 
 ---------------------------------------------------------------------------------
