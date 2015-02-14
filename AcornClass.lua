@@ -5,9 +5,9 @@ Acorn = Obstacle:extends()
 
 function Acorn:init(posX, posY)
 	self.damage = 0
-	self.type = "acorn"
 
 	self.model = display.newImage("imgs/acorn.png")
+	self.model.type = "acorn"  --Define the type of obstacle for collision detection
 	
 	--self.model:setSequence("forward")
 	self.model.x = posX

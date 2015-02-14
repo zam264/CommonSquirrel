@@ -6,7 +6,6 @@ Obstacle = LCS.class({damage, spriteOptions, mySheet ,model})
 function Obstacle:init(posX, posY)
 	-- Initialize creatures base attributes
 	self.damage = 1
-	self.type = "obstacle"
 
 	--Declare and set up Sprite Image Sheet and sequence data
 	spriteOptions = {	
@@ -32,6 +31,7 @@ function Obstacle:init(posX, posY)
 	
 	-- Display the new sprite at the coordinates passed
 	self.model = display.newSprite(mySheet, sequenceData)
+	self.model.type = "obstacle"  --Define the type of obstacle for collision detection
 	self.model:setSequence("forward")
 	self.model.x = posX
 	self.model.y = posY

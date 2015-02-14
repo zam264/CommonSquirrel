@@ -103,7 +103,11 @@ end
 --When the player collides with an "obstacle" they should lose health 
 local function hitObstacle(self, event)
 	if event.phase == "began" then
-		player:damage(1)
+		if event.other.type == "obstacle" then   --If obstacle, do damage
+			player:damage(1)
+		else  --If Acorn, heal the player 
+			player:heal(1)
+		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
 		healthSprite:play()
 
