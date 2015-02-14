@@ -1,13 +1,12 @@
 local LCS = require 'LCS'
 --require "options"	-- options needed for difficulty variable
 
-Obstacle = LCS.class({speedModifier, damage, spriteOptions, mySheet ,model})
+Obstacle = LCS.class({damage, spriteOptions, mySheet ,model})
 
 function Obstacle:init(posX, posY)
 	-- Initialize creatures base attributes
 	self.damage = 1
-	self.speedModifier = 0
-
+	self.type = "obstacle"
 
 	--Declare and set up Sprite Image Sheet and sequence data
 	spriteOptions = {	

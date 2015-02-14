@@ -4,6 +4,7 @@ local score = require( "score" )
 local widget = require "widget"		-- include Corona's "widget" library
 require('ObstacleClass')
 require('PlayerClass')
+require('AcornClass')
 require('obstacleGeneration')
 local scene = composer.newScene()
 
@@ -130,7 +131,6 @@ function scene:create( event )
    timePassed = 0
    stageTimer = 0
    highScore = loadScore()
-   
    
    pauseBtn = widget.newButton{
 		label="",
