@@ -33,7 +33,7 @@ function scene:create( event )
 	
 	
 	local scrollableCredits = widget.newScrollView {
-		left = 0, top = display.contentHeight*.065,
+		left = 0, top = display.contentHeight*.08,
 		width = display.contentWidth,
 		height = display.contentHeight*.73,
 		topPadding = display.contentHeight * .1,
