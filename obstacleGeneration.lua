@@ -33,30 +33,30 @@ function generateRow(chance0, chance1, chance2, empty, row, collection)
 		if empty == 1 then 
 			random = math.random(3)
 			if emptyCols[random] == false then 
-				newRect(row, random, collection)
+				newObstacle(row, random, collection)
 			else 
-				newRect(row, ((random + math.random(0,1)) % 3 ) + 1, collection)
+				newObstacle(row, ((random + math.random(0,1)) % 3 ) + 1, collection)
 			end
 		end
 	else -- place 2 obstacles
 		if numEmpty == 1 then
 			for i=1, #emptyCols do
 				if ( not emptyCols[i]) then
-					newRect(row, i, collection)
+					newObstacle(row, i, collection)
 				end
 			end
 
 		elseif numEmpty == 2 then
 			for i=1, #emptyCols do
 				if ( not emptyCols[i]) then
-					newRect(row, i, collection)
-					newRect(row, ((i + math.random(0,1)) % 3 ) + 1, collection)
+					newObstacle(row, i, collection)
+					newObstacle(row, ((i + math.random(0,1)) % 3 ) + 1, collection)
 				end
 			end
 		else
 			random = math.random(3)
 			-- put obstacle at random
-			newRect(row, ((random + math.random(0,1)) % 3 ) + 1, collection)
+			newObstacle(row, ((random + math.random(0,1)) % 3 ) + 1, collection)
 		end
 	end 
 	--Return array of 3 (columns)
@@ -72,9 +72,17 @@ function countEmptyCols()
 	return count 
 end
 
-function newRect(row, col, collection)
+--Generates a new obstacle at the row/col passed
+function newObstacle(row, col, collection)
 	yPos = row*display.contentWidth*.25 - display.contentHeight
-	local obj = Obstacle( display.contentWidth * .25 * col, yPos)
+	local obj
+	--An obstacle has ~% chance of being an Acorn 
+	local random = math.random(100)
+	if random <= 10 then 
+		obj = Acorn(display.contentWidth * .25 * col, yPos)
+	else
+		obj = Obstacle( display.contentWidth * .25 * col, yPos)
+	end
 	physics.addBody(obj.model, "dynamic", {isSensor=true})
 	table.insert(collection, obj)
 	
