@@ -106,7 +106,12 @@ local function hitObstacle(self, event)
 		if event.other.type == "obstacle" then   --If obstacle, do damage
 			player:damage(1)
 		else  --If Acorn, heal the player 
-			player:heal(1)
+			if player.health == 3 then
+				playerScore = playerScore + 10 
+			else
+				player:heal(1)
+			end
+			event.other.alpha = 0
 		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
 		healthSprite:play()
