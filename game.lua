@@ -133,7 +133,7 @@ local function hitObstacle(self, event)
 				xDir = -1
 			end
 			player.model:applyForce( 5* xDir, -20, player.model.x, player.model.y)
-			transition.to(player.model, {rotation=720, time=2000})
+			transition.to(player.model, {rotation=720*xDir, time=2000})
 		end
 	end
 end
