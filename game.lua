@@ -124,7 +124,15 @@ local function hitObstacle(self, event)
 				obstacles[x]:delete()
 			end
 			obstacles = {}
-			composer.gotoScene( "loseScreen", fromTop)
+			timer.performWithDelay (2000, function() composer.gotoScene( "loseScreen", fromTop) end)
+			physics.setGravity(0,20)
+			local xDir = (display.contentWidth*.5 - player.model.x)
+			if xDir > 0 then
+				xDir = 1
+			else
+				xDir = -1
+			end
+			player.model:applyForce( 5* xDir, -20, player.model.x, player.model.y)
 		end
 	end
 end
