@@ -1,5 +1,6 @@
 local composer = require( "composer" )
 local score = require( "score" )
+local options = require("options")
 local game = require( "game" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
@@ -11,6 +12,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 -- local forward references should go here
 local resumeBtn, quitBtn
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
+local effectsSlider, musicSlider, effectsText, musicText
 
 
 local function onResumeBtn()
@@ -34,30 +36,61 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
-	titleText = display.newText( "Paused" , display.contentWidth*.5, display.contentHeight *.125, native.systemFont,  display.contentHeight * .1)
+	titleText = display.newText( "Paused" , display.contentWidth*.5, display.contentHeight *.1, native.systemFont,  display.contentHeight * .1)
 	titleText.anchorX = .5
 	titleText.anchorY = .5
 	sceneGroup:insert(titleText)
 	
-	scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+	scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, native.systemFont,  display.contentHeight * .05)
 	scoreText.anchorX = 0
 	scoreText.anchorY = 0
 	sceneGroup:insert(scoreText)
 	
-	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.365, native.systemFont,  display.contentHeight * .05)
+	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, native.systemFont,  display.contentHeight * .05)
 	scoreT.anchorX = 1
 	scoreT.anchorY = 0
 	sceneGroup:insert(scoreT)
 	
-	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.455, native.systemFont,  display.contentHeight * .05)
+	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, native.systemFont,  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
 	
-	distanceT = display.newText (distance, display.contentWidth*.95, display.contentHeight *.52, native.systemFont,  display.contentHeight * .05)
+	distanceT = display.newText (distance, display.contentWidth*.95, display.contentHeight *.33, native.systemFont,  display.contentHeight * .05)
 	distanceT.anchorX = 1
 	distanceT.anchorY = 0
 	sceneGroup:insert(distanceT)
+	
+	
+	effectsText = display.newText( "Sound Effects", display.contentWidth * .25, display.contentHeight*.375, native.systemFont ,display.contentHeight * .035)
+	effectsText.anchorX = 0
+	effectsText.anchorY = 0
+	sceneGroup:insert(effectsText)
+	
+	effectsSlider = widget.newSlider
+	{
+		top = display.contentHeight * .425,
+		left = display.contentWidth * .25,
+		width = display.contentWidth * .5,
+		value = effectsVolume,
+		listener = effectsListener
+	}
+	sceneGroup:insert(effectsSlider)
+
+	musicText = display.newText( "Music", display.contentWidth * .25, display.contentHeight*.475, native.systemFont ,display.contentHeight * .035)
+	musicText.anchorX = 0
+	musicText.anchorY = 0
+	sceneGroup:insert(musicText)
+   
+   musicSlider = widget.newSlider
+	{
+		top = display.contentHeight * .525,
+		left = display.contentWidth * .25,
+		width = display.contentWidth * .5,
+		value = musicVolume,
+		listener = musicListener
+	}
+	sceneGroup:insert(musicSlider)
 	
 	
 	
@@ -141,6 +174,16 @@ function scene:destroy( event )
 	distanceText = nil
 	distanceT:removeSelf()
 	distanceT = nil
+	
+	effectsSlider:removeSelf()
+	effectsSlider = nil
+	effectsText:removeSelf()
+	effectsText = nil
+	musicSlider:removeSelf()
+	musicSlider = nil
+	musicText:removeSelf()
+	musicText = nil	
+	
 	resumeBtn:removeSelf()
 	resumeBtn = nil
 	quitBtn:removeSelf()

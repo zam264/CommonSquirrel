@@ -9,16 +9,17 @@ local widget = require ("widget")		-- include Corona's "widget" library
 -- local forward references should go here
 local titleText, difficultyText, easyText, normalText, hardText
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn
-local effectsVolume, musicVolume
+effectsVolume = 50
+musicVolume = 50
 
 
 
 -- Slider listener
-local function effectsListener( event )
+function effectsListener( event )
 	effectsVolume = event.value
     print( "Effects Slider at " .. event.value .. "%" )
 end
-local function musicListener ( event )
+function musicListener ( event )
 	musicVolume = event.value
 	print( "Music Slider at " .. event.value .. "%" )
 end
@@ -65,7 +66,7 @@ function scene:create( event )
 		top = display.contentHeight * .225,
 		left = display.contentWidth * .25,
 		width = display.contentWidth * .5,
-		value = 50,
+		value = effectsVolume,
 		listener = effectsListener
 	}
 	sceneGroup:insert(effectsSlider)
@@ -80,7 +81,7 @@ function scene:create( event )
 		top = display.contentHeight * .325,
 		left = display.contentWidth * .25,
 		width = display.contentWidth * .5,
-		value = 50,
+		value = musicVolume,
 		listener = musicListener
 	}
 	sceneGroup:insert(musicSlider)
