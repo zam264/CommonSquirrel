@@ -278,6 +278,16 @@ function scene:destroy( event )
 	distanceText = nil
 	distanceT:removeSelf()
 	distanceT = nil
+	
+	achievementText:removeSelf()
+	achievementText = nil
+	achievementTitle:removeSelf()
+	achievementTitle = nil
+	achievementSubtext:removeSelf()
+	achievementSubtext = nil
+	achievementIcon:removeSelf()
+	achievementIcon = nil
+	
 	replayBtn:removeSelf()
 	replayBtn = nil
 	quitBtn:removeSelf()
