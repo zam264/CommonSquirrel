@@ -133,7 +133,15 @@ local function hitObstacle(self, event)
 				xDir = -1
 			end
 			player.model:applyForce( 5* xDir, -20, player.model.x, player.model.y)
+			rotatePlayer()
 		end
+	end
+end
+
+function rotatePlayer()
+	if (player.health <= 0) then
+		player.model:rotate(10)
+		timer.performWithDelay(10, function() rotatePlayer() end)
 	end
 end
 
