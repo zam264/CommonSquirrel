@@ -10,7 +10,6 @@ local scene = composer.newScene()
 
 --Variables
 local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer
-local bgSpeed = 10	--Change the speed of the background (orig. 3) 
 local highScore
 local screenTop, screenBottom, screenLeft, screenRight
 local player
@@ -19,25 +18,28 @@ local bgTree1 = "imgs/tree1xl.png"
 local bgTree2 = "imgs/tree2xl.png"
 local bgTree3 = "imgs/tree3xl.png"
 local obstacles = {} --Holds obstacles
+local yTranslate
+local contentHeight = display.contentHeight
+local contentWidth = display.contentWidth
 paused = false
 playerScore = 0
 distance = 0
-difficulty = 1
+local difficulty = 1
 
 --Images and sprite setup
 --Background
 display.setDefault( "background", 0/255, 120/255, 171/255 )
-local tree1 = display.newImageRect(bgTree1, display.contentWidth*.1, display.contentHeight*2)
-local tree2 = display.newImageRect(bgTree2, display.contentWidth*.1, display.contentHeight*2)
-local tree3 = display.newImageRect(bgTree3, display.contentWidth*.1, display.contentHeight*2)
-tree1.x = display.contentWidth*.25
+local tree1 = display.newImageRect(bgTree1, contentWidth*.1, display.contentHeight*2)
+local tree2 = display.newImageRect(bgTree2, contentWidth*.1, display.contentHeight*2)
+local tree3 = display.newImageRect(bgTree3, contentWidth*.1, display.contentHeight*2)
+tree1.x = contentWidth*.25
 tree1.y = 0
-tree2.x = display.contentWidth*.5
+tree2.x = contentWidth*.5
 tree2.y = 0
-tree3.x = display.contentWidth*.75
+tree3.x = contentWidth*.75
 tree3.y = 0
 
-local tut = display.newImageRect("imgs/tutorial.png", display.contentWidth, 100)
+local tut = display.newImageRect("imgs/tutorial.png", contentWidth, 100)
 tut.x = display.contentCenterX
 tut.y = display.contentHeight-50
 
@@ -57,38 +59,32 @@ local sequenceData = {
 local healthSprite = display.newSprite( healthSheet, sequenceData )
 healthSprite.x = 100
 healthSprite.y = 32
-healthSprite.xScale = display.contentWidth * .001
-healthSprite.yScale = display.contentWidth * .001
+healthSprite.xScale = contentWidth * .001
+healthSprite.yScale = contentWidth * .001
 healthSprite:setSequence( "health" .. 3 )
 healthSprite:play()
 
 local function moveRight() 
-	--if (player.model.x < display.contentWidth * .75) then
-	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .25) then
-		if (player.model.x < display.contentWidth * .5) then
-			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.5})
-		else
-			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.75})
-		end
+	if (player.model.x == contentWidth * .5) then
+		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
+	else
+		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
 	end
 end
 
 local function moveLeft() 
-	--if (player.model.x > display.contentWidth * .25) then
-	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .75) then
-		if (player.model.x > display.contentWidth * .5) then
-			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.5})
-		else
-			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.25})
-		end
+	if (player.model.x == contentWidth * .75) then
+		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
+	else
+		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.25})
 	end
 end
 
 local function printTouch(event)
 	if(event.phase == "began")then
-		if(event.x > display.contentWidth*0.5)then
+		if(event.x > contentWidth*0.5)then
 			moveRight()
-		elseif(event.x < display.contentWidth*0.5)then
+		elseif(event.x < contentWidth*0.5)then
 			moveLeft()
 		end	
 	end	
@@ -127,7 +123,7 @@ local function hitObstacle(self, event)
 			obstacles = {}
 			timer.performWithDelay (2000, function() composer.gotoScene( "loseScreen", {effect="fromRight", time=1000}) end)
 			physics.setGravity(0,20)
-			local xDir = (display.contentWidth*.5 - player.model.x)
+			local xDir = (contentWidth*.5 - player.model.x)
 			if xDir > 0 then
 				xDir = 1
 			else
@@ -150,11 +146,12 @@ function scene:create( event )
    timePassed = 0
    stageTimer = 0
    difficultyTimer = 0
-   highScore = loadScore()
+	yTranslate = 10 * difficulty
+	highScore = loadScore()
    
    pauseBtn = widget.newButton{
 		label="",
-		fontSize = display.contentWidth * .05,
+		fontSize = contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/pauseBtn.png",
 		overFile="imgs/pauseBtn.png",
@@ -164,7 +161,7 @@ function scene:create( event )
 	--Pause button
 	pauseBtn.anchorX = .5
 	pauseBtn.anchorY = .5
-	pauseBtn.x = display.contentWidth * .93
+	pauseBtn.x = contentWidth * .93
 	pauseBtn.y = display.contentHeight * .05
 
 	--Physics and physics vars
@@ -176,12 +173,12 @@ function scene:create( event )
 	screenRight = display.viewableContentWidth + display.screenOriginX
 	
 	--Collision detection
-	player = Player(display.contentWidth*.5, display.contentHeight*.75)
+	player = Player(contentWidth*.5, display.contentHeight*.75)
 	player.model.collision = hitObstacle
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
-	scoreText = display.newText( tostring(playerScore), display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010", display.contentHeight * .065)
+	scoreText = display.newText( tostring(playerScore), contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010", display.contentHeight * .065)
 
 	sceneGroup:insert(tree1)
 	sceneGroup:insert(tree2)
@@ -193,7 +190,7 @@ function scene:create( event )
 	sceneGroup:insert(healthSprite)
 end
 
-function obstacles:enterFrame(event)
+function main(event)
 	if  ( paused ) then
 		timePassed = timePassed + (event.time - timePassedBetweenEvents)
 		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
@@ -205,29 +202,29 @@ function obstacles:enterFrame(event)
 			scoreText.text = playerScore
 			distance = distance + difficulty
 		end	
-		if ( event.time - stageTimer > 1250/(difficulty/2) ) then
+		if ( event.time - stageTimer > 1250/(difficulty*.5) ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
-		if (event.time - difficultyTimer > 2000 and difficulty < 10) then
+		if (event.time - difficultyTimer > 2000 and difficulty < 5) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
+			yTranslate = 10 * difficulty
 		end
 
-
-		if(tree1.y >= display.contentHeight)then 
+		if(tree1.y >= contentHeight)then 
 			tree1.y = 0
 			tree2.y = 0
 			tree3.y = 0
 		else
-			tree1:translate(0, 10*difficulty)
-			tree2:translate(0, 10*difficulty)
-			tree3:translate(0, 10*difficulty)
+			tree1:translate(0,yTranslate)
+			tree2:translate(0,yTranslate)
+			tree3:translate(0,yTranslate)
 		end
 
 		for x=#obstacles, 1, -1 do
-			obstacles[x].model:translate(0,10*difficulty)
-			if (obstacles[x].model.y > display.contentHeight + 200) then
+			obstacles[x].model:translate(0,yTranslate)
+			if (obstacles[x].model.y > contentHeight + 100) then
 				-- kill obstacle that is now off the screen
 				obstacles[x]:delete()
 				table.remove(obstacles, x)
@@ -331,7 +328,7 @@ scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
-Runtime:addEventListener( "enterFrame", obstacles )
+Runtime:addEventListener( "enterFrame", main )
 Runtime:addEventListener( "touch", printTouch)
 
 ---------------------------------------------------------------------------------
