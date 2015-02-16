@@ -157,7 +157,7 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementNames[x] .. " " .. achievementDistance[x] .. "ft" , display.contentWidth*.3, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementNames[x] .. " " .. achievementDistance[x] .. "ft" , display.contentWidth*.35, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
@@ -179,7 +179,7 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementDistance[x].."ft" , display.contentWidth*.3, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementDistance[x].."ft" , display.contentWidth*.35, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
