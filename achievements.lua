@@ -11,10 +11,91 @@ local widget = require "widget"		-- include Corona's "widget" library
 local titleText1, scrollableachievements, background
 local backBtnBtn
 
+local distance = {
+2,		8,
+26,		60,
+100,	141,
+176,	286,
+305,	316,
+360,	379,
+455,	555,
+841,	986,
+1250,	1451,
+2717,	3000,
+5280,	9001,
+10663,	28000,
+29029,	35000,
+327000,	1360000,
+5443680, 1200000000,
+9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
+local achievementNames = {
+"Tree Sapling",
+"Tallest Man",
+"Great WAll of China",
+"Average Oak Tree",
+"Rockefellar Xmas Tree",
+"New Years Eve Ball",
+"Pine Tree",
+"Giant Sequoia Tree",
+"Statue of Liberty",
+"Big Ben",
+"Football Field",
+"Record Breaking Redwood",
+"Great Pyramid of Giza",
+"Washington Monument",
+"U.S. Steel Tower",
+"Eiffel Tower",
+"Empire State Building",
+"Sears Tower",
+"Burj Khalifa",
+"Cumulus Cloud",
+"1 Mile Up",
+"Power Level",
+"Mt. Botzer",
+"Lost Balloon",
+"Mt. Everest",
+"Boeing 757",
+"Space",
+"International Space Station",
+"Sputnik 2",
+"Moon",
+"Good Luck..."
+}
+local achievementDescriptions = {
+"Just a sapling",
+"High five, mate",
+"Squirrels > Mongols",
+"I AM GROOT!",
+"Rockin' Around the Christmas Tree",
+"Dropping the Ball",
+"Pine cones aren't enough",
+"Neighborhood has really gone downhill",
+"Emancipate the squirrels",
+"Up high, wanker!",
+"The whole 100 yards",
+"Big Red",
+"On your way to Ra",
+"The rent at the top is too dang high",
+"Developers! Developers!",
+"Do squirrels like cheese?",
+"More like Empire Squirrel Building",
+"Wish I had brought my windbreaker",
+"Are there even squirrels in Dubai?",
+"Into the Clouds",
+"Mile High Club",
+"What does the scouter say?",
+"Developers!",
+"Super Squirrel will retrieve it",
+"I should be hibernating right now",
+"Now seating squirrels",
+"No racoons allowed",
+"Squilnit the Soviet Squirrel",
+"One small step for man, one giant leap for a squirrel",
+"I think you cheated..."}
 
 
 local function onBackBtn()
-	composer.gotoScene("options")
+	composer.gotoScene("options", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
 
@@ -31,35 +112,8 @@ function scene:create( event )
 	titleText1.anchorX = 0
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
-
-   -- Initialize the scene here.
-	backBtn = widget.newButton{
-		label="Back",
-		fontSize = display.contentWidth * .05,
-		labelColor = { default={255}, over={128} },
-		defaultFile="imgs/button.png",
-		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
-		onRelease = onBackBtn
-	}
-	backBtn.anchorX = .5
-	backBtn.anchorY = .5
-	backBtn.x = display.contentWidth * .50
-	backBtn.y = display.contentHeight * .95
-	sceneGroup:insert(backBtn)
 	
-	
-   -- Example: add display objects to "sceneGroup", add touch listeners, etc.
-end
-
--- "scene:show()"
-function scene:show( event )
-
-   local sceneGroup = self.view
-   local phase = event.phase
-
-   if ( phase == "will" ) then
-   	scrollableachievements = widget.newScrollView {
+	scrollableachievements = widget.newScrollView {
 		left = 0, top = display.contentHeight*.08, --display.contentHeight*.065,
 		width = display.contentWidth,
 		height = display.contentHeight*.80,
@@ -70,88 +124,8 @@ function scene:show( event )
 		backgroundColor = {0/255, 120/255, 171/255}
 	}
 	sceneGroup:insert(scrollableachievements)
-
-	local distance = {
-	2,		8,
-	26,		60,
-	100,	141,
-	176,	286,
-	305,	316,
-	360,	379,
-	455,	555,
-	841,	986,
-	1250,	1451,
-	2717,	3000,
-	5280,	9001,
-	10663,	28000,
-	29029,	35000,
-	327000,	1360000,
-	5443680, 1200000000,
-	9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
-	local achievementNames = {
-	"Tree Sapling",
-	"Tallest Man",
-	"Great WAll of China",
-	"Average Oak Tree",
-	"Rockefellar Xmas Tree",
-	"New Years Eve Ball",
-	"Pine Tree",
-	"Giant Sequoia Tree",
-	"Statue of Liberty",
-	"Big Ben",
-	"Football Field",
-	"Record Breaking Redwood",
-	"Great Pyramid of Giza",
-	"Washington Monument",
-	"U.S. Steel Tower",
-	"Eiffel Tower",
-	"Empire State Building",
-	"Sears Tower",
-	"Burj Khalifa",
-	"Cumulus Cloud",
-	"1 Mile Up",
-	"Power Level",
-	"Mt. Botzer",
-	"Lost Balloon",
-	"Mt. Everest",
-	"Boeing 757",
-	"Space",
-	"International Space Station",
-	"Sputnik 2",
-	"Moon",
-	"Good Luck..."
-	}
-	local achievementDescriptions = {
-	"Just a sapling",
-	"High five, mate",
-	"Squirrels > Mongols",
-	"I AM GROOT!",
-	"Rockin' Around the Christmas Tree",
-	"Dropping the Ball",
-	"Pine cones aren't enough",
-	"Neighborhood has really gone downhill",
-	"Emancipate the squirrels",
-	"Up high, wanker!",
-	"The whole 100 yards",
-	"Big Red",
-	"On your way to Ra",
-	"The rent at the top is too dang high",
-	"Developers! Developers!",
-	"Do squirrels like cheese?",
-	"More like Empire Squirrel Building",
-	"Wish I had brought my windbreaker",
-	"Are there even squirrels in Dubai?",
-	"Into the Clouds",
-	"Mile High Club",
-	"What does the scouter say?",
-	"Developers!",
-	"Super Squirrel will retrieve it",
-	"I should be hibernating right now",
-	"Now seating squirrels",
-	"No racoons allowed",
-	"Squilnit the Soviet Squirrel",
-	"One small step for man, one giant leap for a squirrel",
-	"I think you cheated..."}
+	
+	
 	local i = 1  --used for achievement index
 	local j = 1  --used for achievement placement
 	while distance[i] < loadDistance()do --find the next unlockable achievement
@@ -195,6 +169,38 @@ function scene:show( event )
 		j = j+1
    	end
 
+   -- Initialize the scene here.
+	backBtn = widget.newButton{
+		label="Back",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=display.contentWidth * .50, height=display.contentHeight * .1,
+		onRelease = onBackBtn
+	}
+	backBtn.anchorX = .5
+	backBtn.anchorY = .5
+	backBtn.x = display.contentWidth * .50
+	backBtn.y = display.contentHeight * .95
+	sceneGroup:insert(backBtn)
+	
+	
+   -- Example: add display objects to "sceneGroup", add touch listeners, etc.
+end
+
+-- "scene:show()"
+function scene:show( event )
+
+   local sceneGroup = self.view
+   local phase = event.phase
+
+   if ( phase == "will" ) then
+		titleText1.isVisible = true
+		scrollableachievements.isVisible = true
+		backBtn.isVisible = true
+
+
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -210,6 +216,9 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText1.isVisible = false
+		scrollableachievements.isVisible = false
+		backBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.

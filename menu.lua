@@ -14,12 +14,12 @@ local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDist
 
 
 local function onPlayBtn()
-	composer.gotoScene( "game")
+	composer.gotoScene( "game", {effect="fromRight", time=1000})
 
 	return true	-- indicates successful touch
 end
 local function onOptionsBtn()
-	composer.gotoScene( "options")
+	composer.gotoScene( "options", {effect="fromLeft", time=1000})
 
 	return true	-- indicates successful touch
 end
@@ -106,6 +106,14 @@ function scene:show( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText1.isVisible = true
+		titleText2.isVisible = true
+		highScoreText.isVisible = true
+		highScore.isVisible = true
+		totalDistanceText.isVisible = true
+		totalDistance.isVisible = true
+		playBtn.isVisible = true
+		optionsBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -121,6 +129,14 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText1.isVisible = false
+		titleText2.isVisible = false
+		highScoreText.isVisible = false
+		highScore.isVisible = false
+		totalDistanceText.isVisible = false
+		totalDistance.isVisible = false
+		playBtn.isVisible = false
+		optionsBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.

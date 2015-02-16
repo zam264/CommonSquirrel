@@ -96,7 +96,7 @@ end
 local function pauseGame ()
 	paused = true;
 	composer.hideOverlay("game")
-	composer.gotoScene("pause")
+	composer.gotoScene("pause", {effect="fromRight", time=1000})
 end
 
 --Function handles player collision
@@ -124,7 +124,7 @@ local function hitObstacle(self, event)
 				obstacles[x]:delete()
 			end
 			obstacles = {}
-			timer.performWithDelay (2000, function() composer.gotoScene( "loseScreen", fromTop) end)
+			timer.performWithDelay (2000, function() composer.gotoScene( "loseScreen", {effect="fromRight", time=1000}) end)
 			physics.setGravity(0,20)
 			local xDir = (display.contentWidth*.5 - player.model.x)
 			if xDir > 0 then
@@ -142,6 +142,8 @@ end
 -- "scene:create()"
 function scene:create( event )
    local sceneGroup = self.view
+   paused = true
+   timePassedBetweenEvents = 0
    playerScore = 0
    distance = 0
    timePassed = 0
@@ -177,7 +179,7 @@ function scene:create( event )
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
-	scoreText = display.newText( tostring(playerScore), display.contentWidth * .5, display.contentHeight*.1, --[["fonts/Rufscript010" or]] native.systemFont ,display.contentHeight * .065)
+	scoreText = display.newText( tostring(playerScore), display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010", display.contentHeight * .065)
 
 	sceneGroup:insert(tree1)
 	sceneGroup:insert(tree2)
@@ -234,11 +236,22 @@ function scene:show( event )
    local sceneGroup = self.view
    local phase = event.phase
 
-   paused = false
+   
    
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
+	  tut.isVisible = true
+		tree1.isVisible = true
+		tree2.isVisible = true
+		tree3.isVisible = true
+		scoreText.isVisible = true
+		for x=1,  #obstacles do
+			obstacles[x].isVisible = true
+		end
+		player.model.isVisible = true
+		healthSprite.isVisible = true
    elseif ( phase == "did" ) then
+		paused = false
       -- Called when the scene is now on screen.
       -- Insert code here to make the scene come alive.
       -- Example: start timers, begin animation, play audio, etc.
@@ -256,6 +269,16 @@ function scene:hide( event )
 	end
    
    if ( phase == "will" ) then
+		tut.isVisible = false
+		tree1.isVisible = false
+		tree2.isVisible = false
+		tree3.isVisible = false
+		scoreText.isVisible = false
+		for x=1,  #obstacles do
+			obstacles[x].isVisible = false
+		end
+		player.model.isVisible = false
+		healthSprite.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.

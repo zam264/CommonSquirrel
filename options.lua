@@ -25,15 +25,15 @@ function musicListener ( event )
 end
 
 local function onAchievmentsBtn()
-	composer.gotoScene( "achievements")
+	composer.gotoScene( "achievements", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 local function onCreditsBtn()
-	composer.gotoScene( "gamecredits")
+	composer.gotoScene( "gamecredits", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 local function onBackBtn()
-	composer.gotoScene( "menu")
+	composer.gotoScene( "menu", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
 
@@ -143,6 +143,15 @@ function scene:show( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+   titleText.isVisible = true
+	difficultyText.isVisible = true
+	effectsText.isVisible = true
+	effectsSlider.isVisible = true
+	musicText.isVisible = true
+	musicSlider.isVisible = true
+	creditsBtn.isVisible = true
+	backBtn.isVisible = true
+	achievmentsBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -158,6 +167,15 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+   titleText.isVisible = false
+	difficultyText.isVisible = false
+	effectsText.isVisible = false
+	effectsSlider.isVisible = false
+	musicText.isVisible = false
+	musicSlider.isVisible = false
+	creditsBtn.isVisible = false
+	backBtn.isVisible = false
+	achievmentsBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.

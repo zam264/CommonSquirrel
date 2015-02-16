@@ -96,14 +96,14 @@ local achievementDescriptions = {
 local function onReplayBtn()
 	composer.removeScene( "game" )
 	composer.removeScene( "loseScreen" )
-	composer.gotoScene( "game")
+	composer.gotoScene( "game", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 local function onQuitBtn()
 	composer.removeScene( "game" )
 	composer.removeScene( "menu" )
 	composer.removeScene( "loseScreen" )
-	composer.gotoScene( "menu")
+	composer.gotoScene( "menu", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 
@@ -150,7 +150,7 @@ function scene:create( event )
 	while totalDist > achievementDistance[x] do
 		x = x+1
 	end
-	print (x)
+	
 	if totalDist - distance < achievementDistance[x-1] then
 		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, native.systemFont,  display.contentHeight * .05)
 		achievementText.anchorX = 0
@@ -241,6 +241,16 @@ function scene:show( event )
 
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
+	  titleText.isVisible = true
+	  scoreText.isVisible = true
+	  scoreT.isVisible = true
+	  distanceText.isVisible = true
+	  achievementText.isVisible = true
+	  achievementTitle.isVisible = true
+	  achievementSubtext.isVisible = true
+	  achievementIcon.isVisible = true
+	  replayBtn.isVisible = true
+	  quitBtn.isVisible = true
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
       -- Insert code here to make the scene come alive.
@@ -257,7 +267,16 @@ function scene:hide( event )
    if ( phase == "will" ) then
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
-      -- Example: stop timers, stop animation, stop audio, etc.
+      titleText.isVisible = false
+	  scoreText.isVisible = false
+	  scoreT.isVisible = false
+	  distanceText.isVisible = false
+	  achievementText.isVisible = false
+	  achievementTitle.isVisible = false
+	  achievementSubtext.isVisible = false
+	  achievementIcon.isVisible = false
+	  replayBtn.isVisible = false
+	  quitBtn.isVisible = false
    elseif ( phase == "did" ) then
       -- Called immediately after scene goes off screen.
    end

@@ -18,14 +18,14 @@ local effectsSlider, musicSlider, effectsText, musicText
 local function onResumeBtn()
 	pause = false
 	composer.removeScene( "pause" )
-	composer.gotoScene( "game")
+	composer.gotoScene( "game", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 local function onQuitBtn()
 	composer.removeScene( "game" )
 	composer.removeScene( "menu" )
 	composer.removeScene( "pause" )
-	composer.gotoScene( "menu")
+	composer.gotoScene( "menu", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 

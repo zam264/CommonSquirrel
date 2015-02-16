@@ -8,12 +8,12 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText1
-local backBtnBtn
-
+local backBtn
+local scrollableCredits
 
 
 local function onBackBtn()
-	composer.gotoScene("options")
+	composer.gotoScene("options", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
 
@@ -32,7 +32,7 @@ function scene:create( event )
 	sceneGroup:insert(titleText1)
 	
 	
-	local scrollableCredits = widget.newScrollView {
+	scrollableCredits = widget.newScrollView {
 		left = 0, top = display.contentHeight*.08,
 		width = display.contentWidth,
 		height = display.contentHeight*.73,
@@ -77,6 +77,9 @@ function scene:show( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText1.isVisible = true
+		backBtn.isVisible = true
+		scrollableCredits.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -92,6 +95,9 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText1.isVisible = false
+		backBtn.isVisible = false
+		scrollableCredits.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -107,6 +113,8 @@ function scene:destroy( event )
 
    titleText1:removeSelf()
    titleText1 = nil
+   scrollableCredits:removeSelf()
+   scrollableCredits = nil
    backBtn:removeSelf()
    backBtn = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
