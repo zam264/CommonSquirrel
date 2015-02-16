@@ -7,7 +7,11 @@ function loadScore ()
 		local contents = file:read( "*a" )
 		local score = tonumber(contents)
 		io.close( file )
-		return score
+		if score == nil then
+			return 0
+		else
+			return score
+		end
 	else
 		print( "Error: could not read scores")
 	end
