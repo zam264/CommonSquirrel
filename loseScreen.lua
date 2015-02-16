@@ -162,7 +162,7 @@ function scene:create( event )
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementSubtext = display.newText( achievementDescriptions[x] , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .035)
+		achievementSubtext = display.newText( achievementDescriptions[x] , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .02)
 		achievementSubtext.anchorX = 0
 		achievementSubtext.anchorY = 0
 		sceneGroup:insert(achievementSubtext)
