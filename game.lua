@@ -17,6 +17,7 @@ local bgImg = "imgs/bg1.jpg"
 local bgTree1 = "imgs/tree1xl.png"
 local bgTree2 = "imgs/tree2xl.png"
 local bgTree3 = "imgs/tree3xl.png"
+local clouds = {}
 local obstacles = {} --Holds obstacles
 local yTranslate
 local contentHeight = display.contentHeight
@@ -32,6 +33,11 @@ display.setDefault( "background", 0/255, 120/255, 171/255 )
 local tree1 = display.newImageRect(bgTree1, contentWidth*.1, display.contentHeight*2)
 local tree2 = display.newImageRect(bgTree2, contentWidth*.1, display.contentHeight*2)
 local tree3 = display.newImageRect(bgTree3, contentWidth*.1, display.contentHeight*2)
+for i = 1, 3, 1 do
+	clouds[i] = display.newImageRect("imgs/achievement" .. i .. ".png", 128, 128)
+	clouds[i].x = math.random(1, display.contentWidth)
+	clouds[i].y = 0 - math.random(1, display.contentHeight)
+end
 tree1.x = contentWidth*.25
 tree1.y = 0
 tree2.x = contentWidth*.5
@@ -65,10 +71,10 @@ healthSprite:setSequence( "health" .. 3 )
 healthSprite:play()
 
 local function moveRight() 
-	if (player.model.x == contentWidth * .5) then
-		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
-	else
+	if (player.model.x == contentWidth * .25) then
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
+	else
+		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
 	end
 end
 
@@ -180,6 +186,9 @@ function scene:create( event )
 	
 	scoreText = display.newText( tostring(playerScore), contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010", display.contentHeight * .065)
 
+	for i = 1, 3, 1 do
+		sceneGroup:insert(clouds[i])
+	end
 	sceneGroup:insert(tree1)
 	sceneGroup:insert(tree2)
 	sceneGroup:insert(tree3)
@@ -210,6 +219,16 @@ function main(event)
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
 			yTranslate = 10 * difficulty
+		end
+
+		--Background
+		for i=1, 3, 1 do 
+			if(clouds[i].y > contentHeight)then
+				clouds[i].x = math.random(1, display.contentWidth)
+				clouds[i].y = 0 - math.random(1, display.contentHeight)
+			else
+				clouds[i]:translate(0, yTranslate*.5)
+			end
 		end
 
 		if(tree1.y >= contentHeight)then 
@@ -281,6 +300,9 @@ function scene:hide( event )
 		for x=1,  #obstacles do
 			obstacles[x].isVisible = false
 		end
+		for i = 1, #clouds do
+			clouds[i].isVisible = false
+		end
 		player.model.isVisible = false
 		healthSprite.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
@@ -302,6 +324,11 @@ function scene:destroy( event )
 	tree2 = nil
 	tree3:removeSelf()
 	tree3 = nil
+	for i = 1, #clouds do
+		clouds[i]:removeSelf()
+		clouds[i] = nil
+	end
+	clouds = {}
 
 	scoreText:removeSelf()
 	scoreText = nil
