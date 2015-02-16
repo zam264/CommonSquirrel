@@ -11,7 +11,87 @@ local widget = require "widget"		-- include Corona's "widget" library
 -- local forward references should go here
 local replayBtn, quitBtn
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
-
+local achievementText, achievementIcon, achievementTitle, achivementSubtext
+local achievementDistance = {
+	2,		8,
+	26,		60,
+	100,	141,
+	176,	286,
+	305,	316,
+	360,	379,
+	455,	555,
+	841,	986,
+	1250,	1451,
+	2717,	3000,
+	5280,	9001,
+	10663,	28000,
+	29029,	35000,
+	327000,	1360000,
+	5443680, 1200000000,
+	9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
+local achievementNames = {
+	"Tree Sapling",
+	"Tallest Man",
+	"Great WAll of China",
+	"Average Oak Tree",
+	"Rockefellar Xmas Tree",
+	"New Years Eve Ball",
+	"Pine Tree",
+	"Giant Sequoia Tree",
+	"Statue of Liberty",
+	"Big Ben",
+	"Football Field",
+	"Record Breaking Redwood",
+	"Great Pyramid of Giza",
+	"Washington Monument",
+	"U.S. Steel Tower",
+	"Eiffel Tower",
+	"Empire State Building",
+	"Sears Tower",
+	"Burj Khalifa",
+	"Cumulus Cloud",
+	"1 Mile Up",
+	"Power Level",
+	"Mt. Botzer",
+	"Lost Balloon",
+	"Mt. Everest",
+	"Boeing 757",
+	"Space",
+	"International Space Station",
+	"Sputnik 2",
+	"Moon",
+	"Good Luck..."	}
+local achievementDescriptions = {
+	"Just a sapling",
+	"High five, mate",
+	"Squirrels > Mongols",
+	"I AM GROOT!",
+	"Rockin' Around the Christmas Tree",
+	"Dropping the Ball",
+	"Pine cones aren't enough",
+	"Neighborhood has really gone downhill",
+	"Emancipate the squirrels",
+	"Up high, wanker!",
+	"The whole 100 yards",
+	"Big Red",
+	"On your way to Ra",
+	"The rent at the top is too dang high",
+	"Developers! Developers!",
+	"Do squirrels like cheese?",
+	"More like Empire Squirrel Building",
+	"Wish I had brought my windbreaker",
+	"Are there even squirrels in Dubai?",
+	"Into the Clouds",
+	"Mile High Club",
+	"What does the scouter say?",
+	"Developers!",
+	"Super Squirrel will retrieve it",
+	"I should be hibernating right now",
+	"Now seating squirrels",
+	"No racoons allowed",
+	"Squilnit the Soviet Squirrel",
+	"One small step for man, one giant leap for a squirrel",
+	"I think you cheated..."}
 
 local function onReplayBtn()
 	composer.removeScene( "game" )
@@ -34,37 +114,88 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
-	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.125, native.systemFont,  display.contentHeight * .1)
+	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.1, native.systemFont,  display.contentHeight * .1)
 	titleText.anchorX = .5
 	titleText.anchorY = .5
 	sceneGroup:insert(titleText)
 	
 	if (loadScore() <= playerScore) then	--new highscore has been set
-		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.14, native.systemFont,  display.contentHeight * .05)
 		scoreText.anchorX = 0
 		scoreText.anchorY = 0
 		sceneGroup:insert(scoreText)
 	else
-		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, native.systemFont,  display.contentHeight * .05)
 		scoreText.anchorX = 0
 		scoreText.anchorY = 0
 		sceneGroup:insert(scoreText)
 	end
-	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.365, native.systemFont,  display.contentHeight * .05)
+	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, native.systemFont,  display.contentHeight * .05)
 	scoreT.anchorX = 1
 	scoreT.anchorY = 0
 	sceneGroup:insert(scoreT)
 	
-	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.455, native.systemFont,  display.contentHeight * .05)
+	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, native.systemFont,  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
 	
-	distanceT = display.newText (distance, display.contentWidth*.95, display.contentHeight *.52, native.systemFont,  display.contentHeight * .05)
+	distanceT = display.newText (distance, display.contentWidth*.95, display.contentHeight *.330, native.systemFont,  display.contentHeight * .05)
 	distanceT.anchorX = 1
 	distanceT.anchorY = 0
 	sceneGroup:insert(distanceT)
 	
+	local x = 2
+	local totalDist = loadDistance()
+	while totalDist > achievementDistance[x] do
+		x = x+1
+	end
+	print (x)
+	if totalDist - distance < achievementDistance[x-1] then
+		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, native.systemFont,  display.contentHeight * .05)
+		achievementText.anchorX = 0
+		achievementText.anchorY = 0
+		sceneGroup:insert(achievementText)
+		
+		achievementTitle = display.newText( achievementNames[x] .. " " .. achievementDistance[x] .. "ft" , display.contentWidth*.3, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle.anchorX = 0
+		achievementTitle.anchorY = 0
+		sceneGroup:insert(achievementTitle)
+		
+		achievementSubtext = display.newText( achievementDescriptions[x] , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .035)
+		achievementSubtext.anchorX = 0
+		achievementSubtext.anchorY = 0
+		sceneGroup:insert(achievementSubtext)
+		
+		achievementIcon = display.newImageRect( "imgs/achievement1.png", display.contentHeight*.175, display.contentHeight*.15 )
+		achievementIcon.anchorX = 0
+		achievementIcon.anchorY = 0
+		achievementIcon.x = 0
+		achievementIcon.y = display.contentHeight*.47
+		sceneGroup:insert( achievementIcon )
+	else	
+		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, native.systemFont,  display.contentHeight * .05)
+		achievementText.anchorX = 0
+		achievementText.anchorY = 0
+		sceneGroup:insert(achievementText)
+		
+		achievementTitle = display.newText( achievementDistance[x].."ft" , display.contentWidth*.3, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle.anchorX = 0
+		achievementTitle.anchorY = 0
+		sceneGroup:insert(achievementTitle)
+		
+		achievementSubtext = display.newText( "" , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .035)
+		achievementSubtext.anchorX = 0
+		achievementSubtext.anchorY = 0
+		sceneGroup:insert(achievementSubtext)
+		
+		achievementIcon = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.15 )
+		achievementIcon.anchorX = 0
+		achievementIcon.anchorY = 0
+		achievementIcon.x = 0
+		achievementIcon.y = display.contentHeight*.47
+		sceneGroup:insert( achievementIcon )
+	end
 	
 	
 	replayBtn = widget.newButton{
