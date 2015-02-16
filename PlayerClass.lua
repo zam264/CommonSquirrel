@@ -45,8 +45,8 @@ function Player:init(posX, posY)
 		end
 	end
 
-	function Player:heal(amg)
-		self.health = 3
+	function Player:heal(amt)
+		self.health = self.health + 1 
 		if self.health > 3 then
 			self.health = 3 
 		end

@@ -78,7 +78,7 @@ function newObstacle(row, col, collection)
 	local obj
 	--An obstacle has ~% chance of being an Acorn 
 	local random = math.random(100)
-	if random <= 10 then 
+	if random <= 3 then 
 		obj = Acorn(display.contentWidth * .25 * col, yPos)
 	else
 		obj = Obstacle( display.contentWidth * .25 * col, yPos)
