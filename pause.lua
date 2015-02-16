@@ -56,7 +56,7 @@ function scene:create( event )
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
 	
-	distanceT = display.newText (distance, display.contentWidth*.95, display.contentHeight *.33, native.systemFont,  display.contentHeight * .05)
+	distanceT = display.newText (distance.." ft", display.contentWidth*.95, display.contentHeight *.33, native.systemFont,  display.contentHeight * .05)
 	distanceT.anchorX = 1
 	distanceT.anchorY = 0
 	sceneGroup:insert(distanceT)

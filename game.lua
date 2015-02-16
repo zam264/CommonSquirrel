@@ -9,7 +9,7 @@ require('obstacleGeneration')
 local scene = composer.newScene()
 
 --Variables
-local scoreText, timePassedBetweenEvents, timePassed, stageTimer
+local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer
 local bgSpeed = 10	--Change the speed of the background (orig. 3) 
 local highScore
 local screenTop, screenBottom, screenLeft, screenRight
@@ -22,6 +22,7 @@ local obstacles = {} --Holds obstacles
 paused = false
 playerScore = 0
 distance = 0
+difficulty = 1
 
 --Images and sprite setup
 --Background
@@ -65,9 +66,9 @@ local function moveRight()
 	--if (player.model.x < display.contentWidth * .75) then
 	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .25) then
 		if (player.model.x < display.contentWidth * .5) then
-			transition.to(player.model, {time=200, x=display.contentWidth*0.5})
+			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.5})
 		else
-			transition.to(player.model, {time=200, x=display.contentWidth*0.75})
+			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.75})
 		end
 	end
 end
@@ -76,9 +77,9 @@ local function moveLeft()
 	--if (player.model.x > display.contentWidth * .25) then
 	if (player.model.x == display.contentWidth * .5 or player.model.x == display.contentWidth * .75) then
 		if (player.model.x > display.contentWidth * .5) then
-			transition.to(player.model, {time=200, x=display.contentWidth*0.5})
+			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.5})
 		else
-			transition.to(player.model, {time=200, x=display.contentWidth*0.25})
+			transition.to(player.model, {time=200/difficulty, x=display.contentWidth*0.25})
 		end
 	end
 end
@@ -148,6 +149,7 @@ function scene:create( event )
    distance = 0
    timePassed = 0
    stageTimer = 0
+   difficultyTimer = 0
    highScore = loadScore()
    
    pauseBtn = widget.newButton{
@@ -195,17 +197,22 @@ function obstacles:enterFrame(event)
 	if  ( paused ) then
 		timePassed = timePassed + (event.time - timePassedBetweenEvents)
 		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
+		difficultyTimer = difficultyTimer + (event.time - timePassedBetweenEvents)
 	elseif (player.health > 0) then
 		if (event.time - timePassed > 250) then
 			timePassed = event.time
 			playerScore = playerScore + 1
 			scoreText.text = playerScore
-			distance = distance + 2.64
+			distance = distance + difficulty
 		end	
-		if ( event.time - stageTimer > 1250 ) then
+		if ( event.time - stageTimer > 1250/(difficulty/2) ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
+		if (event.time - difficultyTimer > 2000 and difficulty < 10) then
+			difficultyTimer = event.time
+			difficulty = difficulty +.1
+		end
 
 
 		if(tree1.y >= display.contentHeight)then 
@@ -213,13 +220,13 @@ function obstacles:enterFrame(event)
 			tree2.y = 0
 			tree3.y = 0
 		else
-			tree1:translate(0, bgSpeed)
-			tree2:translate(0, bgSpeed)
-			tree3:translate(0, bgSpeed)
+			tree1:translate(0, 10*difficulty)
+			tree2:translate(0, 10*difficulty)
+			tree3:translate(0, 10*difficulty)
 		end
 
 		for x=#obstacles, 1, -1 do
-			obstacles[x].model:translate(0,20)
+			obstacles[x].model:translate(0,10*difficulty)
 			if (obstacles[x].model.y > display.contentHeight + 200) then
 				-- kill obstacle that is now off the screen
 				obstacles[x]:delete()
