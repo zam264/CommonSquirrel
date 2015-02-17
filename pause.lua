@@ -207,10 +207,10 @@ function scene:destroy( event )
 	quitBtn:removeSelf()
     quitBtn = nil
 
-    movementButton:removeSelf()
-    movementButton = nil 
-    movementText:removeSelf() 
-    movementText = nil 
+    --movementButton:removeSelf()
+    --movementButton = nil 
+    --movementText:removeSelf() 
+    --movementText = nil 
 	
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
