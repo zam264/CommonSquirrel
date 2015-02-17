@@ -28,6 +28,9 @@ local function onQuitBtn()
 	return true	-- indicates successful touch
 end
 
+local function switchMovement()
+	swipeMovement = not swipeMovement
+end
 
 ---------------------------------------------------------------------------------
 
@@ -90,8 +93,24 @@ function scene:create( event )
 		listener = musicListener
 	}
 	sceneGroup:insert(musicSlider)
-	
-	
+	--[[
+	movementText = display.newText( "Swipe To Move", display.contentWidth * .25, display.contentHeight * .6, native.systemFont, display.contentHeight * .035)
+	movementText.anchorX = 0 
+	movementText.anchorY = 0 
+	sceneGroup:insert(movementText)
+
+	movementButton = widget.newSwitch
+	{
+	    left = display.contentWidth * .7,
+	    top = display.contentHeight * .61,
+	    style = "onOff",
+	    initialSwitchState = swipeMovement,
+	    onPress = switchMovement
+	}
+	movementButton.width = display.contentWidth * .25
+	movementButton.height = display.contentHeight * .07
+	sceneGroup:insert( movementButton )
+	]]
 	
 	resumeBtn = widget.newButton{
 		label="Resume Game",
@@ -105,7 +124,7 @@ function scene:create( event )
 	resumeBtn.anchorX = .5
 	resumeBtn.anchorY = .5
 	resumeBtn.x = display.contentWidth * .50
-	resumeBtn.y = display.contentHeight * .7
+	resumeBtn.y = display.contentHeight * .75
 	sceneGroup:insert(resumeBtn)
 	
 	
@@ -121,7 +140,7 @@ function scene:create( event )
 	quitBtn.anchorX = .5
 	quitBtn.anchorY = .5
 	quitBtn.x = display.contentWidth * .50
-	quitBtn.y = display.contentHeight * .85
+	quitBtn.y = display.contentHeight * .9
 	sceneGroup:insert(quitBtn)
 	
 	
@@ -187,6 +206,11 @@ function scene:destroy( event )
 	resumeBtn = nil
 	quitBtn:removeSelf()
     quitBtn = nil
+
+    movementButton:removeSelf()
+    movementButton = nil 
+    movementText:removeSelf() 
+    movementText = nil 
 	
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.

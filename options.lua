@@ -12,7 +12,7 @@ local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn
 effectsVolume = 50
 musicVolume = 50
 swipeMovement = true
-
+widget.setTheme("widget_theme_android") 
 
 -- Slider listener
 function effectsListener( event )
@@ -35,6 +35,10 @@ end
 local function onBackBtn()
 	composer.gotoScene( "menu", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
+end
+
+local function switchMovement() 
+	swipeMovement = not swipeMovement
 end
 
 
@@ -85,6 +89,24 @@ function scene:create( event )
 		listener = musicListener
 	}
 	sceneGroup:insert(musicSlider)
+
+	movementText = display.newText( "Swipe To Move", display.contentWidth * .25, display.contentHeight * .4, native.systemFont, display.contentHeight * .035)
+	movementText.anchorX = 0 
+	movementText.anchorY = 0 
+	sceneGroup:insert(movementText)
+
+	movementButton = widget.newSwitch
+	{
+	    left = display.contentWidth * .7,
+	    top = display.contentHeight * .41,
+	    style = "onOff",
+	    initialSwitchState = swipeMovement,
+	    onPress = switchMovement
+	}
+	movementButton.width = display.contentWidth * .25
+	movementButton.height = display.contentHeight * .07
+	sceneGroup:insert( movementButton )
+
    
    -- Initialize the scene here.
 	achievmentsBtn = widget.newButton{
@@ -152,6 +174,8 @@ function scene:show( event )
 	creditsBtn.isVisible = true
 	backBtn.isVisible = true
 	achievmentsBtn.isVisible = true
+	movementButton.isVisible = true
+	movementText.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -176,6 +200,8 @@ function scene:hide( event )
 	creditsBtn.isVisible = false
 	backBtn.isVisible = false
 	achievmentsBtn.isVisible = false
+	movementButton.isVisible = false
+	movementText.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
