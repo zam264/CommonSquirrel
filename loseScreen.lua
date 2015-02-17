@@ -152,17 +152,18 @@ function scene:create( event )
 	end
 	
 	if totalDist - distance < achievementDistance[x-1] then
+		composer.removeScene( "achievements" )
 		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, native.systemFont,  display.contentHeight * .05)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementNames[x] .. " " .. achievementDistance[x] .. "ft" , display.contentWidth*.35, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementNames[x-1] .. " " .. achievementDistance[x-1] .. "ft" , display.contentWidth*.35, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementSubtext = display.newText( achievementDescriptions[x] , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .02)
+		achievementSubtext = display.newText( achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .02)
 		achievementSubtext.anchorX = 0
 		achievementSubtext.anchorY = 0
 		sceneGroup:insert(achievementSubtext)

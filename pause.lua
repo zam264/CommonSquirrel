@@ -16,7 +16,6 @@ local effectsSlider, musicSlider, effectsText, musicText
 
 
 local function onResumeBtn()
-	pause = false
 	composer.removeScene( "pause" )
 	composer.gotoScene( "game", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
