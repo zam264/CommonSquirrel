@@ -11,7 +11,7 @@ local titleText, difficultyText, easyText, normalText, hardText
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn
 effectsVolume = 50
 musicVolume = 50
-
+swipeMovement = true
 
 
 -- Slider listener

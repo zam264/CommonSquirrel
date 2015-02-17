@@ -6,6 +6,7 @@ require('ObstacleClass')
 require('PlayerClass')
 require('AcornClass')
 require('obstacleGeneration')
+require('options')
 local scene = composer.newScene()
 
 --Variables
@@ -26,6 +27,7 @@ local contentHeight = contentHeight
 local contentWidth = contentWidth
 local playerHit = false
 local maskAlpha = 0
+local beginX = contentWidth *0.5 	--Used to track swiping movements, represents initial user touch position on screen 
 paused = false
 playerScore = 0
 distance = 0
@@ -90,7 +92,7 @@ local function moveLeft()
 	end
 end
 
-local function printTouch(event)
+local function clickMove(event)
 	if(event.phase == "began")then
 		if(event.x > contentWidth*0.5)then
 			moveRight()
@@ -98,6 +100,19 @@ local function printTouch(event)
 			moveLeft()
 		end	
 	end	
+end
+
+local function swipeMove(event)
+	if(event.phase == "began") then
+		print("Grabbed begin x")
+		beginX = event.x 
+	elseif(event.phase == "ended") then 
+		if(beginX > event.x) then 
+			moveLeft()
+		else 
+			moveRight()
+		end
+	end
 end
 
 local function pauseGame ()
@@ -372,7 +387,11 @@ function scene:destroy( event )
 	player:delete()
 
 	Runtime:removeEventListener( "enterFrame", main )
-	Runtime:removeEventListener( "touch", printTouch )
+	if swipeMovement then 
+		Runtime:removeEventListener( "touch", swipeMove )
+	else
+		Runtime:removeEventListener( "touch", clickMove )
+	end
 	-- Called prior to the removal of scene's view ("sceneGroup").
 	-- Insert code here to clean up the scene.
 	-- Example: remove display objects, save state, etc.
@@ -386,7 +405,12 @@ scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 Runtime:addEventListener( "enterFrame", main )
-Runtime:addEventListener( "touch", printTouch)
+--Runtime:addEventListener( "touch", swipeMove)
+if swipeMovement then
+	Runtime:addEventListener( "touch", swipeMove)
+else
+	Runtime:addEventListener( "touch", clickMove)
+end
 
 ---------------------------------------------------------------------------------
 
