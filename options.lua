@@ -7,8 +7,8 @@ local widget = require ("widget")		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local titleText, difficultyText, easyText, normalText, hardText
-local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn
+local titleText, difficultyText, easyText, normalText, hardText, movementText
+local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton
 effectsVolume = 50
 musicVolume = 50
 swipeMovement = true
@@ -90,20 +90,20 @@ function scene:create( event )
 	}
 	sceneGroup:insert(musicSlider)
 
-	movementText = display.newText( "Swipe To Move", display.contentWidth * .25, display.contentHeight * .4, native.systemFont, display.contentHeight * .035)
+	movementText = display.newText( "Swipe To Move", display.contentWidth * .15, display.contentHeight * .4, native.systemFont, display.contentHeight * .035)
 	movementText.anchorX = 0 
 	movementText.anchorY = 0 
 	sceneGroup:insert(movementText)
 
 	movementButton = widget.newSwitch
 	{
-	    left = display.contentWidth * .7,
+	    left = display.contentWidth * .625,
 	    top = display.contentHeight * .41,
 	    style = "onOff",
 	    initialSwitchState = swipeMovement,
 	    onPress = switchMovement
 	}
-	movementButton.width = display.contentWidth * .25
+	movementButton.width = display.contentWidth * .4
 	movementButton.height = display.contentHeight * .07
 	sceneGroup:insert( movementButton )
 
@@ -233,6 +233,10 @@ function scene:destroy( event )
 	backBtn = nil
 	achievmentsBtn:removeSelf()
 	achievmentsBtn = nil
+	movementButton:removeSelf()
+	movementButton = nil
+	movementText:removeSelf()
+	movementText = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.

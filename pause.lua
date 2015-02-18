@@ -10,9 +10,9 @@ local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local resumeBtn, quitBtn
+local resumeBtn, quitBtn, movementButton
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
-local effectsSlider, musicSlider, effectsText, musicText
+local effectsSlider, musicSlider, effectsText, musicText, movementText
 
 
 local function onResumeBtn()
@@ -93,24 +93,24 @@ function scene:create( event )
 		listener = musicListener
 	}
 	sceneGroup:insert(musicSlider)
-	--[[
-	movementText = display.newText( "Swipe To Move", display.contentWidth * .25, display.contentHeight * .6, native.systemFont, display.contentHeight * .035)
+	
+	movementText = display.newText( "Swipe To Move", display.contentWidth * .175, display.contentHeight * .6, native.systemFont, display.contentHeight * .035)
 	movementText.anchorX = 0 
 	movementText.anchorY = 0 
 	sceneGroup:insert(movementText)
 
 	movementButton = widget.newSwitch
 	{
-	    left = display.contentWidth * .7,
+	    left = display.contentWidth * .65,
 	    top = display.contentHeight * .61,
 	    style = "onOff",
 	    initialSwitchState = swipeMovement,
 	    onPress = switchMovement
 	}
-	movementButton.width = display.contentWidth * .25
+	movementButton.width = display.contentWidth * .4
 	movementButton.height = display.contentHeight * .07
 	sceneGroup:insert( movementButton )
-	]]
+	
 	
 	resumeBtn = widget.newButton{
 		label="Resume Game",
@@ -154,6 +154,23 @@ function scene:show( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText.isVisible = true
+		scoreText.isVisible = true
+		scoreT.isVisible = true
+		distanceText.isVisible = true
+		distanceT.isVisible = true
+		
+		effectsSlider.isVisible = true
+
+		effectsText.isVisible = true
+		musicSlider.isVisible = true
+		musicText.isVisible = true
+		
+		movementText.isVisible = true
+		movementButton.isVisible = true
+		
+		resumeBtn.isVisible = true
+		quitBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -169,6 +186,23 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		titleText.isVisible = false
+		scoreText.isVisible = false
+		scoreT.isVisible = false
+		distanceText.isVisible = false
+		distanceT.isVisible = false
+		
+		effectsSlider.isVisible = false
+
+		effectsText.isVisible = false
+		musicSlider.isVisible = false
+		musicText.isVisible = false
+		
+		movementText.isVisible = false
+		movementButton.isVisible = false
+		
+		resumeBtn.isVisible = false
+		quitBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -201,6 +235,11 @@ function scene:destroy( event )
 	musicSlider = nil
 	musicText:removeSelf()
 	musicText = nil	
+	
+	movementText:removeSelf()
+	movementText = nil
+	movementButton:removeSelf()
+	movementButton = nil
 	
 	resumeBtn:removeSelf()
 	resumeBtn = nil

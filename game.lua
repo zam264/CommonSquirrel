@@ -10,7 +10,7 @@ require('options')
 local scene = composer.newScene()
 
 --Variables
-local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer
+local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty
 local highScore, pauseBtn, damageMask
 local screenTop, screenBottom, screenLeft, screenRight
 local contentHeight = display.contentHeight
@@ -92,26 +92,25 @@ local function moveLeft()
 	end
 end
 
-local function clickMove(event)
-	if(event.phase == "began")then
-		if(event.x > contentWidth*0.5)then
-			moveRight()
-		elseif(event.x < contentWidth*0.5)then
-			moveLeft()
-		end	
-	end	
-end
-
-local function swipeMove(event)
-	if(event.phase == "began") then
-		print("Grabbed begin x")
-		beginX = event.x 
-	elseif(event.phase == "ended") then 
-		if(beginX > event.x) then 
-			moveLeft()
-		else 
-			moveRight()
+local function move(event)
+	if (swipeMovement) then
+		if(event.phase == "began") then
+			beginX = event.x 
+		elseif(event.phase == "ended") then 
+			if(beginX > event.x) then 
+				moveLeft()
+			elseif (beginX < event.x) then
+				moveRight()
+			end
 		end
+	else
+		if(event.phase == "began")then
+			if(event.x > contentWidth*0.5)then
+				moveRight()
+			elseif(event.x < contentWidth*0.5)then
+				moveLeft()
+			end	
+		end	
 	end
 end
 
@@ -175,6 +174,7 @@ function scene:create( event )
    difficultyTimer = 0
 	yTranslate = 10 * difficulty
 	highScore = loadScore()
+	maxDifficulty = 5 + math.floor(highScore *.01)
    
    pauseBtn = widget.newButton{
 		label="",
@@ -242,7 +242,7 @@ function main(event)
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
-		if (event.time - difficultyTimer > 2000 and difficulty < 5) then
+		if (event.time - difficultyTimer > 3000 and difficulty < maxDifficulty) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
 			yTranslate = 10 * difficulty
@@ -313,8 +313,12 @@ function scene:show( event )
 		end
 		player.model.isVisible = true
 		healthSprite.isVisible = true
+		
+		
+
    elseif ( phase == "did" ) then
 		paused = false
+		Runtime:addEventListener( "touch", move)
       -- Called when the scene is now on screen.
       -- Insert code here to make the scene come alive.
       -- Example: start timers, begin animation, play audio, etc.
@@ -347,6 +351,8 @@ function scene:hide( event )
 		end
 		player.model.isVisible = false
 		healthSprite.isVisible = false
+		Runtime:removeEventListener( "touch", move )
+
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -387,11 +393,9 @@ function scene:destroy( event )
 	player:delete()
 
 	Runtime:removeEventListener( "enterFrame", main )
-	if swipeMovement then 
-		Runtime:removeEventListener( "touch", swipeMove )
-	else
-		Runtime:removeEventListener( "touch", clickMove )
-	end
+
+	Runtime:removeEventListener( "touch", move )
+
 	-- Called prior to the removal of scene's view ("sceneGroup").
 	-- Insert code here to clean up the scene.
 	-- Example: remove display objects, save state, etc.
@@ -406,11 +410,8 @@ scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 Runtime:addEventListener( "enterFrame", main )
 --Runtime:addEventListener( "touch", swipeMove)
-if swipeMovement then
-	Runtime:addEventListener( "touch", swipeMove)
-else
-	Runtime:addEventListener( "touch", clickMove)
-end
+Runtime:addEventListener( "touch", move)
+
 
 ---------------------------------------------------------------------------------
 
