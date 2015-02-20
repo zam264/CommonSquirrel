@@ -40,7 +40,7 @@ local tree1 = display.newImageRect(bgTree1, contentWidth*.1, contentHeight*2)
 local tree2 = display.newImageRect(bgTree2, contentWidth*.1, contentHeight*2)
 local tree3 = display.newImageRect(bgTree3, contentWidth*.1, contentHeight*2)
 for i = 1, 3, 1 do
-	clouds[i] = display.newImageRect("imgs/achievement" .. i .. ".png", 128, 128)
+	clouds[i] = display.newImageRect("imgs/cloud" .. i .. ".png", contentWidth*.6, contentWidth*.3)
 	clouds[i].x = math.random(1, contentWidth)
 	clouds[i].y = 0 - math.random(1, contentHeight)
 end
