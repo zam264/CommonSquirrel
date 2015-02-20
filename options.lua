@@ -11,7 +11,7 @@ local titleText, difficultyText, easyText, normalText, hardText, movementText
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton
 effectsVolume = 50
 musicVolume = 50
-swipeMovement = true
+swipeMovement = false
 widget.setTheme("widget_theme_android") 
 
 -- Slider listener

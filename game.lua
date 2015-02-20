@@ -16,10 +16,7 @@ local screenTop, screenBottom, screenLeft, screenRight
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
 local player
-local bgImg = "imgs/bg1.jpg"
-local bgTree1 = "imgs/tree1xl.png"
-local bgTree2 = "imgs/tree2xl.png"
-local bgTree3 = "imgs/tree3xl.png"
+local trees = {}
 local clouds = {}
 local obstacles = {} --Holds obstacles
 local yTranslate
@@ -36,20 +33,20 @@ local difficulty = 1
 --Images and sprite setup
 --Background
 display.setDefault( "background", 0/255, 120/255, 171/255 )
-local tree1 = display.newImageRect(bgTree1, contentWidth*.1, contentHeight*2)
-local tree2 = display.newImageRect(bgTree2, contentWidth*.1, contentHeight*2)
-local tree3 = display.newImageRect(bgTree3, contentWidth*.1, contentHeight*2)
+for i = 1, 6, 1 do
+	trees[i] = display.newImageRect("imgs/tree" .. i%3 .. "xl.png", contentWidth*.1, contentHeight*2 )
+	trees[i].x = contentWidth *.25 * (i%3 + 1)
+	if(i<=3)then
+		trees[i].y = 0
+	else
+		trees[i].y = trees[1].y - (contentHeight * .95) * 2
+	end
+end
 for i = 1, 3, 1 do
 	clouds[i] = display.newImageRect("imgs/cloud" .. i .. ".png", contentWidth*.6, contentWidth*.3)
 	clouds[i].x = math.random(1, contentWidth)
 	clouds[i].y = 0 - math.random(1, contentHeight)
 end
-tree1.x = contentWidth*.25
-tree1.y = 0
-tree2.x = contentWidth*.5
-tree2.y = 0
-tree3.x = contentWidth*.75
-tree3.y = 0
 
 local tut = display.newImageRect("imgs/tutorial.png", contentWidth, 100)
 tut.x = display.contentCenterX
@@ -210,14 +207,15 @@ function scene:create( event )
 	for i = 1, 3, 1 do
 		sceneGroup:insert(clouds[i])
 	end
+	for i = 1, 6, 1 do
+		sceneGroup:insert(trees[i])
+	end
 	damageMask = display.newImageRect("imgs/damageMask.png", contentWidth, contentHeight)
 	damageMask.anchorX = 0
 	damageMask.anchorY = 0
 	damageMask.alpha = 0
 	
-	sceneGroup:insert(tree1)
-	sceneGroup:insert(tree2)
-	sceneGroup:insert(tree3)
+
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(tut)
 	sceneGroup:insert(player.model)
@@ -267,14 +265,18 @@ function main(event)
 			end
 		end
 
-		if(tree1.y >= contentHeight)then 
-			tree1.y = tree1.y - contentHeight
-			tree2.y = tree2.y - contentHeight
-			tree3.y = tree3.y - contentHeight
+		if(trees[1].y >= 2*contentHeight)then 
+			trees[1].y = trees[4].y - (contentHeight * .95) * 2
+			trees[2].y = trees[4].y - (contentHeight * .95) * 2
+			trees[3].y = trees[4].y - (contentHeight * .95) * 2
+		elseif(trees[4].y >= 2*contentHeight) then
+			trees[4].y = trees[1].y - (contentHeight * .95) * 2
+			trees[5].y = trees[1].y - (contentHeight * .95) * 2
+			trees[6].y = trees[1].y - (contentHeight * .95) * 2
 		else
-			tree1:translate(0,yTranslate)
-			tree2:translate(0,yTranslate)
-			tree3:translate(0,yTranslate)
+			for i = 1, #trees do
+				trees[i]:translate(0, yTranslate)
+			end
 		end
 
 		for x=#obstacles, 1, -1 do
@@ -299,14 +301,15 @@ function scene:show( event )
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
 	  tut.isVisible = true
-		tree1.isVisible = true
-		tree2.isVisible = true
-		tree3.isVisible = true
+
 		scoreText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
 		for x=1,  #obstacles do
 			obstacles[x].model.isVisible = true
+		end
+		for x=1,  #trees do
+			trees[x].isVisible = true
 		end
 		for i = 1, #clouds do
 			clouds[i].isVisible = true
@@ -337,9 +340,9 @@ function scene:hide( event )
    
    if ( phase == "will" ) then
 		tut.isVisible = false
-		tree1.isVisible = false
-		tree2.isVisible = false
-		tree3.isVisible = false
+		for x=1, #trees do
+			trees[x].isVisible = false
+		end
 		scoreText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
@@ -366,14 +369,12 @@ function scene:destroy( event )
 	local sceneGroup = self.view
 	tut:removeSelf()
 	tut = nil
-	tree1:removeSelf()
-	tree1 = nil
-	tree2:removeSelf()
-	tree2 = nil
-	tree3:removeSelf()
-	tree3 = nil
 	pauseBtn:removeSelf()
 	pauseBtn = nil
+	for i = 1, #trees do
+		trees[i]:removeSelf()
+		trees[i] = nil
+	end
 	for i = 1, #clouds do
 		clouds[i]:removeSelf()
 		clouds[i] = nil
