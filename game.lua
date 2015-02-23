@@ -249,11 +249,11 @@ function main(event)
 		--On hit mask
 		if (playerHit and maskAlpha < 1) then
 			maskAlpha = maskAlpha + .2
+			damageMask.alpha = maskAlpha
 		elseif (maskAlpha > 0) then
 			maskAlpha = maskAlpha - .05
+			damageMask.alpha = maskAlpha
 		end
-		
-		damageMask.alpha = maskAlpha
 		
 		--Background
 		for i=1, #clouds do 
@@ -265,6 +265,7 @@ function main(event)
 			end
 		end
 
+		--Tree Movement
 		if(trees[1].y >= 2*contentHeight)then 
 			trees[1].y = trees[4].y - (contentHeight * .95) * 2
 			trees[2].y = trees[4].y - (contentHeight * .95) * 2
@@ -272,13 +273,13 @@ function main(event)
 		elseif(trees[4].y >= 2*contentHeight) then
 			trees[4].y = trees[1].y - (contentHeight * .95) * 2
 			trees[5].y = trees[1].y - (contentHeight * .95) * 2
-			trees[6].y = trees[1].y - (contentHeight * .95) * 2
-		else
-			for i = 1, #trees do
-				trees[i]:translate(0, yTranslate)
-			end
+			trees[6].y = trees[1].y - (contentHeight * .95) * 2			
+		end
+		for i = 1, #trees do
+			trees[i]:translate(0, yTranslate)
 		end
 
+		--Obstacle Handling
 		for x=#obstacles, 1, -1 do
 			obstacles[x].model:translate(0,yTranslate)
 			if (obstacles[x].model.y > contentHeight + 100) then
@@ -322,6 +323,7 @@ function scene:show( event )
    elseif ( phase == "did" ) then
 		paused = false
 		Runtime:addEventListener( "touch", move)
+		Runtime:addEventListener( "enterFrame", main)
       -- Called when the scene is now on screen.
       -- Insert code here to make the scene come alive.
       -- Example: start timers, begin animation, play audio, etc.
@@ -355,6 +357,7 @@ function scene:hide( event )
 		player.model.isVisible = false
 		healthSprite.isVisible = false
 		Runtime:removeEventListener( "touch", move )
+		Runtime:removeEventListener( "enterFrame", main)
 
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
