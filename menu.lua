@@ -1,5 +1,7 @@
 local composer = require( "composer" )
 local score = require( "score" )
+require("settings")
+require("options")
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
@@ -29,11 +31,9 @@ end
 
 -- "scene:create()"
 function scene:create( event )
+    loadSettings(effectsVolume, musicVolume, swipeMovement)
     sceneGroup = self.view
 
-	
-	
-	
 	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
 	sceneGroup:insert(titleText1)
@@ -60,9 +60,6 @@ function scene:create( event )
    totalDistance.anchorX = .5
    totalDistance.anchorY = .5
    sceneGroup:insert(totalDistance)
-   
-   
-   
    
    -- Initialize the scene here.
 	playBtn = widget.newButton{
@@ -101,7 +98,6 @@ end
 
 -- "scene:show()"
 function scene:show( event )
-
    local sceneGroup = self.view
    local phase = event.phase
 

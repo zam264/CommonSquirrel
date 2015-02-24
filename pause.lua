@@ -24,12 +24,9 @@ local function onQuitBtn()
 	composer.removeScene( "game" )
 	composer.removeScene( "menu" )
 	composer.removeScene( "pause" )
+	composer.removeScene( "options" )
 	composer.gotoScene( "menu", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
-end
-
-local function switchMovement()
-	swipeMovement = not swipeMovement
 end
 
 ---------------------------------------------------------------------------------

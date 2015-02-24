@@ -1,6 +1,7 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require ("widget")		-- include Corona's "widget" library
+require('settings')
 ---------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE
 -- unless "composer.removeScene()" is called.
@@ -17,11 +18,13 @@ widget.setTheme("widget_theme_android")
 -- Slider listener
 function effectsListener( event )
 	effectsVolume = event.value
-    print( "Effects Slider at " .. event.value .. "%" )
+	saveSettings(effectsVolume, musicVolume, swipeMovement)
+    --print( "Effects Slider at " .. event.value .. "%" )
 end
 function musicListener ( event )
 	musicVolume = event.value
-	print( "Music Slider at " .. event.value .. "%" )
+	saveSettings(effectsVolume, musicVolume, swipeMovement)
+	--print( "Music Slider at " .. event.value .. "%" )
 end
 
 local function onAchievmentsBtn()
@@ -37,8 +40,9 @@ local function onBackBtn()
 	return true	-- indicates successful touch
 end
 
-local function switchMovement() 
+function switchMovement() 
 	swipeMovement = not swipeMovement
+	saveSettings(effectsVolume, musicVolume, swipeMovement)
 end
 
 
