@@ -34,12 +34,12 @@ local difficulty = 1
 --Background
 display.setDefault( "background", 0/255, 120/255, 171/255 )
 for i = 1, 6, 1 do
-	trees[i] = display.newImageRect("imgs/tree" .. i%3 .. "xl.png", contentWidth*.1, contentHeight*2 )
+	trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
 	trees[i].x = contentWidth *.25 * (i%3 + 1)
 	if(i<=3)then
-		trees[i].y = 0
+		trees[i].y = -i * contentHeight * .33
 	else
-		trees[i].y = trees[1].y - (contentHeight * .95) * 2
+		trees[i].y = trees[i-3].y - (contentHeight * .95) * 2
 	end
 end
 for i = 1, 3, 1 do
@@ -218,13 +218,14 @@ function scene:create( event )
 
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(tut)
+	sceneGroup:insert(damageMask)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
 	sceneGroup:insert(healthSprite)
-	sceneGroup:insert(damageMask)
 end
 
 function main(event)
+	--print (event.time - timePassedBetweenEvents)
 	if  ( paused ) then
 		timePassed = timePassed + (event.time - timePassedBetweenEvents)
 		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
@@ -249,11 +250,10 @@ function main(event)
 		--On hit mask
 		if (playerHit and maskAlpha < 1) then
 			maskAlpha = maskAlpha + .2
-			damageMask.alpha = maskAlpha
-		elseif (maskAlpha > 0) then
+		elseif (maskAlpha > (3-player.health) * .3) then
 			maskAlpha = maskAlpha - .05
-			damageMask.alpha = maskAlpha
 		end
+		damageMask.alpha = maskAlpha
 		
 		--Background
 		for i=1, #clouds do 
@@ -268,13 +268,20 @@ function main(event)
 		--Tree Movement
 		if(trees[1].y >= 2*contentHeight)then 
 			trees[1].y = trees[4].y - (contentHeight * .95) * 2
-			trees[2].y = trees[4].y - (contentHeight * .95) * 2
-			trees[3].y = trees[4].y - (contentHeight * .95) * 2
-		elseif(trees[4].y >= 2*contentHeight) then
+		elseif (trees[4].y >= 2*contentHeight) then
 			trees[4].y = trees[1].y - (contentHeight * .95) * 2
-			trees[5].y = trees[1].y - (contentHeight * .95) * 2
-			trees[6].y = trees[1].y - (contentHeight * .95) * 2			
 		end
+		if (trees[2].y >= 2*contentHeight) then
+			trees[2].y = trees[5].y - (contentHeight * .95) * 2
+		elseif (trees[5].y >= 2*contentHeight) then
+			trees[5].y = trees[2].y - (contentHeight * .95) * 2
+		end
+		if (trees[3].y >= 2*contentHeight) then
+			trees[3].y = trees[6].y - (contentHeight * .95) * 2
+		elseif (trees[6].y >= 2*contentHeight) then
+			trees[6].y = trees[3].y - (contentHeight * .95) * 2	
+		end
+		
 		for i = 1, #trees do
 			trees[i]:translate(0, yTranslate)
 		end
