@@ -159,7 +159,7 @@ function scene:create( event )
 		achievementDescriptionTextObject.anchorY = 0
 		scrollableachievements:insert(achievementDescriptionTextObject)
 
-		background = display.newImageRect( "imgs/achievement1.png", display.contentHeight*.175, display.contentHeight*.175 )
+		background = display.newImageRect( "achievements/achievement" .. 27 .. ".png", display.contentHeight*.175, display.contentHeight*.175 )
 		background.anchorX = 0
 		background.anchorY = 0
 		background.x = 0
