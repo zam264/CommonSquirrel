@@ -88,11 +88,44 @@ local achievementDescriptions = {
 "Super Squirrel will retrieve it",
 "I should be hibernating right now",
 "Now seating squirrels",
+"Where no squirrel has gone before",
 "No racoons allowed",
 "Squilnit the Soviet Squirrel",
 "One small step for man, one giant leap for a squirrel",
 "I think you cheated..."}
 
+local achievementImgs = {
+"placeholder.png",
+"placeholder.png",
+"achievement3.png",
+"placeholder.png",
+"placeholder.png",
+"achievement6.png",
+"placeholder.png",
+"placeholder.png",
+"achievement9.png",
+"placeholder.png",
+"placeholder.png",
+"achievement12.png",
+"placeholder.png",
+"placeholder.png",
+"achievement15.png",
+"placeholder.png",
+"placeholder.png",
+"achievement18.png",
+"placeholder.png",
+"placeholder.png",
+"achievement21.png",
+"placeholder.png",
+"placeholder.png",
+"achievement24.png",
+"placeholder.png",
+"placeholder.png",
+"placeholder.png",
+"placeholder.png",
+"placeholder.png",
+"achievement30.png",
+"placeholder.png"}
 
 local function onBackBtn()
 	composer.gotoScene("options", {effect="fromRight", time=1000})
@@ -159,7 +192,7 @@ function scene:create( event )
 		achievementDescriptionTextObject.anchorY = 0
 		scrollableachievements:insert(achievementDescriptionTextObject)
 
-		background = display.newImageRect( "achievements/achievement" .. 27 .. ".png", display.contentHeight*.175, display.contentHeight*.175 )
+		background = display.newImageRect( "achievements/"..achievementImgs[i], display.contentHeight*.175, display.contentHeight*.175 )
 		background.anchorX = 0
 		background.anchorY = 0
 		background.x = 0
