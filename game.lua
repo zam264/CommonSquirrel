@@ -11,7 +11,7 @@ local scene = composer.newScene()
 
 --Variables
 local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty
-local highScore, pauseBtn, damageMask
+local highScore, pauseBtn, damageMask, leftText, rightText, line
 local screenTop, screenBottom, screenLeft, screenRight
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
@@ -30,6 +30,8 @@ playerScore = 0
 distance = 0
 local difficulty = 1
 
+
+
 --Images and sprite setup
 --Background
 display.setDefault( "background", 0/255, 120/255, 171/255 )
@@ -37,7 +39,7 @@ for i = 1, 6, 1 do
 	trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
 	trees[i].x = contentWidth *.25 * (i%3 + 1)
 	if(i<=3)then
-		trees[i].y = -i * contentHeight * .33
+		trees[i].y = contentHeight+(-i * contentHeight * .33)
 	else
 		trees[i].y = trees[i-3].y - (contentHeight * .95) * 2
 	end
@@ -47,10 +49,6 @@ for i = 1, 3, 1 do
 	clouds[i].x = math.random(1, contentWidth)
 	clouds[i].y = 0 - math.random(1, contentHeight)
 end
-
-local tut = display.newImageRect("imgs/tutorial.png", contentWidth, 100)
-tut.x = display.contentCenterX
-tut.y = contentHeight-50
 
 --Health sprite variables
 local options = {
@@ -161,6 +159,12 @@ end
 
 -- "scene:create()"
 function scene:create( event )
+	leftText =  display.newText( "LEFT", contentWidth * .25, contentHeight*.95, "fonts/Rufscript010", contentHeight * .05, "right")
+	rightText =  display.newText( "RIGHT", contentWidth * .75, contentHeight*.95, "fonts/Rufscript010", contentHeight * .05, "right")
+
+	line = display.newLine(contentWidth*.5, contentHeight*.90, contentWidth*.5, contentHeight)
+	line.strokeWidth = 10
+
    local sceneGroup = self.view
    paused = true
    timePassedBetweenEvents = 0
@@ -217,7 +221,6 @@ function scene:create( event )
 	
 
 	sceneGroup:insert(pauseBtn)
-	sceneGroup:insert(tut)
 	sceneGroup:insert(damageMask)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
@@ -257,7 +260,7 @@ function main(event)
 		
 		--Background
 		for i=1, #clouds do 
-			if(clouds[i].y > contentHeight)then
+			if(clouds[i].y > contentHeight+clouds[i].height/2)then
 				clouds[i].x = math.random(1, contentWidth)
 				clouds[i].y = 0 - math.random(1, contentHeight)
 			else
@@ -308,8 +311,9 @@ function scene:show( event )
 
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
-	  tut.isVisible = true
-
+	  	leftText.isVisible = true
+	  	rightText.isVisible = true
+	  	line.isVisible = true
 		scoreText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
@@ -348,10 +352,12 @@ function scene:hide( event )
 	end
    
    if ( phase == "will" ) then
-		tut.isVisible = false
 		for x=1, #trees do
 			trees[x].isVisible = false
 		end
+		leftText.isVisible = false
+		rightText.isVisible = false
+		line.isVisible = false
 		scoreText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
@@ -377,8 +383,6 @@ end
 -- "scene:destroy()"
 function scene:destroy( event )
 	local sceneGroup = self.view
-	tut:removeSelf()
-	tut = nil
 	pauseBtn:removeSelf()
 	pauseBtn = nil
 	for i = 1, #trees do
@@ -392,6 +396,12 @@ function scene:destroy( event )
 	clouds = {}
 	damageMask:removeSelf()
 	damageMask = nil
+	leftText:removeSelf()
+	leftText = nil
+	rightText:removeSelf()
+	rightText = nil
+	line:removeSelf()
+	line = nil
 	scoreText:removeSelf()
 	scoreText = nil
 
