@@ -19,7 +19,7 @@ function loadScore ()
 end
 
 function saveScore (score)
-	if (tonumber(score) > tonumber(loadScore())) then
+	if (tonumber(score) > tonumber(loadScore()) or tonumber(score)==0) then
 		local path = system.pathForFile( "scorefile.txt", system.DocumentsDirectory )
 		local file = io.open(path, "w")
 		if ( file ) then

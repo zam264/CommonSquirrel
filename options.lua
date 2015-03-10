@@ -10,6 +10,8 @@ require('settings')
 -- local forward references should go here
 local titleText, difficultyText, easyText, normalText, hardText, movementText
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton
+local btnWidth = display.contentWidth * .65
+local btnHeight = display.contentHeight * .09
 effectsVolume = 50
 musicVolume = 50
 swipeMovement = false
@@ -33,6 +35,12 @@ local function onAchievmentsBtn()
 end
 local function onCreditsBtn()
 	composer.gotoScene( "gamecredits", {effect="fromLeft", time=1000})
+	return true	-- indicates successful touch
+end
+local function onClearScoreBtn()
+	saveScore(0)
+	addToDistance(loadDistance()*-1)
+	composer.removeScene( "menu" )
 	return true	-- indicates successful touch
 end
 local function onBackBtn()
@@ -119,7 +127,7 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
+		width=btnWidth, height=btnHeight,
 		onRelease = onAchievmentsBtn
 	}
 	achievmentsBtn.anchorX = .5
@@ -135,14 +143,29 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
+		width=btnWidth, height=btnHeight,
 		onRelease = onCreditsBtn
 	}
 	creditsBtn.anchorX = .5
 	creditsBtn.anchorY = .5
 	creditsBtn.x = display.contentWidth * .50
-	creditsBtn.y = display.contentHeight * .7
+	creditsBtn.y = display.contentHeight * .65
 	sceneGroup:insert(creditsBtn)
+
+	clearScoreBtn = widget.newButton{
+		label="Clear Score and Distance",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=btnWidth, height=btnHeight,
+		onRelease = onClearScoreBtn
+	}
+	clearScoreBtn.anchorX = .5
+	clearScoreBtn.anchorY = .5
+	clearScoreBtn.x = display.contentWidth * .50
+	clearScoreBtn.y = display.contentHeight * .75
+	sceneGroup:insert(clearScoreBtn)
 
 	backBtn = widget.newButton{
 		label="Back",
@@ -150,7 +173,7 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
+		width=btnWidth, height=btnHeight,
 		onRelease = onBackBtn
 	}
 	backBtn.anchorX = .5
@@ -176,6 +199,7 @@ function scene:show( event )
 	musicText.isVisible = true
 	musicSlider.isVisible = true
 	creditsBtn.isVisible = true
+	clearScoreBtn.isVisible = true
 	backBtn.isVisible = true
 	achievmentsBtn.isVisible = true
 	movementButton.isVisible = true
@@ -202,6 +226,7 @@ function scene:hide( event )
 	musicText.isVisible = false
 	musicSlider.isVisible = false
 	creditsBtn.isVisible = false
+	clearScoreBtn.isVisible = false
 	backBtn.isVisible = false
 	achievmentsBtn.isVisible = false
 	movementButton.isVisible = false
@@ -233,6 +258,8 @@ function scene:destroy( event )
 	musicSlider = nil
 	creditsBtn:removeSelf()
 	creditsBtn = nil
+	clearScoreBtn:removeSelf()
+	clearScoreBtn = nil
 	backBtn:removeSelf()
 	backBtn = nil
 	achievmentsBtn:removeSelf()
