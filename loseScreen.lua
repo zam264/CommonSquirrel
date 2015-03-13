@@ -114,33 +114,33 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
-	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.1, native.systemFont,  display.contentHeight * .1)
+	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.1, "fonts/Rufscript010",  display.contentHeight * .1)
 	titleText.anchorX = .5
 	titleText.anchorY = .5
 	sceneGroup:insert(titleText)
 	
 	if (loadScore() <= playerScore) then	--new highscore has been set
-		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.14, native.systemFont,  display.contentHeight * .05)
+		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
 		scoreText.anchorX = 0
 		scoreText.anchorY = 0
 		sceneGroup:insert(scoreText)
 	else
-		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, native.systemFont,  display.contentHeight * .05)
+		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
 		scoreText.anchorX = 0
 		scoreText.anchorY = 0
 		sceneGroup:insert(scoreText)
 	end
-	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, native.systemFont,  display.contentHeight * .05)
+	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, "fonts/Rufscript010",  display.contentHeight * .05)
 	scoreT.anchorX = 1
 	scoreT.anchorY = 0
 	sceneGroup:insert(scoreT)
 	
-	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, native.systemFont,  display.contentHeight * .05)
+	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
 	
-	distanceT = display.newText (distance.." ft", display.contentWidth*.95, display.contentHeight *.330, native.systemFont,  display.contentHeight * .05)
+	distanceT = display.newText (distance.." ft", display.contentWidth*.95, display.contentHeight *.330, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceT.anchorX = 1
 	distanceT.anchorY = 0
 	sceneGroup:insert(distanceT)
@@ -153,17 +153,17 @@ function scene:create( event )
 	
 	if totalDist - distance < achievementDistance[x-1] then
 		composer.removeScene( "achievements" )
-		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, native.systemFont,  display.contentHeight * .05)
+		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementNames[x-1] .. " " .. achievementDistance[x-1] .. "ft" , display.contentWidth*.35, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementNames[x-1] .. " " .. achievementDistance[x-1] .. "ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementSubtext = display.newText( achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .02)
+		achievementSubtext = display.newText( achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .02)
 		achievementSubtext.anchorX = 0
 		achievementSubtext.anchorY = 0
 		sceneGroup:insert(achievementSubtext)
@@ -175,17 +175,17 @@ function scene:create( event )
 		achievementIcon.y = display.contentHeight*.47
 		sceneGroup:insert( achievementIcon )
 	else	
-		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, native.systemFont,  display.contentHeight * .05)
+		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementDistance[x].."ft" , display.contentWidth*.35, display.contentHeight *.48, native.systemFont,  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementDistance[x].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementSubtext = display.newText( "" , display.contentWidth*.35, display.contentHeight *.535, native.systemFont,  display.contentHeight * .035)
+		achievementSubtext = display.newText( "" , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementSubtext.anchorX = 0
 		achievementSubtext.anchorY = 0
 		sceneGroup:insert(achievementSubtext)

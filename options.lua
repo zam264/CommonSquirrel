@@ -61,18 +61,18 @@ function scene:create( event )
 	--composer.getScene("menu"):destroy()
    local sceneGroup = self.view
 
-	titleText = display.newText( "Options", 0, 0, native.systemFont ,display.contentHeight * .065)
+	titleText = display.newText( "Options", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText.anchorX = 0
 	titleText.anchorY = 0
 	sceneGroup:insert(titleText)
    
-	difficultyText = display.newText( "Volume", display.contentWidth * .15, display.contentHeight*.125, native.systemFont,  display.contentHeight * .04)
+	difficultyText = display.newText( "Volume", display.contentWidth * .15, display.contentHeight*.125, "fonts/Rufscript010",  display.contentHeight * .04)
 	difficultyText.anchorX = 0
 	difficultyText.anchorY = 0
 	sceneGroup:insert(difficultyText)
 
    
-	effectsText = display.newText( "Sound Effects", display.contentWidth * .25, display.contentHeight*.175, native.systemFont ,display.contentHeight * .035)
+	effectsText = display.newText( "Sound Effects", display.contentWidth * .25, display.contentHeight*.175, "fonts/Rufscript010" ,display.contentHeight * .035)
 	effectsText.anchorX = 0
 	effectsText.anchorY = 0
 	sceneGroup:insert(effectsText)
@@ -87,7 +87,7 @@ function scene:create( event )
 	}
 	sceneGroup:insert(effectsSlider)
 
-	musicText = display.newText( "Music", display.contentWidth * .25, display.contentHeight*.275, native.systemFont ,display.contentHeight * .035)
+	musicText = display.newText( "Music", display.contentWidth * .25, display.contentHeight*.275, "fonts/Rufscript010" ,display.contentHeight * .035)
 	musicText.anchorX = 0
 	musicText.anchorY = 0
 	sceneGroup:insert(musicText)
@@ -102,7 +102,7 @@ function scene:create( event )
 	}
 	sceneGroup:insert(musicSlider)
 
-	movementText = display.newText( "Swipe To Move", display.contentWidth * .15, display.contentHeight * .4, native.systemFont, display.contentHeight * .035)
+	movementText = display.newText( "Swipe To Move", display.contentWidth * .15, display.contentHeight * .4, "fonts/Rufscript010", display.contentHeight * .035)
 	movementText.anchorX = 0 
 	movementText.anchorY = 0 
 	sceneGroup:insert(movementText)

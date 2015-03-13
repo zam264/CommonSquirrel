@@ -141,7 +141,7 @@ function scene:create( event )
 
    local sceneGroup = self.view
 
-	titleText1 = display.newText( "Achievements", 0, 0, native.systemFont ,display.contentHeight * .065)
+	titleText1 = display.newText( "Achievements", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText1.anchorX = 0
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
@@ -170,7 +170,7 @@ function scene:create( event )
 	scrollableachievements:insert( background )
 	
 	local achievementsText = "LOCKED until " .. distance[i] .. "ft"
-	local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.2, (display.contentHeight*.2*(j-1)), native.systemFont ,display.contentHeight * .025)
+	local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.2, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
 	achievementsTextObject.anchorX = 0	
 	achievementsTextObject.anchorY = 0
 	achievementsTextObject:setTextColor(1,1,1)
@@ -181,13 +181,13 @@ function scene:create( event )
 	print("j="..j)
 	while i>=1 do
 		local achievementsText = achievementNames[i] .. " " .. distance[i] .. "ft"
-		local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), native.systemFont ,display.contentHeight * .025)
+		local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
 		achievementsTextObject.anchorX = 0	
 		achievementsTextObject.anchorY = 0
 		achievementsTextObject:setTextColor(1,1,1)
 		scrollableachievements:insert(achievementsTextObject)
 		
-		local achievementDescriptionTextObject = display.newText(achievementDescriptions[i], display.contentHeight*.2, display.contentHeight*.2*(j-1)+display.contentHeight*.05, native.systemFont, display.contentHeight * .02)
+		local achievementDescriptionTextObject = display.newText(achievementDescriptions[i], display.contentHeight*.2, display.contentHeight*.2*(j-1)+display.contentHeight*.05, "fonts/Rufscript010", display.contentHeight * .02)
 		achievementDescriptionTextObject.anchorX = 0
 		achievementDescriptionTextObject.anchorY = 0
 		scrollableachievements:insert(achievementDescriptionTextObject)

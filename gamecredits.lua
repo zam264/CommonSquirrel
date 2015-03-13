@@ -26,7 +26,7 @@ function scene:create( event )
 
    local sceneGroup = self.view
 
-	titleText1 = display.newText( "Credits", 0, 0, native.systemFont ,display.contentHeight * .065)
+	titleText1 = display.newText( "Credits", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText1.anchorX = 0
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
@@ -44,7 +44,7 @@ function scene:create( event )
 	}
 	sceneGroup:insert(scrollableCredits)
 	local creditsText = "Creators:\nWilliam Botzer\nZachary Petrusch\nSteven Zamborsky\n\nArtwork:\nCasey Squires" 
-	local creditsTextObject = display.newText(creditsText, 0, 0, native.systemFont ,display.contentHeight * .025)
+	local creditsTextObject = display.newText(creditsText, 0, 0, "fonts/Rufscript010" ,display.contentHeight * .025)
 	creditsTextObject.anchorX = 0
 	creditsTextObject.anchorY = 0
 	creditsTextObject:setTextColor(1,1,1)

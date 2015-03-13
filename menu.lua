@@ -39,24 +39,24 @@ function scene:create( event )
 	sceneGroup:insert(titleText1)
 	sceneGroup:insert(titleText2)
    
-   highScoreText = display.newText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, native.systemFont,  display.contentHeight * .05)
+   highScoreText = display.newText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, "fonts/Rufscript010",  display.contentHeight * .05)
    highScoreText.anchorX = .5
    highScoreText.anchorY = .5
    sceneGroup:insert(highScoreText)
 
-   highScore = display.newText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, native.systemFont,  display.contentHeight * .04)
+   highScore = display.newText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, "fonts/Rufscript010",  display.contentHeight * .04)
    highScore.anchorX = .5
    highScore.anchorY = .5
    sceneGroup:insert(highScore)
    
    
    
-   totalDistanceText = display.newText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, native.systemFont,  display.contentHeight * .05)
+   totalDistanceText = display.newText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, "fonts/Rufscript010",  display.contentHeight * .05)
    totalDistanceText.anchorX = .5
    totalDistanceText.anchorY = .5
    sceneGroup:insert(totalDistanceText)
 
-   totalDistance = display.newText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, native.systemFont,  display.contentHeight * .04)
+   totalDistance = display.newText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, "fonts/Rufscript010",  display.contentHeight * .04)
    totalDistance.anchorX = .5
    totalDistance.anchorY = .5
    sceneGroup:insert(totalDistance)
