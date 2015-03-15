@@ -168,7 +168,7 @@ function scene:create( event )
 		achievementSubtext.anchorY = 0
 		sceneGroup:insert(achievementSubtext)
 		
-		achievementIcon = display.newImageRect( "achievements/achievement" .. 27 .. ".png", display.contentHeight*.175, display.contentHeight*.15 )
+		achievementIcon = display.newImageRect( "achievements/achievement" .. x-1 .. ".png", display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0
 		achievementIcon.anchorY = 0
 		achievementIcon.x = 0

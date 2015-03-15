@@ -94,39 +94,6 @@ local achievementDescriptions = {
 "One small step for man, one giant leap for a squirrel",
 "I think you cheated..."}
 
-local achievementImgs = {
-"sapling.png",
-"tapeMeasure.png",
-"achievement3.png",
-"oak.png",
-"rockefellarTree.png",
-"achievement6.png",
-"pine.png",
-"sequoia.png",
-"achievement9.png",
-"bigBen.png",
-"field.png",
-"achievement12.png",
-"giza.png",
-"washington.png",
-"achievement15.png",
-"eiffel.png",
-"empireStateBuilding.png",
-"achievement18.png",
-"burjKhalifa.png",
-"cloud.png",
-"achievement21.png",
-"scouter.png",
-"botzer.png",
-"achievement24.png",
-"everest.png",
-"757.png",
-"achievement27.png",
-"iss.png",
-"spacedog.png",
-"achievement30.png",
-"placeholder.png"}
-
 local function onBackBtn()
 	composer.gotoScene("options", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
@@ -192,7 +159,7 @@ function scene:create( event )
 		achievementDescriptionTextObject.anchorY = 0
 		scrollableachievements:insert(achievementDescriptionTextObject)
 
-		background = display.newImageRect( "achievements/"..achievementImgs[i], display.contentHeight*.175, display.contentHeight*.175 )
+		background = display.newImageRect( "achievements/achievement"..i..".png", display.contentHeight*.175, display.contentHeight*.175 )
 		background.anchorX = 0
 		background.anchorY = 0
 		background.x = 0
