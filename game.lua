@@ -11,7 +11,7 @@ local scene = composer.newScene()
 
 --Variables
 local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty
-local highScore, pauseBtn, damageMask, leftText, rightText, line
+local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup
 local screenTop, screenBottom, screenLeft, screenRight
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
@@ -125,7 +125,7 @@ local function hitObstacle(self, event)
 			player:damage(1)
 		else  --If Acorn, heal the player 
 			if player.health == 3 then
-				playerScore = playerScore + 10 
+				playerScore = playerScore + math.floor(difficulty * 5)
 			else
 				player:heal(1)
 			end
@@ -135,7 +135,6 @@ local function hitObstacle(self, event)
 		healthSprite:play()
 
 		if player.health == 0 then 
-			print("Dead") 
 			saveScore(playerScore)
 			addToDistance(distance)
 			for x=1,  #obstacles do
@@ -159,12 +158,6 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-	leftText =  display.newText( "LEFT", contentWidth * .25, contentHeight*.95, "fonts/Rufscript010", contentHeight * .05, "right")
-	rightText =  display.newText( "RIGHT", contentWidth * .75, contentHeight*.95, "fonts/Rufscript010", contentHeight * .05, "right")
-
-	line = display.newLine(contentWidth*.5, contentHeight*.90, contentWidth*.5, contentHeight)
-	line.strokeWidth = 10
-
    local sceneGroup = self.view
    paused = true
    timePassedBetweenEvents = 0
@@ -191,6 +184,41 @@ function scene:create( event )
 	pauseBtn.anchorY = .5
 	pauseBtn.x = contentWidth * .93
 	pauseBtn.y = contentHeight * .05
+	
+	-- create tutorial
+	tutorialGroup = display.newGroup()
+	tutorialBackground = display.newImageRect("imgs/tutorialBackground.png", contentWidth *.75, contentWidth * .15  )
+	tutorialBackground.x = contentWidth *.5
+	tutorialBackground.y = contentHeight *.35
+	tutorialBackground.anchorX = .5
+	tutorialBackground.anchorY = .5
+	tutorialGroup:insert(tutorialBackground)
+	if (swipeMovement) then
+		tutorialText =  display.newText( "Swipe          to jump Left\nSwipe          to jump Right", contentWidth * .5, contentHeight*.35, "fonts/Rufscript010", contentWidth * .05)
+		tutorialText.anchorX = .5
+		tutorialText.anchorY = .5
+		
+		tutorialArrowR = display.newImageRect("imgs/arrow.png", contentWidth*.08, contentWidth*.04)
+		tutorialArrowR.x = contentWidth * .42
+		tutorialArrowR.y = contentHeight*.335
+		tutorialArrowR.anchorX = .5
+		tutorialArrowR.anchorY = .5
+		tutorialGroup:insert(tutorialArrowR)
+		
+		tutorialArrowL = display.newImageRect("imgs/arrow.png", contentWidth*.08, contentWidth*.04)
+		tutorialArrowL.x = contentWidth * .42
+		tutorialArrowL.y = contentHeight*.365
+		tutorialArrowL.anchorX = .5
+		tutorialArrowL.anchorY = .5
+		tutorialArrowL:rotate(180)
+		tutorialGroup:insert(tutorialArrowL)
+	else
+		tutorialText =  display.newText( "    Tap Here      |       Tap Here\n to Jump Left    |    to Jump Right", contentWidth * .5, contentHeight*.35, "fonts/Rufscript010", contentWidth * .05)
+		tutorialText.anchorX = .5
+		tutorialText.anchorY = .5
+	end
+	tutorialGroup:insert(tutorialText)
+	-- end tutorial
 
 	--Physics and physics vars
    	physics.start()
@@ -225,6 +253,7 @@ function scene:create( event )
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
 	sceneGroup:insert(healthSprite)
+	sceneGroup:insert(tutorialGroup)
 end
 
 function main(event)
@@ -249,7 +278,12 @@ function main(event)
 			difficulty = difficulty +.1
 			yTranslate = 10 * difficulty
 		end
-
+		
+		if (difficulty > 1 and difficulty < 1.5) then
+			tutorialGroup:translate(0, yTranslate)
+			tutorialGroup.alpha = tutorialGroup.alpha - .015
+		end
+			
 		--On hit mask
 		if (playerHit and maskAlpha < 1) then
 			maskAlpha = maskAlpha + .2
@@ -311,9 +345,7 @@ function scene:show( event )
 
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
-	  	leftText.isVisible = true
-	  	rightText.isVisible = true
-	  	line.isVisible = true
+	  	tutorialGroup.isVisible = true
 		scoreText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
@@ -355,9 +387,7 @@ function scene:hide( event )
 		for x=1, #trees do
 			trees[x].isVisible = false
 		end
-		leftText.isVisible = false
-		rightText.isVisible = false
-		line.isVisible = false
+		tutorialGroup.isVisible = false
 		scoreText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
@@ -396,12 +426,8 @@ function scene:destroy( event )
 	clouds = {}
 	damageMask:removeSelf()
 	damageMask = nil
-	leftText:removeSelf()
-	leftText = nil
-	rightText:removeSelf()
-	rightText = nil
-	line:removeSelf()
-	line = nil
+	tutorialGroup:removeSelf()
+	tutorialGroup = nil
 	scoreText:removeSelf()
 	scoreText = nil
 
