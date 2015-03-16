@@ -64,6 +64,7 @@ function scene:create( event )
    -- Initialize the scene here.
 	playBtn = widget.newButton{
 		label="Play",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
@@ -79,6 +80,7 @@ function scene:create( event )
 	
 	optionsBtn = widget.newButton{
 		label="Options",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",

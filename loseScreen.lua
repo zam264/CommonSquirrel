@@ -201,6 +201,7 @@ function scene:create( event )
 	
 	replayBtn = widget.newButton{
 		label="Play Again",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
@@ -217,6 +218,7 @@ function scene:create( event )
 	
 	quitBtn = widget.newButton{
 		label="Give up...",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",

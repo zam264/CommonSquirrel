@@ -123,6 +123,7 @@ function scene:create( event )
    -- Initialize the scene here.
 	achievmentsBtn = widget.newButton{
 		label="Achievments",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
@@ -139,6 +140,7 @@ function scene:create( event )
 
 	creditsBtn = widget.newButton{
 		label="Credits",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
@@ -154,6 +156,7 @@ function scene:create( event )
 
 	clearScoreBtn = widget.newButton{
 		label="Clear Score and Distance",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
@@ -169,6 +172,7 @@ function scene:create( event )
 
 	backBtn = widget.newButton{
 		label="Back",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",

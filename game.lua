@@ -10,7 +10,7 @@ require('options')
 local scene = composer.newScene()
 
 --Variables
-local scoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty
+local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup
 local screenTop, screenBottom, screenLeft, screenRight
 local contentHeight = display.contentHeight
@@ -234,7 +234,8 @@ function scene:create( event )
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
-	scoreText = display.newText( tostring(playerScore), contentWidth * .5, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
+	scoreText = display.newText( tostring(playerScore), contentWidth * .25, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
+	distanceText = display.newText( tostring(distance), contentWidth * .75, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 
 	for i = 1, 3, 1 do
 		sceneGroup:insert(clouds[i])
@@ -252,6 +253,7 @@ function scene:create( event )
 	sceneGroup:insert(damageMask)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
+	sceneGroup:insert(distanceText)
 	sceneGroup:insert(healthSprite)
 	sceneGroup:insert(tutorialGroup)
 end
@@ -268,6 +270,7 @@ function main(event)
 			playerScore = playerScore + 1
 			scoreText.text = playerScore
 			distance = distance + difficulty
+			distanceText.text = distance
 		end	
 		if ( event.time - stageTimer > 1250/(difficulty*.5) ) then
 			stageTimer = event.time
@@ -347,6 +350,7 @@ function scene:show( event )
       -- Called when the scene is still off screen (but is about to come on screen).
 	  	tutorialGroup.isVisible = true
 		scoreText.isVisible = true
+		distanceText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
 		for x=1,  #obstacles do
@@ -389,6 +393,7 @@ function scene:hide( event )
 		end
 		tutorialGroup.isVisible = false
 		scoreText.isVisible = false
+		distanceText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
 		for x=1, #obstacles do
@@ -430,6 +435,8 @@ function scene:destroy( event )
 	tutorialGroup = nil
 	scoreText:removeSelf()
 	scoreText = nil
+	distanceText:removeSelf()
+	distanceText = nil
 
 	for x=1,  #obstacles do
 		obstacles[x]:delete()

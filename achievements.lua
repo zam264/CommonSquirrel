@@ -172,6 +172,7 @@ function scene:create( event )
    -- Initialize the scene here.
 	backBtn = widget.newButton{
 		label="Back",
+		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
