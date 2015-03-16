@@ -10,7 +10,7 @@ require('options')
 local scene = composer.newScene()
 
 --Variables
-local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty
+local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup
 local screenTop, screenBottom, screenLeft, screenRight
 local contentHeight = display.contentHeight
@@ -125,6 +125,8 @@ local function hitObstacle(self, event)
 			player:damage(1)
 		else  --If Acorn, heal the player 
 			if player.health == 3 then
+				bonusScoreText.text ="+" .. math.floor(difficulty * 5)
+				bonusScoreText.alpha = 1
 				playerScore = playerScore + math.floor(difficulty * 5)
 			else
 				player:heal(1)
@@ -235,6 +237,8 @@ function scene:create( event )
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
 	scoreText = display.newText( tostring(playerScore), contentWidth * .25, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
+	bonusScoreText = display.newText( 0, contentWidth * .25, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
+	bonusScoreText.alpha = 0
 	distanceText = display.newText( tostring(distance), contentWidth * .75, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 
 	for i = 1, 3, 1 do
@@ -253,6 +257,7 @@ function scene:create( event )
 	sceneGroup:insert(damageMask)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreText)
+	sceneGroup:insert(bonusScoreText)
 	sceneGroup:insert(distanceText)
 	sceneGroup:insert(healthSprite)
 	sceneGroup:insert(tutorialGroup)
@@ -272,6 +277,7 @@ function main(event)
 			distance = distance + difficulty
 			distanceText.text = distance
 		end	
+		bonusScoreText.alpha = bonusScoreText.alpha - .003
 		if ( event.time - stageTimer > 1250/(difficulty*.5) ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
@@ -350,6 +356,7 @@ function scene:show( event )
       -- Called when the scene is still off screen (but is about to come on screen).
 	  	tutorialGroup.isVisible = true
 		scoreText.isVisible = true
+		bonusScoreText.isVisible = true
 		distanceText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
@@ -393,6 +400,7 @@ function scene:hide( event )
 		end
 		tutorialGroup.isVisible = false
 		scoreText.isVisible = false
+		bonusScoreText.isVisible = false
 		distanceText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
@@ -435,6 +443,8 @@ function scene:destroy( event )
 	tutorialGroup = nil
 	scoreText:removeSelf()
 	scoreText = nil
+	bonusScoreText:removeSelf()
+	bonusScoreText = nil
 	distanceText:removeSelf()
 	distanceText = nil
 
