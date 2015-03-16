@@ -11,14 +11,14 @@ function Obstacle:init(posX, posY)
 	spriteOptions = {	
 		height = 64, 
 		width = 64, 
-		numFrames = 3, 
-		sheetContentWidth = 192, 
+		numFrames = 6, 
+		sheetContentWidth = 384, 
 		sheetContentHeight = 64 
 	}
 
-	mySheet = graphics.newImageSheet("imgs/beeSheet.png", spriteOptions)--, 2000, 2000)
+	mySheet = graphics.newImageSheet("imgs/beeSheet2a.png", spriteOptions)--, 2000, 2000)
 	sequenceData = {
-		{name = "buzz", frames={1, 2, 3, 2, 1}, time = 150, loopCount = 0},
+		{name = "buzz", frames={1, 6, 4, 5, 3, 2, 6, 3, 4, 5, 1}, time = 300, loopCount = 0},
 	}	
 	
 	-- Display the new sprite at the coordinates passed
