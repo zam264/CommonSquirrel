@@ -11,8 +11,8 @@ local scene = composer.newScene()
 
 --Variables
 local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText
-local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup
-local screenTop, screenBottom, screenLeft, screenRight
+local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, btR, bgG, bgB
+local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
 local player
@@ -25,16 +25,20 @@ local contentWidth = contentWidth
 local playerHit = false
 local maskAlpha = 0
 local beginX = contentWidth *0.5 	--Used to track swiping movements, represents initial user touch position on screen 
+spaceBoundary = 2 --level of difficulty which you enter space
 paused = false
 playerScore = 0
 distance = 0
+bgR = 0
+bgG = 120
+bgB = 171
 local difficulty = 1
 
 
 
 --Images and sprite setup
 --Background
-display.setDefault( "background", 0/255, 120/255, 171/255 )
+display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 for i = 1, 6, 1 do
 	trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
 	trees[i].x = contentWidth *.25 * (i%3 + 1)
@@ -302,13 +306,28 @@ function main(event)
 		damageMask.alpha = maskAlpha
 		
 		--Background
-		for i=1, #clouds do 
-			if(clouds[i].y > contentHeight+clouds[i].height/2)then
-				clouds[i].x = math.random(1, contentWidth)
-				clouds[i].y = 0 - math.random(1, contentHeight)
-			else
-				clouds[i]:translate(0, yTranslate*.5)
+		if(difficulty < spaceBoundary)then--stop cloud spawn in space
+			for i=1, #clouds do 
+				if(clouds[i].y > contentHeight+clouds[i].height/2)then
+					clouds[i].x = math.random(1, contentWidth)
+					clouds[i].y = 0 - math.random(1, contentHeight)
+				else
+					clouds[i]:translate(0, yTranslate*.5)
+				end
 			end
+		else --move lingering clouds off-screen 
+			for i=1, #clouds do 
+				if(clouds[i].y < contentHeight+clouds[i].height/2)then
+					clouds[i]:translate(0, yTranslate*.5)
+					print("moving cloud")
+				end
+			end
+		end
+
+		if(difficulty > spaceBoundary and (bgG > 1 or bgB > 1))then
+			bgG = bgG - .5
+			bgB = bgB - .5
+			display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 		end
 
 		--Tree Movement
