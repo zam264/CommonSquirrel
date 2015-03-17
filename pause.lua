@@ -108,6 +108,22 @@ function scene:create( event )
 	movementButton.height = display.contentHeight * .07
 	sceneGroup:insert( movementButton )
 	
+	vibrationText = display.newText( "Vibration", display.contentWidth * .15, display.contentHeight * .68, "fonts/Rufscript010", display.contentHeight * .035)
+	vibrationText.anchorX = 0 
+	vibrationText.anchorY = 0 
+	sceneGroup:insert(vibrationText)
+
+	vibrationButton = widget.newSwitch
+	{
+	    left = display.contentWidth * .625,
+	    top = display.contentHeight * .69,
+	    style = "onOff",
+	    initialSwitchState = vibrate,
+	    onPress = switchVibrate
+	}
+	vibrationButton.width = display.contentWidth * .4
+	vibrationButton.height = display.contentHeight * .07
+	sceneGroup:insert( vibrationButton )
 	
 	resumeBtn = widget.newButton{
 		label="Resume Game",
@@ -122,7 +138,7 @@ function scene:create( event )
 	resumeBtn.anchorX = .5
 	resumeBtn.anchorY = .5
 	resumeBtn.x = display.contentWidth * .50
-	resumeBtn.y = display.contentHeight * .75
+	resumeBtn.y = display.contentHeight * .80
 	sceneGroup:insert(resumeBtn)
 	
 	
@@ -139,7 +155,7 @@ function scene:create( event )
 	quitBtn.anchorX = .5
 	quitBtn.anchorY = .5
 	quitBtn.x = display.contentWidth * .50
-	quitBtn.y = display.contentHeight * .9
+	quitBtn.y = display.contentHeight * .93
 	sceneGroup:insert(quitBtn)
 	
 	
