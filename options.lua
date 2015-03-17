@@ -15,17 +15,18 @@ local btnHeight = display.contentHeight * .09
 effectsVolume = 50
 musicVolume = 50
 swipeMovement = false
+vibrate = true
 widget.setTheme("widget_theme_android") 
 
 -- Slider listener
 function effectsListener( event )
 	effectsVolume = event.value
-	saveSettings(effectsVolume, musicVolume, swipeMovement)
+	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
     --print( "Effects Slider at " .. event.value .. "%" )
 end
 function musicListener ( event )
 	musicVolume = event.value
-	saveSettings(effectsVolume, musicVolume, swipeMovement)
+	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
 	--print( "Music Slider at " .. event.value .. "%" )
 end
 
@@ -50,9 +51,13 @@ end
 
 function switchMovement() 
 	swipeMovement = not swipeMovement
-	saveSettings(effectsVolume, musicVolume, swipeMovement)
+	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
 end
 
+function switchVibrate() 
+	vibrate = not vibrate
+	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
+end
 
 ---------------------------------------------------------------------------------
 
@@ -119,6 +124,23 @@ function scene:create( event )
 	movementButton.height = display.contentHeight * .07
 	sceneGroup:insert( movementButton )
 
+	vibrationText = display.newText( "Vibration", display.contentWidth * .15, display.contentHeight * .5, "fonts/Rufscript010", display.contentHeight * .035)
+	vibrationText.anchorX = 0 
+	vibrationText.anchorY = 0 
+	sceneGroup:insert(vibrationText)
+
+	vibrationButton = widget.newSwitch
+	{
+	    left = display.contentWidth * .625,
+	    top = display.contentHeight * .51,
+	    style = "onOff",
+	    initialSwitchState = vibrate,
+	    onPress = switchVibrate
+	}
+	vibrationButton.width = display.contentWidth * .4
+	vibrationButton.height = display.contentHeight * .07
+	sceneGroup:insert( vibrationButton )
+
    
    -- Initialize the scene here.
 	achievmentsBtn = widget.newButton{
@@ -134,7 +156,7 @@ function scene:create( event )
 	achievmentsBtn.anchorX = .5
 	achievmentsBtn.anchorY = .5
 	achievmentsBtn.x = display.contentWidth * .50
-	achievmentsBtn.y = display.contentHeight * .55
+	achievmentsBtn.y = display.contentHeight * .65
 	sceneGroup:insert(achievmentsBtn)
 
 
@@ -151,7 +173,7 @@ function scene:create( event )
 	creditsBtn.anchorX = .5
 	creditsBtn.anchorY = .5
 	creditsBtn.x = display.contentWidth * .50
-	creditsBtn.y = display.contentHeight * .65
+	creditsBtn.y = display.contentHeight * .75
 	sceneGroup:insert(creditsBtn)
 
 	clearScoreBtn = widget.newButton{
@@ -167,7 +189,7 @@ function scene:create( event )
 	clearScoreBtn.anchorX = .5
 	clearScoreBtn.anchorY = .5
 	clearScoreBtn.x = display.contentWidth * .50
-	clearScoreBtn.y = display.contentHeight * .75
+	clearScoreBtn.y = display.contentHeight * .85
 	sceneGroup:insert(clearScoreBtn)
 
 	backBtn = widget.newButton{
@@ -183,7 +205,7 @@ function scene:create( event )
 	backBtn.anchorX = .5
 	backBtn.anchorY = .5
 	backBtn.x = display.contentWidth * .50
-	backBtn.y = display.contentHeight * .85
+	backBtn.y = display.contentHeight * .95
 	sceneGroup:insert(backBtn)
 	
    -- Example: add display objects to "sceneGroup", add touch listeners, etc.

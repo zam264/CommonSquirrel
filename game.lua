@@ -124,6 +124,9 @@ end
 local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if event.other.type == "obstacle" then   --If obstacle, do damage
+			if vibrate then 
+				system.vibrate()
+			end
 			playerHit = true
 			timer.performWithDelay (200, function() playerHit = false end)
 			player:damage(1)

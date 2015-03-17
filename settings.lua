@@ -1,8 +1,8 @@
-function saveSettings(effects, music, swipe) 
+function saveSettings(effects, music, swipe, vibration) 
 	local path = system.pathForFile( "settings.txt", system.DocumentsDirectory )
 	local file = io.open(path, "w")
 	if ( file ) then
-		local contents = tostring( effects ).."\n"..tostring( music ).."\n"..tostring(swipe)
+		local contents = tostring( effects ).."\n"..tostring( music ).."\n"..tostring(swipe).."\n"..tostring(vibration)
 		file:write( contents )
 		io.close( file )
 		return true
@@ -28,6 +28,12 @@ function loadSettings()
 		else 
 			swipeMovement = false 
 		end 
+		contents = file:read()
+		if contents == "true" then 
+			vibrate = true 
+		else
+			vibrate = false
+		end
 		io.close( file )
 		if swipeMovement == nil then
 			swipeMovement = false 
@@ -38,6 +44,9 @@ function loadSettings()
 		if musicVolume == nil then 
 			musicVolume = 50 
 		end 
+		if vibration == nil then 
+			vibrate = true
+		end
 	else
 		print( "Error: could not read scores")
 	end

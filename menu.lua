@@ -31,7 +31,7 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-    loadSettings(effectsVolume, musicVolume, swipeMovement)
+    loadSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
     sceneGroup = self.view
 
 	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
