@@ -77,16 +77,24 @@ healthSprite:play()
 
 local function moveRight() 
 	if (player.model.x == contentWidth * .25) then
+		transition.to(player.model, {rotation=30, time=100/difficulty})
+		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
 	else
+		transition.to(player.model, {rotation=30, time=100/difficulty})
+		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
 	end
 end
 
 local function moveLeft() 
 	if (player.model.x == contentWidth * .75) then
+		transition.to(player.model, {rotation=-30, time=100/difficulty})
+		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
 	else
+		transition.to(player.model, {rotation=-30, time=100/difficulty})
+		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.25})
 	end
 end
