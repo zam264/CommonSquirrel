@@ -10,9 +10,9 @@ require('options')
 local scene = composer.newScene()
 
 --Variables
-local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText
-local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, btR, bgG, bgB
-local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary
+local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, distanceLabel
+local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
+local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
 local player
@@ -26,6 +26,7 @@ local playerHit = false
 local maskAlpha = 0
 local beginX = contentWidth *0.5 	--Used to track swiping movements, represents initial user touch position on screen 
 spaceBoundary = 2 --level of difficulty which you enter space
+spaceTransition = .25
 paused = false
 playerScore = 0
 distance = 0
@@ -251,9 +252,11 @@ function scene:create( event )
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
+	scoreLabel = display.newText( "Score", contentWidth * .25, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	scoreText = display.newText( tostring(playerScore), contentWidth * .25, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText = display.newText( 0, contentWidth * .25, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText.alpha = 0
+	distanceLabel = display.newText( "Distance", contentWidth * .75, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	distanceText = display.newText( tostring(distance), contentWidth * .75, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 
 	for i = 1, 3, 1 do
@@ -271,8 +274,10 @@ function scene:create( event )
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(damageMask)
 	sceneGroup:insert(player.model)
+	sceneGroup:insert(scoreLabel)
 	sceneGroup:insert(scoreText)
 	sceneGroup:insert(bonusScoreText)
+	sceneGroup:insert(distanceLabel)
 	sceneGroup:insert(distanceText)
 	sceneGroup:insert(healthSprite)
 	sceneGroup:insert(tutorialGroup)
@@ -336,8 +341,8 @@ function main(event)
 		end
 
 		if(difficulty > spaceBoundary and (bgG > 1 or bgB > 1))then
-			bgG = bgG - .5
-			bgB = bgB - .5
+			bgG = bgG - spaceTransition
+			bgB = bgB - spaceTransition
 			display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 		end
 
@@ -385,8 +390,10 @@ function scene:show( event )
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
 	  	tutorialGroup.isVisible = true
+	  	scoreLabel.isVisible = true
 		scoreText.isVisible = true
 		bonusScoreText.isVisible = true
+		distanceLabel.isVisible = true
 		distanceText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
@@ -429,8 +436,10 @@ function scene:hide( event )
 			trees[x].isVisible = false
 		end
 		tutorialGroup.isVisible = false
+		scoreLabel.isVisible = false
 		scoreText.isVisible = false
 		bonusScoreText.isVisible = false
+		distanceLabel.isVisible = false
 		distanceText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
@@ -471,10 +480,14 @@ function scene:destroy( event )
 	damageMask = nil
 	tutorialGroup:removeSelf()
 	tutorialGroup = nil
+	scoreLabel:removeSelf()
+	scoreLabel = nil
 	scoreText:removeSelf()
 	scoreText = nil
 	bonusScoreText:removeSelf()
 	bonusScoreText = nil
+	distanceLabel:removeSelf()
+	distanceLabel = nil
 	distanceText:removeSelf()
 	distanceText = nil
 
