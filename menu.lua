@@ -33,7 +33,7 @@ end
 function scene:create( event )
     loadSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
     sceneGroup = self.view
-
+	display.setDefault( "background", 0/255, 120/255, 171/255 )
 	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
 	sceneGroup:insert(titleText1)

@@ -222,7 +222,7 @@ function scene:create( event )
 		tutorialArrowL:rotate(180)
 		tutorialGroup:insert(tutorialArrowL)
 	else
-		tutorialText =  display.newText( "    Tap Here      |       Tap Here\n to Jump Left    |    to Jump Right", contentWidth * .5, contentHeight*.35, "fonts/Rufscript010", contentWidth * .05)
+		tutorialText =  display.newText( " Tap Here      |   Tap Here\n to Jump Left   |  to Jump Right", contentWidth * .5, contentHeight*.35, "fonts/Rufscript010", contentWidth * .05)
 		tutorialText.anchorX = .5
 		tutorialText.anchorY = .5
 	end

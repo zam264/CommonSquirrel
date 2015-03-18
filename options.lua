@@ -8,8 +8,8 @@ require('settings')
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local titleText, difficultyText, easyText, normalText, hardText, movementText
-local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton
+local titleText, difficultyText, easyText, normalText, hardText, movementText, vibrationText
+local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton, vibrationButton
 local btnWidth = display.contentWidth * .65
 local btnHeight = display.contentHeight * .09
 effectsVolume = 50
@@ -230,6 +230,8 @@ function scene:show( event )
 	achievmentsBtn.isVisible = true
 	movementButton.isVisible = true
 	movementText.isVisible = true
+	vibrationText.isVisible = true
+	vibrationButton.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -257,6 +259,8 @@ function scene:hide( event )
 	achievmentsBtn.isVisible = false
 	movementButton.isVisible = false
 	movementText.isVisible = false
+	vibrationText.isVisible = false
+	vibrationButton.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -294,6 +298,10 @@ function scene:destroy( event )
 	movementButton = nil
 	movementText:removeSelf()
 	movementText = nil
+	vibrationText:removeSelf()
+	vibrationText = nil
+	vibrationButton:removeSelf()
+	vibrationButton = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.

@@ -10,9 +10,9 @@ local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local resumeBtn, quitBtn, movementButton
+local resumeBtn, quitBtn, movementButton, vibrationButton
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
-local effectsSlider, musicSlider, effectsText, musicText, movementText
+local effectsSlider, musicSlider, effectsText, musicText, movementText, vibrationText
 
 
 local function onResumeBtn()
@@ -108,14 +108,14 @@ function scene:create( event )
 	movementButton.height = display.contentHeight * .07
 	sceneGroup:insert( movementButton )
 	
-	vibrationText = display.newText( "Vibration", display.contentWidth * .15, display.contentHeight * .68, "fonts/Rufscript010", display.contentHeight * .035)
+	vibrationText = display.newText( "Vibration", display.contentWidth * .175, display.contentHeight * .68, "fonts/Rufscript010", display.contentHeight * .035)
 	vibrationText.anchorX = 0 
 	vibrationText.anchorY = 0 
 	sceneGroup:insert(vibrationText)
 
 	vibrationButton = widget.newSwitch
 	{
-	    left = display.contentWidth * .625,
+	    left = display.contentWidth * .65,
 	    top = display.contentHeight * .69,
 	    style = "onOff",
 	    initialSwitchState = vibrate,
@@ -176,13 +176,16 @@ function scene:show( event )
 		distanceT.isVisible = true
 		
 		effectsSlider.isVisible = true
-
+		
+		
 		effectsText.isVisible = true
 		musicSlider.isVisible = true
 		musicText.isVisible = true
 		
 		movementText.isVisible = true
 		movementButton.isVisible = true
+		vibrationText.isVisible = true
+		vibrationButton.isVisible = true
 		
 		resumeBtn.isVisible = true
 		quitBtn.isVisible = true
@@ -215,6 +218,8 @@ function scene:hide( event )
 		
 		movementText.isVisible = false
 		movementButton.isVisible = false
+		vibrationText.isVisible = false
+		vibrationButton.isVisible = false
 		
 		resumeBtn.isVisible = false
 		quitBtn.isVisible = false
@@ -255,6 +260,10 @@ function scene:destroy( event )
 	movementText = nil
 	movementButton:removeSelf()
 	movementButton = nil
+	vibrationText:removeSelf()
+	vibrationText = nil
+	vibrationButton:removeSelf()
+	vibrationButton = nil
 	
 	resumeBtn:removeSelf()
 	resumeBtn = nil
