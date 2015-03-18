@@ -10,7 +10,7 @@ require('settings')
 -- local forward references should go here
 local titleText, difficultyText, easyText, normalText, hardText, movementText, vibrationText
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton, vibrationButton
-local btnWidth = display.contentWidth * .65
+local btnWidth = display.contentWidth * .80
 local btnHeight = display.contentHeight * .09
 effectsVolume = 50
 musicVolume = 50
