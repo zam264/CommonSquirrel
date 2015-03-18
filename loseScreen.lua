@@ -32,7 +32,7 @@ local achievementDistance = {
 local achievementNames = {
 	"Tree Sapling",
 	"Tallest Man",
-	"Great WAll of China",
+	"Great Wall of China",
 	"Average Oak Tree",
 	"Rockefellar Xmas Tree",
 	"New Years Eve Ball",
@@ -158,15 +158,15 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementNames[x-1] .. " " .. achievementDistance[x-1] .. "ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementNames[x-1] .. "\n" .. achievementDistance[x-1] .. "ft".."\n"..achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementSubtext = display.newText( achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .02)
+		--[[achievementSubtext = display.newText( achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .02)
 		achievementSubtext.anchorX = 0
 		achievementSubtext.anchorY = 0
-		sceneGroup:insert(achievementSubtext)
+		sceneGroup:insert(achievementSubtext)]]
 		
 		achievementIcon = display.newImageRect( "achievements/achievement" .. x-1 .. ".png", display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0
@@ -184,11 +184,11 @@ function scene:create( event )
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
-		
+		--[[
 		achievementSubtext = display.newText( "" , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementSubtext.anchorX = 0
 		achievementSubtext.anchorY = 0
-		sceneGroup:insert(achievementSubtext)
+		sceneGroup:insert(achievementSubtext)]]
 		
 		achievementIcon = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0
@@ -250,7 +250,7 @@ function scene:show( event )
 	  distanceText.isVisible = true
 	  achievementText.isVisible = true
 	  achievementTitle.isVisible = true
-	  achievementSubtext.isVisible = true
+	  --achievementSubtext.isVisible = true
 	  achievementIcon.isVisible = true
 	  replayBtn.isVisible = true
 	  quitBtn.isVisible = true
@@ -276,7 +276,7 @@ function scene:hide( event )
 	  distanceText.isVisible = false
 	  achievementText.isVisible = false
 	  achievementTitle.isVisible = false
-	  achievementSubtext.isVisible = false
+	  --achievementSubtext.isVisible = false
 	  achievementIcon.isVisible = false
 	  replayBtn.isVisible = false
 	  quitBtn.isVisible = false
@@ -305,8 +305,8 @@ function scene:destroy( event )
 	achievementText = nil
 	achievementTitle:removeSelf()
 	achievementTitle = nil
-	achievementSubtext:removeSelf()
-	achievementSubtext = nil
+	--achievementSubtext:removeSelf()
+	--achievementSubtext = nil
 	achievementIcon:removeSelf()
 	achievementIcon = nil
 	
