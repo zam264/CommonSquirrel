@@ -12,18 +12,20 @@ local scene = composer.newScene()
 --Variables
 local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, distanceLabel
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
-local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition
+local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
 local player
 local trees = {}
-local clouds = {}
+local earthBGImgs = {}
+local spaceBGImgs = {}
 local obstacles = {} --Holds obstacles
 local yTranslate
 local contentHeight = contentHeight
 local contentWidth = contentWidth
 local playerHit = false
 local maskAlpha = 0
+local bgClear = false
 local beginX = contentWidth *0.5 	--Used to track swiping movements, represents initial user touch position on screen 
 spaceBoundary = 2 --level of difficulty which you enter space
 spaceTransition = .25
@@ -49,10 +51,22 @@ for i = 1, 6, 1 do
 		trees[i].y = trees[i-3].y - (contentHeight * .95) * 2
 	end
 end
+for i = 1, 4, 1 do
+	if(i<=3)then
+		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. i .. ".png", contentWidth*.6, contentWidth*.3)
+		earthBGImgs[i].x = math.random(1, contentWidth)
+		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
+	else
+		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3, contentWidth*.3)
+		earthBGImgs[i].x = math.random(1, contentWidth)
+		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
+	end
+end
+
 for i = 1, 3, 1 do
-	clouds[i] = display.newImageRect("imgs/cloud" .. i .. ".png", contentWidth*.6, contentWidth*.3)
-	clouds[i].x = math.random(1, contentWidth)
-	clouds[i].y = 0 - math.random(1, contentHeight)
+	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3, contentWidth*.3)
+	spaceBGImgs[i].x = math.random(1, contentWidth)
+	spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
 end
 
 --Health sprite variables
@@ -81,7 +95,7 @@ local function moveRight()
 		transition.to(player.model, {rotation=30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
-	else
+	elseif (player.model.x == contentWidth * .5) then
 		transition.to(player.model, {rotation=30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
@@ -93,7 +107,7 @@ local function moveLeft()
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
-	else
+	elseif (player.model.x == contentWidth * .5) then
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.25})
@@ -259,8 +273,11 @@ function scene:create( event )
 	distanceLabel = display.newText( "Distance", contentWidth * .75, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	distanceText = display.newText( tostring(distance), contentWidth * .75, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 
+	for i = 1, 4, 1 do
+		sceneGroup:insert(earthBGImgs[i])
+	end
 	for i = 1, 3, 1 do
-		sceneGroup:insert(clouds[i])
+		sceneGroup:insert(spaceBGImgs[i])
 	end
 	for i = 1, 6, 1 do
 		sceneGroup:insert(trees[i])
@@ -322,20 +339,37 @@ function main(event)
 		damageMask.alpha = maskAlpha
 		
 		--Background
-		if(difficulty < spaceBoundary)then--stop cloud spawn in space
-			for i=1, #clouds do 
-				if(clouds[i].y > contentHeight+clouds[i].height/2)then
-					clouds[i].x = math.random(1, contentWidth)
-					clouds[i].y = 0 - math.random(1, contentHeight)
+
+		if(difficulty < spaceBoundary)then--spawn normal earthly background images
+			for i=1, #earthBGImgs do 
+				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height/2)then
+					earthBGImgs[i].x = math.random(1, contentWidth)
+					earthBGImgs[i].y = 0 - math.random(1, contentHeight)
 				else
-					clouds[i]:translate(0, yTranslate*.5)
+					earthBGImgs[i]:translate(0, yTranslate*.5)
 				end
 			end
-		else --move lingering clouds off-screen 
-			for i=1, #clouds do 
-				if(clouds[i].y < contentHeight+clouds[i].height/2)then
-					clouds[i]:translate(0, yTranslate*.5)
-					print("moving cloud")
+		else --clear old images and make space images
+			if(bgClear == false)then
+				local count = 0
+				for i=1, #earthBGImgs do --move earth images off screen
+					if(earthBGImgs[i].y < contentHeight+earthBGImgs[i].height/2)then
+						earthBGImgs[i]:translate(0, yTranslate*.5)
+					else
+						count = count + 1
+						if(count == #earthBGImgs)then
+							bgClear = true
+						end
+					end
+				end
+			else
+				for i=1, #spaceBGImgs do 
+					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height/2)then
+						spaceBGImgs[i].x = math.random(1, contentWidth)
+						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
+					else
+						spaceBGImgs[i]:translate(0, yTranslate*.5)
+					end
 				end
 			end
 		end
@@ -403,8 +437,11 @@ function scene:show( event )
 		for x=1,  #trees do
 			trees[x].isVisible = true
 		end
-		for i = 1, #clouds do
-			clouds[i].isVisible = true
+		for i = 1, #earthBGImgs do
+			earthBGImgs[i].isVisible = true
+		end
+		for i = 1, #spaceBGImgs do
+			spaceBGImgs[i].isVisible = true
 		end
 		player.model.isVisible = true
 		healthSprite.isVisible = true
@@ -446,8 +483,11 @@ function scene:hide( event )
 		for x=1, #obstacles do
 			obstacles[x].model.isVisible = false
 		end
-		for i = 1, #clouds do
-			clouds[i].isVisible = false
+		for i = 1, #earthBGImgs do
+			earthBGImgs[i].isVisible = false
+		end
+		for i = 1, #spaceBGImgs do
+			spaceBGImgs[i].isVisible = false
 		end
 		player.model.isVisible = false
 		healthSprite.isVisible = false
@@ -471,11 +511,16 @@ function scene:destroy( event )
 		trees[i]:removeSelf()
 		trees[i] = nil
 	end
-	for i = 1, #clouds do
-		clouds[i]:removeSelf()
-		clouds[i] = nil
+	for i = 1, #earthBGImgs do
+		earthBGImgs[i]:removeSelf()
+		earthBGImgs[i] = nil
 	end
-	clouds = {}
+	for i = 1, #spaceBGImgs do
+		spaceBGImgs[i]:removeSelf()
+		spaceBGImgs[i] = nil
+	end
+	earthBGImgs = {}
+	spaceBGImgs = {}
 	damageMask:removeSelf()
 	damageMask = nil
 	tutorialGroup:removeSelf()
