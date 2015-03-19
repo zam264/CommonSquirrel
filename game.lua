@@ -81,7 +81,7 @@ local function moveRight()
 		transition.to(player.model, {rotation=30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
-	else
+	elseif (player.model.x == contentWidth * .5) then
 		transition.to(player.model, {rotation=30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
@@ -93,7 +93,7 @@ local function moveLeft()
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
-	else
+	elseif (player.model.x == contentWidth * .5) then
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.25})
