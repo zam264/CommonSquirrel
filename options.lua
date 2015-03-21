@@ -9,7 +9,7 @@ require('settings')
 
 -- local forward references should go here
 local titleText, difficultyText, easyText, normalText, hardText, movementText, vibrationText
-local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton, vibrationButton
+local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton, vibrationButton, journalBtn
 local btnWidth = display.contentWidth * .80
 local btnHeight = display.contentHeight * .09
 effectsVolume = 50
@@ -42,6 +42,10 @@ local function onClearScoreBtn()
 	saveScore(0)
 	addToDistance(loadDistance()*-1)
 	composer.removeScene( "menu" )
+	return true	-- indicates successful touch
+end
+local function onJournalBtn()
+	composer.gotoScene( "template", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
 local function onBackBtn()
@@ -156,7 +160,7 @@ function scene:create( event )
 	achievmentsBtn.anchorX = .5
 	achievmentsBtn.anchorY = .5
 	achievmentsBtn.x = display.contentWidth * .50
-	achievmentsBtn.y = display.contentHeight * .65
+	achievmentsBtn.y = display.contentHeight * .60
 	sceneGroup:insert(achievmentsBtn)
 
 
@@ -173,7 +177,7 @@ function scene:create( event )
 	creditsBtn.anchorX = .5
 	creditsBtn.anchorY = .5
 	creditsBtn.x = display.contentWidth * .50
-	creditsBtn.y = display.contentHeight * .75
+	creditsBtn.y = display.contentHeight * .68
 	sceneGroup:insert(creditsBtn)
 
 	clearScoreBtn = widget.newButton{
@@ -189,8 +193,24 @@ function scene:create( event )
 	clearScoreBtn.anchorX = .5
 	clearScoreBtn.anchorY = .5
 	clearScoreBtn.x = display.contentWidth * .50
-	clearScoreBtn.y = display.contentHeight * .85
+	clearScoreBtn.y = display.contentHeight * .76
 	sceneGroup:insert(clearScoreBtn)
+
+	journalBtn = widget.newButton{
+		label="Journal",
+		font = "fonts/Rufscript010",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=btnWidth, height=btnHeight,
+		onRelease = onJournalBtn
+	}
+	journalBtn.anchorX = .5
+	journalBtn.anchorY = .5
+	journalBtn.x = display.contentWidth * .50
+	journalBtn.y = display.contentHeight * .84
+	sceneGroup:insert(journalBtn)
 
 	backBtn = widget.newButton{
 		label="Back",
@@ -205,7 +225,7 @@ function scene:create( event )
 	backBtn.anchorX = .5
 	backBtn.anchorY = .5
 	backBtn.x = display.contentWidth * .50
-	backBtn.y = display.contentHeight * .95
+	backBtn.y = display.contentHeight * .92
 	sceneGroup:insert(backBtn)
 	
    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
@@ -218,7 +238,7 @@ function scene:show( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
-   titleText.isVisible = true
+  	titleText.isVisible = true
 	difficultyText.isVisible = true
 	effectsText.isVisible = true
 	effectsSlider.isVisible = true
@@ -232,6 +252,7 @@ function scene:show( event )
 	movementText.isVisible = true
 	vibrationText.isVisible = true
 	vibrationButton.isVisible = true
+	journalBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -247,7 +268,7 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
-   titleText.isVisible = false
+    titleText.isVisible = false
 	difficultyText.isVisible = false
 	effectsText.isVisible = false
 	effectsSlider.isVisible = false
@@ -261,6 +282,7 @@ function scene:hide( event )
 	movementText.isVisible = false
 	vibrationText.isVisible = false
 	vibrationButton.isVisible = false
+	journalBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -302,6 +324,8 @@ function scene:destroy( event )
 	vibrationText = nil
 	vibrationButton:removeSelf()
 	vibrationButton = nil
+	journalBtn:removeSelf()
+	journalBtn = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.
