@@ -19,6 +19,7 @@ local player
 local trees = {}
 local earthBGImgs = {}
 local spaceBGImgs = {}
+local stars = {}
 local obstacles = {} --Holds obstacles
 local yTranslate
 local contentHeight = contentHeight
@@ -42,6 +43,7 @@ local difficulty = 1
 --Images and sprite setup
 --Background
 display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
+--create the trees
 for i = 1, 6, 1 do
 	trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
 	trees[i].x = contentWidth *.25 * (i%3 + 1)
@@ -51,6 +53,7 @@ for i = 1, 6, 1 do
 		trees[i].y = trees[i-3].y - (contentHeight * .95) * 2
 	end
 end
+--create the earth images
 for i = 1, 4, 1 do
 	if(i<=3)then
 		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. i .. ".png", contentWidth*.6, contentWidth*.3)
@@ -62,11 +65,15 @@ for i = 1, 4, 1 do
 		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
 	end
 end
-
+--create the space images
 for i = 1, 3, 1 do
 	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3, contentWidth*.3)
 	spaceBGImgs[i].x = math.random(1, contentWidth)
 	spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
+end
+--create the stars
+for i = 1, 100, 1 do
+	stars[i] = display.newRect(math.random(1, contentWidth), 0 - math.random(1, contentHeight), 4, 4)
 end
 
 --Health sprite variables
@@ -190,19 +197,19 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-   local sceneGroup = self.view
-   paused = true
-   timePassedBetweenEvents = 0
-   playerScore = 0
-   distance = 0
-   timePassed = 0
-   stageTimer = 0
-   difficultyTimer = 0
+	local sceneGroup = self.view
+	paused = true
+	timePassedBetweenEvents = 0
+	playerScore = 0
+	distance = 0
+	timePassed = 0
+	stageTimer = 0
+	difficultyTimer = 0
 	yTranslate = 10 * difficulty
 	highScore = loadScore()
 	maxDifficulty = 5 + math.floor(highScore *.01)
    
-   pauseBtn = widget.newButton{
+   	pauseBtn = widget.newButton{
 		label="",
 		fontSize = contentWidth * .05,
 		labelColor = { default={255}, over={128} },
@@ -273,6 +280,10 @@ function scene:create( event )
 	distanceLabel = display.newText( "Distance", contentWidth * .75, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	distanceText = display.newText( tostring(distance), contentWidth * .75, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 
+	--insert everything into the scene group
+	for i=1, #stars do
+		sceneGroup:insert(stars[i])
+	end
 	for i = 1, 4, 1 do
 		sceneGroup:insert(earthBGImgs[i])
 	end
@@ -282,11 +293,12 @@ function scene:create( event )
 	for i = 1, 6, 1 do
 		sceneGroup:insert(trees[i])
 	end
+
+	--create the image mask
 	damageMask = display.newImageRect("imgs/damageMask.png", contentWidth, contentHeight)
 	damageMask.anchorX = 0
 	damageMask.anchorY = 0
 	damageMask.alpha = 0
-	
 
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(damageMask)
@@ -380,6 +392,14 @@ function main(event)
 						spaceBGImgs[i]:translate(0, yTranslate*.5)
 					end
 				end
+				for i=1, #stars do
+					if(stars[i].y > contentHeight)then
+						stars[i].x = math.random(1, contentWidth)
+						stars[i].y = 0 - math.random(1, contentHeight)
+					else
+						stars[i]:translate(0, yTranslate*.5)
+					end
+				end
 			end
 		end
 
@@ -456,6 +476,9 @@ function scene:show( event )
 		for i = 1, #spaceBGImgs do
 			spaceBGImgs[i].isVisible = true
 		end
+		for i = 1, #stars do
+			stars[i].isVisible = true
+		end
    elseif ( phase == "did" ) then
 		paused = false
 		Runtime:addEventListener( "touch", move)
@@ -497,6 +520,9 @@ function scene:hide( event )
 		for i = 1, #spaceBGImgs do
 			spaceBGImgs[i].isVisible = false
 		end
+		for i = 1, #stars do
+			stars[i].isVisible = false
+		end
 		player.model.isVisible = false
 		healthSprite.isVisible = false
 		Runtime:removeEventListener( "touch", move )
@@ -526,11 +552,16 @@ function scene:destroy( event )
 		spaceBGImgs[i]:removeSelf()
 		spaceBGImgs[i] = nil
 	end
+	for i = 1, #stars do
+		stars[i]:removeSelf()
+		stars[i] = nil
+	end
 	for x=1,  #obstacles do
 		obstacles[x]:delete()
 	end	
 	earthBGImgs = {}
 	spaceBGImgs = {}
+	stars = {}
 	damageMask:removeSelf()
 	damageMask = nil
 	tutorialGroup:removeSelf()
