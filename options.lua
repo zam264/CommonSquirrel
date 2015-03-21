@@ -45,7 +45,7 @@ local function onClearScoreBtn()
 	return true	-- indicates successful touch
 end
 local function onJournalBtn()
-	composer.gotoScene( "template", {effect="fromRight", time=1000})
+	composer.gotoScene( "journal", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
 local function onBackBtn()
