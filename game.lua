@@ -302,12 +302,14 @@ end
 
 function main(event)
 	--print (event.time - timePassedBetweenEvents)
-	if  ( paused ) then
+	if  ( paused ) then --Check if the game is paused
 		timePassed = timePassed + (event.time - timePassedBetweenEvents)
 		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
 		difficultyTimer = difficultyTimer + (event.time - timePassedBetweenEvents)
-	elseif (player.health > 0) then
-		if (event.time - timePassed > 250) then
+	elseif (player.health > 0) then --Game isn't paused; Normal Gameplay
+
+		--update gameplay variables
+		if (event.time - timePassed > 250) then 
 			timePassed = event.time
 			playerScore = playerScore + 1
 			scoreText.text = playerScore
@@ -315,22 +317,27 @@ function main(event)
 			distanceText.text = distance
 		end	
 		bonusScoreText.alpha = bonusScoreText.alpha - .003
+
+		--generate obstacles
 		if ( event.time - stageTimer > 1250/(difficulty*.5) ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
+
+		--update difficulty and scroll speed
 		if (event.time - difficultyTimer > 3000 and difficulty < maxDifficulty) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
 			yTranslate = 10 * difficulty
 		end
 		
+		--move the tutorial away
 		if (difficulty > 1 and difficulty < 1.5) then
 			tutorialGroup:translate(0, yTranslate)
 			tutorialGroup.alpha = tutorialGroup.alpha - .015
 		end
 			
-		--On hit mask
+		--display mask on hit
 		if (playerHit and maskAlpha < 1) then
 			maskAlpha = maskAlpha + .2
 		elseif (maskAlpha > (3-player.health) * .3) then
@@ -338,9 +345,9 @@ function main(event)
 		end
 		damageMask.alpha = maskAlpha
 		
-		--Background
-
-		if(difficulty < spaceBoundary)then--spawn normal earthly background images
+		--background
+		--spawn normal earthly background images
+		if(difficulty < spaceBoundary)then
 			for i=1, #earthBGImgs do 
 				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height/2)then
 					earthBGImgs[i].x = math.random(1, contentWidth)
@@ -349,19 +356,21 @@ function main(event)
 					earthBGImgs[i]:translate(0, yTranslate*.5)
 				end
 			end
-		else --clear old images and make space images
+		else 
+			--clear old earth images
 			if(bgClear == false)then
 				local count = 0
 				for i=1, #earthBGImgs do --move earth images off screen
 					if(earthBGImgs[i].y < contentHeight+earthBGImgs[i].height/2)then
 						earthBGImgs[i]:translate(0, yTranslate*.5)
-					else
+					else --when we know all earth images are off screen set bgClear to true
 						count = count + 1
 						if(count == #earthBGImgs)then
 							bgClear = true
 						end
 					end
 				end
+			--old images are cleared, begin to utilize space images	
 			else
 				for i=1, #spaceBGImgs do 
 					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height/2)then
@@ -374,13 +383,14 @@ function main(event)
 			end
 		end
 
+		--transition the background to black to represent space
 		if(difficulty > spaceBoundary and (bgG > 1 or bgB > 1))then
 			bgG = bgG - spaceTransition
 			bgB = bgB - spaceTransition
 			display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 		end
 
-		--Tree Movement
+		--reset tree location if trees travel off-screen
 		if(trees[1].y >= 2*contentHeight)then 
 			trees[1].y = trees[4].y - (contentHeight * .95) * 2
 		elseif (trees[4].y >= 2*contentHeight) then
@@ -397,6 +407,7 @@ function main(event)
 			trees[6].y = trees[3].y - (contentHeight * .95) * 2	
 		end
 		
+		--move the trees
 		for i = 1, #trees do
 			trees[i]:translate(0, yTranslate)
 		end
@@ -431,6 +442,8 @@ function scene:show( event )
 		distanceText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
+		player.model.isVisible = true
+		healthSprite.isVisible = true
 		for x=1,  #obstacles do
 			obstacles[x].model.isVisible = true
 		end
@@ -443,11 +456,6 @@ function scene:show( event )
 		for i = 1, #spaceBGImgs do
 			spaceBGImgs[i].isVisible = true
 		end
-		player.model.isVisible = true
-		healthSprite.isVisible = true
-		
-		
-
    elseif ( phase == "did" ) then
 		paused = false
 		Runtime:addEventListener( "touch", move)
@@ -505,8 +513,7 @@ end
 -- "scene:destroy()"
 function scene:destroy( event )
 	local sceneGroup = self.view
-	pauseBtn:removeSelf()
-	pauseBtn = nil
+
 	for i = 1, #trees do
 		trees[i]:removeSelf()
 		trees[i] = nil
@@ -519,6 +526,9 @@ function scene:destroy( event )
 		spaceBGImgs[i]:removeSelf()
 		spaceBGImgs[i] = nil
 	end
+	for x=1,  #obstacles do
+		obstacles[x]:delete()
+	end	
 	earthBGImgs = {}
 	spaceBGImgs = {}
 	damageMask:removeSelf()
@@ -535,19 +545,11 @@ function scene:destroy( event )
 	distanceLabel = nil
 	distanceText:removeSelf()
 	distanceText = nil
-
-	for x=1,  #obstacles do
-		obstacles[x]:delete()
-	end
-	--obstacles:removeSelf()
-	--obstacles = nil
-
+	pauseBtn:removeSelf()
+	pauseBtn = nil
 	player:delete()
-
 	Runtime:removeEventListener( "enterFrame", main )
-
 	Runtime:removeEventListener( "touch", move )
-
 	-- Called prior to the removal of scene's view ("sceneGroup").
 	-- Insert code here to clean up the scene.
 	-- Example: remove display objects, save state, etc.
