@@ -49,7 +49,7 @@ local achievementNames = {
 	"Empire State Building",
 	"Sears Tower",
 	"Burj Khalifa",
-	"Cumulus Cloud",
+	"Cumulus Clouds",
 	"1 Mile Up",
 	"Power Level",
 	"Mt. Botzer",
@@ -176,12 +176,15 @@ function scene:create( event )
 		achievementIcon.y = display.contentHeight*.47
 		sceneGroup:insert( achievementIcon )
 		
-		achievementBorder = display.newImageRect("imgs/achievementBorder.png", display.contentHeight*.175, display.contentHeight*.15)
+		achievementBorder = graphics.newMask("imgs/achievementMask.png", display.contentHeight*.175, display.contentHeight*.15)
+		--[[
 		achievementBorder.anchorX = 0
 		achievementBorder.anchorY = 0
 		achievementBorder.x = 0
 		achievementBorder.y = display.contentHeight*.47
-		sceneGroup:insert(achievementBorder)
+		]]--
+		achievementIcon:setMask(achievementBorder)
+		--sceneGroup:insert(achievementBorder)
 	else	
 		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
@@ -205,12 +208,11 @@ function scene:create( event )
 		achievementIcon.y = display.contentHeight*.47
 		sceneGroup:insert( achievementIcon )
 		
-		achievementBorder = display.newImageRect("imgs/achievementBorder.png", display.contentHeight*.175, display.contentHeight*.15)
-		achievementBorder.anchorX = 0
-		achievementBorder.anchorY = 0
-		achievementBorder.x = 0
-		achievementBorder.y = display.contentHeight*.47
-		sceneGroup:insert(achievementBorder)
+		achievementBorder = graphics.newMask("imgs/achievementMask.png", 124, 124)
+		achievementIcon:setMask(achievementBorder)
+		achievementIcon.maskScaleX = display.contentHeight*.175 /130
+		achievementIcon.maskScaleY = display.contentHeight*.175 /130
+		
 	end
 	
 	
@@ -267,7 +269,7 @@ function scene:show( event )
 	  achievementTitle.isVisible = true
 	  --achievementSubtext.isVisible = true
 	  achievementIcon.isVisible = true
-	  achievementBorder.isVisible = true
+	  --achievementBorder.isVisible = true
 	  replayBtn.isVisible = true
 	  quitBtn.isVisible = true
    elseif ( phase == "did" ) then
@@ -294,7 +296,7 @@ function scene:hide( event )
 	  achievementTitle.isVisible = false
 	  --achievementSubtext.isVisible = false
 	  achievementIcon.isVisible = false
-	  achievementBorder.isVisible = false
+	  --achievementBorder.isVisible = false
 	  replayBtn.isVisible = false
 	  quitBtn.isVisible = false
    elseif ( phase == "did" ) then
@@ -326,8 +328,8 @@ function scene:destroy( event )
 	--achievementSubtext = nil
 	achievementIcon:removeSelf()
 	achievementIcon = nil
-	achievementBorder:removeSelf()
-	achievementBorder = nil
+	--achievementBorder:removeSelf()
+	--achievementBorder = nil
 	
 	replayBtn:removeSelf()
 	replayBtn = nil

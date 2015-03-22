@@ -11,18 +11,24 @@ local widget = require "widget"		-- include Corona's "widget" library
 display.setDefault( "background", 0/255, 120/255, 171/255 )
 
 -- local forward references should go here
-local playBtn, optionsBtn
+local playBtn, optionsBtn, achievementsButton, unlockablesButton
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
 
 
 local function onPlayBtn()
 	composer.gotoScene( "game", {effect="fromRight", time=1000})
-
+	return true	-- indicates successful touch
+end
+local function onAchievementsButton()
+	composer.gotoScene( "achievements", {effect="fromLeft", time=1000})
+	return true	-- indicates successful touch
+end
+local function onUnlockablesButton()
+	composer.gotoScene( "unlockables", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
 end
 local function onOptionsBtn()
 	composer.gotoScene( "options", {effect="fromLeft", time=1000})
-
 	return true	-- indicates successful touch
 end
 
@@ -65,18 +71,54 @@ function scene:create( event )
 	playBtn = widget.newButton{
 		label="Play",
 		font = "fonts/Rufscript010",
-		fontSize = display.contentWidth * .05,
+		fontSize = display.contentWidth * .1,
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
+		width=display.contentWidth * 1, height=display.contentHeight * .1,
 		onRelease = onPlayBtn
 	}
 	playBtn.anchorX = .5
 	playBtn.anchorY = .5
-	playBtn.x = display.contentWidth * .50
+	playBtn.x = display.contentWidth * .5
 	playBtn.y = display.contentHeight * .7
 	sceneGroup:insert(playBtn)
+	
+	
+	--achievementsButton, unlockablesButton
+	achievementsButton = widget.newButton{
+		label="Achievements",
+		font = "fonts/Rufscript010",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=display.contentWidth * .4, height=display.contentHeight * .1,
+		onRelease = onAchievementsButton
+	}
+	achievementsButton.anchorX = .5
+	achievementsButton.anchorY = .5
+	achievementsButton.x = display.contentWidth * .50
+	achievementsButton.y = display.contentHeight * .8
+	sceneGroup:insert(achievementsButton)
+	
+	
+	unlockablesButton = widget.newButton{
+		label="Unlockables",
+		font = "fonts/Rufscript010",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=display.contentWidth * .4, height=display.contentHeight * .1,
+		onRelease = onUnlockablesButton
+	}
+	unlockablesButton.anchorX = .5
+	unlockablesButton.anchorY = .5
+	unlockablesButton.x = display.contentWidth * .8
+	unlockablesButton.y = display.contentHeight * .875
+	sceneGroup:insert(unlockablesButton)
+	
 	
 	optionsBtn = widget.newButton{
 		label="Options",
@@ -85,13 +127,13 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .5, height=display.contentHeight * .1,
+		width=display.contentWidth * .4, height=display.contentHeight * .1,
 		onRelease = onOptionsBtn
 	}
 	optionsBtn.anchorX = .5
 	optionsBtn.anchorY = .5
-	optionsBtn.x = display.contentWidth * .50
-	optionsBtn.y = display.contentHeight * .85
+	optionsBtn.x = display.contentWidth * .2
+	optionsBtn.y = display.contentHeight * .875
 	sceneGroup:insert(optionsBtn)
 	
 	
@@ -111,6 +153,8 @@ function scene:show( event )
 		totalDistanceText.isVisible = true
 		totalDistance.isVisible = true
 		playBtn.isVisible = true
+		achievementsButton.isVisible = true
+		unlockablesButton.isVisible = true
 		optionsBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
@@ -134,6 +178,8 @@ function scene:hide( event )
 		totalDistanceText.isVisible = false
 		totalDistance.isVisible = false
 		playBtn.isVisible = false
+		achievementsButton.isVisible = false
+		unlockablesButton.isVisible = false
 		optionsBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
@@ -162,6 +208,10 @@ function scene:destroy( event )
 	totalDistance = nil
 	playBtn:removeSelf()
 	playBtn = nil
+	achievementsButton:removeSelf()
+	achievementsButton = nil
+	unlockablesButton:removeSelf()
+	unlockablesButton = nil
 	optionsBtn:removeSelf()
     optionsBtn = nil
 	

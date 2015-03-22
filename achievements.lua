@@ -48,7 +48,7 @@ local achievementNames = {
 "Empire State Building",
 "Sears Tower",
 "Burj Khalifa",
-"Cumulus Cloud",
+"Cumulus Clouds",
 "1 Mile Up",
 "Power Level",
 "Mt. Botzer",
@@ -95,7 +95,7 @@ local achievementDescriptions = {
 "I think you cheated..."}
 
 local function onBackBtn()
-	composer.gotoScene("options", {effect="fromRight", time=1000})
+	composer.gotoScene("menu", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
 

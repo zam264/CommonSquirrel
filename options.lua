@@ -30,10 +30,6 @@ function musicListener ( event )
 	--print( "Music Slider at " .. event.value .. "%" )
 end
 
-local function onAchievmentsBtn()
-	composer.gotoScene( "achievements", {effect="fromLeft", time=1000})
-	return true	-- indicates successful touch
-end
 local function onCreditsBtn()
 	composer.gotoScene( "gamecredits", {effect="fromLeft", time=1000})
 	return true	-- indicates successful touch
@@ -145,25 +141,6 @@ function scene:create( event )
 	vibrationButton.height = display.contentHeight * .07
 	sceneGroup:insert( vibrationButton )
 
-   
-   -- Initialize the scene here.
-	achievmentsBtn = widget.newButton{
-		label="Achievments",
-		font = "fonts/Rufscript010",
-		fontSize = display.contentWidth * .05,
-		labelColor = { default={255}, over={128} },
-		defaultFile="imgs/button.png",
-		overFile="imgs/button-over.png",
-		width=btnWidth, height=btnHeight,
-		onRelease = onAchievmentsBtn
-	}
-	achievmentsBtn.anchorX = .5
-	achievmentsBtn.anchorY = .5
-	achievmentsBtn.x = display.contentWidth * .50
-	achievmentsBtn.y = display.contentHeight * .60
-	sceneGroup:insert(achievmentsBtn)
-
-
 	creditsBtn = widget.newButton{
 		label="Credits",
 		font = "fonts/Rufscript010",
@@ -197,7 +174,7 @@ function scene:create( event )
 	sceneGroup:insert(clearScoreBtn)
 
 	journalBtn = widget.newButton{
-		label="Journal",
+		label="Squirrel Journal",
 		font = "fonts/Rufscript010",
 		fontSize = display.contentWidth * .05,
 		labelColor = { default={255}, over={128} },
@@ -247,7 +224,6 @@ function scene:show( event )
 	creditsBtn.isVisible = true
 	clearScoreBtn.isVisible = true
 	backBtn.isVisible = true
-	achievmentsBtn.isVisible = true
 	movementButton.isVisible = true
 	movementText.isVisible = true
 	vibrationText.isVisible = true
@@ -277,7 +253,6 @@ function scene:hide( event )
 	creditsBtn.isVisible = false
 	clearScoreBtn.isVisible = false
 	backBtn.isVisible = false
-	achievmentsBtn.isVisible = false
 	movementButton.isVisible = false
 	movementText.isVisible = false
 	vibrationText.isVisible = false
@@ -314,8 +289,6 @@ function scene:destroy( event )
 	clearScoreBtn = nil
 	backBtn:removeSelf()
 	backBtn = nil
-	achievmentsBtn:removeSelf()
-	achievmentsBtn = nil
 	movementButton:removeSelf()
 	movementButton = nil
 	movementText:removeSelf()
