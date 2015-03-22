@@ -8,7 +8,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
 
 -- local forward references should go here
-local titleText1, scrollableachievements, background
+local titleText1, scrollableachievements, achievementIcon, achievementBorder
 local backBtnBtn
 
 local distance = {
@@ -131,10 +131,12 @@ function scene:create( event )
 	while distance[i] < loadDistance()do --find the next unlockable achievement
 		i = i+1
 	end
-	background = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.175 )
-	background.anchorX = 0
-	background.anchorY = 0
-	scrollableachievements:insert( background )
+	achievementIcon = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.175 )
+	achievementIcon.anchorX = 0
+	achievementIcon.anchorY = 0
+	achievementIcon.x = 0
+	achievementIcon.y = 0
+	scrollableachievements:insert( achievementIcon )
 	
 	local achievementsText = "LOCKED until " .. distance[i] .. "ft"
 	local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.2, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
@@ -142,6 +144,14 @@ function scene:create( event )
 	achievementsTextObject.anchorY = 0
 	achievementsTextObject:setTextColor(1,1,1)
 	scrollableachievements:insert(achievementsTextObject)
+	
+	achievementBorder = display.newImageRect("imgs/achievementBorder.png", display.contentHeight*.175, display.contentHeight*.175)
+	achievementBorder.anchorX = 0
+	achievementBorder.anchorY = 0
+	achievementBorder.x = 0
+	achievementBorder.y = 0
+	scrollableachievements:insert(achievementBorder)
+	
 	i = i-1
 	j = j+1
 	print(i)
@@ -159,12 +169,20 @@ function scene:create( event )
 		achievementDescriptionTextObject.anchorY = 0
 		scrollableachievements:insert(achievementDescriptionTextObject)
 
-		background = display.newImageRect( "achievements/achievement"..i..".png", display.contentHeight*.175, display.contentHeight*.175 )
-		background.anchorX = 0
-		background.anchorY = 0
-		background.x = 0
-		background.y = (display.contentHeight*.2*(j-1))
-		scrollableachievements:insert( background )
+		achievementIcon = display.newImageRect( "achievements/achievement"..i..".png", display.contentHeight*.175, display.contentHeight*.175 )
+		achievementIcon.anchorX = 0
+		achievementIcon.anchorY = 0
+		achievementIcon.x = 0
+		achievementIcon.y = (display.contentHeight*.2*(j-1))
+		scrollableachievements:insert( achievementIcon )
+		
+		achievementBorder = display.newImageRect("imgs/achievementBorder.png", display.contentHeight*.175, display.contentHeight*.175)
+		achievementBorder.anchorX = 0
+		achievementBorder.anchorY = 0
+		achievementBorder.x = 0
+		achievementBorder.y = achievementIcon.y
+		scrollableachievements:insert(achievementBorder)
+		
 		i = i-1
 		j = j+1
    	end

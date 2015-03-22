@@ -11,7 +11,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 -- local forward references should go here
 local replayBtn, quitBtn
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
-local achievementText, achievementIcon, achievementTitle, achivementSubtext
+local achievementText, achievementIcon, achievementTitle, achivementSubtext, achievementBorder
 local achievementDistance = {
 	2,		8,
 	26,		60,
@@ -92,7 +92,7 @@ local achievementDescriptions = {
 	"Squilnit the Soviet Squirrel",
 	"One small step for man, one giant leap for a squirrel",
 	"I think you cheated..."}
-
+	
 local function onReplayBtn()
 	composer.removeScene( "game" )
 	composer.removeScene( "loseScreen" )
@@ -153,6 +153,7 @@ function scene:create( event )
 	
 	if totalDist - distance < achievementDistance[x-1] then
 		composer.removeScene( "achievements" )
+		
 		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
@@ -174,6 +175,13 @@ function scene:create( event )
 		achievementIcon.x = 0
 		achievementIcon.y = display.contentHeight*.47
 		sceneGroup:insert( achievementIcon )
+		
+		achievementBorder = display.newImageRect("imgs/achievementBorder.png", display.contentHeight*.175, display.contentHeight*.15)
+		achievementBorder.anchorX = 0
+		achievementBorder.anchorY = 0
+		achievementBorder.x = 0
+		achievementBorder.y = display.contentHeight*.47
+		sceneGroup:insert(achievementBorder)
 	else	
 		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
@@ -196,6 +204,13 @@ function scene:create( event )
 		achievementIcon.x = 0
 		achievementIcon.y = display.contentHeight*.47
 		sceneGroup:insert( achievementIcon )
+		
+		achievementBorder = display.newImageRect("imgs/achievementBorder.png", display.contentHeight*.175, display.contentHeight*.15)
+		achievementBorder.anchorX = 0
+		achievementBorder.anchorY = 0
+		achievementBorder.x = 0
+		achievementBorder.y = display.contentHeight*.47
+		sceneGroup:insert(achievementBorder)
 	end
 	
 	
@@ -252,6 +267,7 @@ function scene:show( event )
 	  achievementTitle.isVisible = true
 	  --achievementSubtext.isVisible = true
 	  achievementIcon.isVisible = true
+	  achievementBorder.isVisible = true
 	  replayBtn.isVisible = true
 	  quitBtn.isVisible = true
    elseif ( phase == "did" ) then
@@ -278,6 +294,7 @@ function scene:hide( event )
 	  achievementTitle.isVisible = false
 	  --achievementSubtext.isVisible = false
 	  achievementIcon.isVisible = false
+	  achievementBorder.isVisible = false
 	  replayBtn.isVisible = false
 	  quitBtn.isVisible = false
    elseif ( phase == "did" ) then
@@ -309,6 +326,8 @@ function scene:destroy( event )
 	--achievementSubtext = nil
 	achievementIcon:removeSelf()
 	achievementIcon = nil
+	achievementBorder:removeSelf()
+	achievementBorder = nil
 	
 	replayBtn:removeSelf()
 	replayBtn = nil
