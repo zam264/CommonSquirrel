@@ -13,9 +13,12 @@ display.setDefault( "background", 0/255, 120/255, 171/255 )
 -- local forward references should go here
 local playBtn, optionsBtn, achievementsButton, unlockablesButton
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
+local backgroundMusic = audio.loadStream("sound/koertes-ccby-birdsongloop16s.mp3")--Public Domain - Écrivain
+
 
 
 local function onPlayBtn()
+	audio.pause(1)
 	composer.gotoScene( "game", {effect="fromRight", time=1000})
 	return true	-- indicates successful touch
 end
@@ -37,6 +40,7 @@ end
 
 -- "scene:create()"
 function scene:create( event )
+	audio.play( backgroundMusic, { channel=1, loops=-1, fadein=5000 } )
     loadSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
     sceneGroup = self.view
 	display.setDefault( "background", 0/255, 120/255, 171/255 )
@@ -142,6 +146,7 @@ end
 
 -- "scene:show()"
 function scene:show( event )
+	audio.play( backgroundMusic, { channel=1, loops=-1, fadein=5000 } )
    local sceneGroup = self.view
    local phase = event.phase
 
