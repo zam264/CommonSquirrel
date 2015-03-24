@@ -1,6 +1,35 @@
-local emptyCols = {}
+--local emptyCols = {}
+
 function generateObstacles(collection)
-	--print("Calling generate")
+	local rand = math.random(10)
+	local obstacle 
+	if rand <= 2 then
+		obstacle = createItem()
+	else
+		obstacle = createObstacle()
+	end
+	table.insert(collection, obstacle)
+end
+function createObstacle()
+	local yPos = -150
+	local col = math.random(3)
+	local obj = Obstacle( display.contentWidth * .25 * col, yPos)
+	physics.addBody(obj.model, "dynamic", {isSensor=true})
+	return obj
+end
+function createItem()
+	local rand = math.random(4)
+	local yPos = -150
+	local obj
+	if rand > 3 then
+		local col = math.random(3)
+		obj = Acorn(display.contentWidth * .25 * col, yPos)	
+		physics.addBody(obj.model, "dynamic", {isSensor=true})		
+	end
+	return obj
+end
+--[[
+function generateObstacles(collection)
 	for i = 0, 4 do 
 		if i > 0 then 
 			if i == 1 then 
@@ -22,6 +51,7 @@ function generateObstacles(collection)
 		end
 	end
 end
+]]--
 
 function generateRow(chance0, chance1, chance2, empty, row, collection) 
 	local random = math.random(100) 

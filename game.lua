@@ -37,6 +37,7 @@ bgR = 0
 bgG = 120
 bgB = 171
 local difficulty = 1
+local yTranslateModifier = 5
 
 
 
@@ -90,8 +91,10 @@ local sequenceData = {
 	{name = "health0", start=4, count=1, time=0, loopCount=1}
 }
 local healthSprite = display.newSprite( healthSheet, sequenceData )
-healthSprite.x = 100
-healthSprite.y = 32
+healthSprite.anchorX = 0
+healthSprite.anchorY = 0
+healthSprite.x = contentWidth * .005
+healthSprite.y = contentWidth * .015
 healthSprite.xScale = contentWidth * .001
 healthSprite.yScale = contentWidth * .001
 healthSprite:setSequence( "health" .. 3 )
@@ -205,7 +208,7 @@ function scene:create( event )
 	timePassed = 0
 	stageTimer = 0
 	difficultyTimer = 0
-	yTranslate = 10 * difficulty
+	yTranslate = yTranslateModifier * difficulty
 	highScore = loadScore()
 	maxDifficulty = 5 + math.floor(highScore *.01)
    
@@ -215,14 +218,14 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/pauseBtn.png",
 		overFile="imgs/pauseBtn.png",
-		width=contentHeight * .05, height=contentHeight * .05,
+		width=contentWidth * .085, height=contentWidth * .085,
 		onRelease = pauseGame
 	}
 	--Pause button
-	pauseBtn.anchorX = .5
-	pauseBtn.anchorY = .5
-	pauseBtn.x = contentWidth * .93
-	pauseBtn.y = contentHeight * .05
+	pauseBtn.anchorX = 1
+	pauseBtn.anchorY = 0
+	pauseBtn.x = contentWidth
+	pauseBtn.y = 0
 	
 	-- create tutorial
 	tutorialGroup = display.newGroup()
@@ -313,7 +316,6 @@ function scene:create( event )
 end
 
 function main(event)
-	--print (event.time - timePassedBetweenEvents)
 	if  ( paused ) then --Check if the game is paused
 		timePassed = timePassed + (event.time - timePassedBetweenEvents)
 		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
@@ -331,16 +333,16 @@ function main(event)
 		bonusScoreText.alpha = bonusScoreText.alpha - .003
 
 		--generate obstacles
-		if ( event.time - stageTimer > 1250/(difficulty*.5) ) then
+		if ( event.time - stageTimer > 550/(difficulty) ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
 
 		--update difficulty and scroll speed
-		if (event.time - difficultyTimer > 3000 and difficulty < maxDifficulty) then
+		if (event.time - difficultyTimer > 1500 and difficulty < maxDifficulty) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
-			yTranslate = 10 * difficulty
+			yTranslate = yTranslateModifier * difficulty
 		end
 		
 		--move the tutorial away
@@ -361,7 +363,7 @@ function main(event)
 		--spawn normal earthly background images
 		if(difficulty < spaceBoundary)then
 			for i=1, #earthBGImgs do 
-				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height/2)then
+				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height *.5)then
 					earthBGImgs[i].x = math.random(1, contentWidth)
 					earthBGImgs[i].y = 0 - math.random(1, contentHeight)
 				else
@@ -369,11 +371,10 @@ function main(event)
 				end
 			end
 		else 
-			--clear old earth images
-			if(bgClear == false)then
+			if(bgClear == false)then --clear old earth images
 				local count = 0
 				for i=1, #earthBGImgs do --move earth images off screen
-					if(earthBGImgs[i].y < contentHeight+earthBGImgs[i].height/2)then
+					if(earthBGImgs[i].y < contentHeight+earthBGImgs[i].height *.5)then
 						earthBGImgs[i]:translate(0, yTranslate*.5)
 					else --when we know all earth images are off screen set bgClear to true
 						count = count + 1
@@ -382,16 +383,17 @@ function main(event)
 						end
 					end
 				end
-			--old images are cleared, begin to utilize space images	
-			else
+			else  --old images are cleared, begin to utilize space images	
 				for i=1, #spaceBGImgs do 
-					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height/2)then
+					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height *.5)then
 						spaceBGImgs[i].x = math.random(1, contentWidth)
 						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
 					else
 						spaceBGImgs[i]:translate(0, yTranslate*.5)
 					end
 				end
+				spaceBGImgs[1]:rotate(1)
+				spaceBGImgs[2]:rotate(-1.3)
 				for i=1, #stars do
 					if(stars[i].y > contentHeight)then
 						stars[i].x = math.random(1, contentWidth)
