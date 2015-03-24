@@ -66,31 +66,32 @@ local achievementDescriptions = {
 	"High five, mate",
 	"Squirrels > Mongols",
 	"I AM GROOT!",
-	"Rockin' Around the Christmas Tree",
+	"Rockin' Around the \nChristmas Tree",
 	"Dropping the Ball",
 	"Pine cones aren't enough",
-	"Neighborhood has really gone downhill",
+	"Neighborhood has really\n gone downhill",
 	"Emancipate the squirrels",
 	"Up high, wanker!",
 	"The whole 100 yards",
 	"Big Red",
 	"On your way to Ra",
-	"The rent at the top is too dang high",
+	"The rent at the top is\n too dang high",
 	"Developers! Developers!",
-	"Do squirrels like cheese?",
-	"More like Empire Squirrel Building",
-	"Wish I had brought my windbreaker",
-	"Are there even squirrels in Dubai?",
+	"Do squirrels like \ncheese?",
+	"More like Empire \nSquirrel Building",
+	"Wish I had brought my \nwindbreaker",
+	"Are there even squirrels\n in Dubai?",
 	"Into the Clouds",
 	"Mile High Club",
-	"What does the scouter say?",
+	"What does the scouter \nsay?",
 	"Developers!",
-	"Super Squirrel will retrieve it",
-	"I should be hibernating right now",
+	"Super Squirrel will \nretrieve it",
+	"I should be hibernating\n right now",
 	"Now seating squirrels",
+	"Where no squirrel has\n gone before",
 	"No racoons allowed",
-	"Squilnit the Soviet Squirrel",
-	"One small step for man, one giant leap for a squirrel",
+	"Squilnit the Soviet\n Squirrel",
+	"One small step for \nman, one giant leap \nfor a squirrel",
 	"I think you cheated..."}
 	
 local function onReplayBtn()
@@ -229,7 +230,7 @@ function scene:create( event )
 	replayBtn.anchorX = .5
 	replayBtn.anchorY = .5
 	replayBtn.x = display.contentWidth * .50
-	replayBtn.y = display.contentHeight * .7
+	replayBtn.y = display.contentHeight * .75
 	sceneGroup:insert(replayBtn)
 	
 	

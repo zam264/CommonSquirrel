@@ -56,7 +56,7 @@ local achievementNames = {
 "Mt. Everest",
 "Boeing 757",
 "Space",
-"International Space Station",
+"ISS",
 "Sputnik 2",
 "Moon",
 "Good Luck..."
