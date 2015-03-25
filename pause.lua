@@ -21,6 +21,7 @@ local function onResumeBtn()
 	return true	-- indicates successful touch
 end
 local function onQuitBtn()
+	audio.stop(2)
 	composer.removeScene( "game" )
 	composer.removeScene( "menu" )
 	composer.removeScene( "pause" )

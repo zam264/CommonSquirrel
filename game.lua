@@ -13,6 +13,10 @@ local scene = composer.newScene()
 local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, distanceLabel
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
 local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
+local earthMusic = audio.loadStream("sound/Raining Bits_0.mp3")
+local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")
+local acornSFX = audio.loadSound("sound/Replenish.mp3")
+local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
 local contentHeight = display.contentHeight
 local contentWidth = display.contentWidth
 local player
@@ -157,6 +161,7 @@ end
 local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if event.other.type == "obstacle" then   --If obstacle, do damage
+			audio.play( hitSFX, { channel=4, loops=0 } )
 			if vibrate then 
 				system.vibrate()
 			end
@@ -164,6 +169,7 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (200, function() playerHit = false end)
 			player:damage(1)
 		else  --If Acorn, heal the player 
+			audio.play( acornSFX, { channel=3, loops=0 } )
 			if player.health == 3 then
 				bonusScoreText.text ="+" .. math.floor(difficulty * 5)
 				bonusScoreText.alpha = 1
@@ -200,6 +206,7 @@ end
 
 -- "scene:create()"
 function scene:create( event )
+	audio.play( earthMusic, { channel=2, loops=-1, fadein=5000 } )
 	local sceneGroup = self.view
 	paused = true
 	timePassedBetweenEvents = 0
@@ -379,7 +386,12 @@ function main(event)
 					else --when we know all earth images are off screen set bgClear to true
 						count = count + 1
 						if(count == #earthBGImgs)then
-							bgClear = true
+							bgClear = true			
+							audio.stop(2)
+							audio.play( spaceMusic, { channel=2, loops=-1, fadein=5000 } )
+							--[[timer.performWithDelay(5000, function() 
+								--audio.stop(2) 
+								audio.play( spaceMusic, { channel=2, loops=-1, fadein=5000 } ) end)]]
 						end
 					end
 				end
@@ -456,6 +468,7 @@ function scene:show( event )
 
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
+      	audio.resume(2)
 	  	tutorialGroup.isVisible = true
 	  	scoreLabel.isVisible = true
 		scoreText.isVisible = true
