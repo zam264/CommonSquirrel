@@ -98,7 +98,9 @@ local function onReplayBtn()
 	audio.stop(2)
 	composer.removeScene( "game" )
 	composer.removeScene( "loseScreen" )
+	sceneInTransition = true
 	composer.gotoScene( "game", {effect="fromLeft", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onQuitBtn()
@@ -106,7 +108,9 @@ local function onQuitBtn()
 	composer.removeScene( "game" )
 	composer.removeScene( "menu" )
 	composer.removeScene( "loseScreen" )
+	sceneInTransition = true
 	composer.gotoScene( "menu", {effect="fromLeft", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 

@@ -20,19 +20,27 @@ musicVolume = 0
 
 local function onPlayBtn()
 	audio.stop(1)
+	sceneInTransition = true
 	composer.gotoScene( "game", {effect="fromRight", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onAchievementsButton()
+	sceneInTransition = true
 	composer.gotoScene( "achievements", {effect="fromLeft", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onUnlockablesButton()
+	sceneInTransition = true
 	composer.gotoScene( "unlockables", {effect="fromLeft", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onOptionsBtn()
+	sceneInTransition = true
 	composer.gotoScene( "options", {effect="fromLeft", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 

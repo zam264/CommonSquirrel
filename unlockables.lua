@@ -12,7 +12,9 @@ local titleText
 local backBtn
 
 local function onBackBtn()
+	sceneInTransition = true
 	composer.gotoScene("menu", {effect="fromRight", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 

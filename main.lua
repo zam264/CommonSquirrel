@@ -9,10 +9,7 @@ display.setStatusBar( display.HiddenStatusBar )
 
 local composer = require "composer"
 
--- load menu screen
-local rect
-holding = {}
-inUse = {}
+sceneInTransition = false
 
 composer.gotoScene( "menu" )
 
@@ -21,11 +18,11 @@ local function onKeyEvent(event)
 	local phase = event.phase
     local keyName = event.keyName 
 
-    if ( "back" == keyName and phase == "up" ) then
+	if ( "back" == keyName and phase == "up" and  not sceneInTransition) then
 		if ( composer.getCurrentSceneName() == "menu" ) then
-        	native.requestExit()
-        elseif ( composer.getCurrentSceneName() == "pause" ) then
-        	composer.removeScene( "pause" )
+			native.requestExit()
+		elseif ( composer.getCurrentSceneName() == "pause" ) then
+			composer.removeScene( "pause" )
 			composer.gotoScene( "game", {effect="fromLeft", time=1000}) 
 		elseif ( composer.getCurrentSceneName() == "achievements" or 
 				 composer.getCurrentSceneName() == "options" 	  or 
@@ -33,14 +30,10 @@ local function onKeyEvent(event)
 			composer.gotoScene("menu", {effect="fromRight", time=1000})
 		elseif ( composer.getCurrentSceneName() == "gamecredits" or composer.getCurrentSceneName() == "journal") then
 			composer.gotoScene("options", {effect="fromRight", time=1000})
-        end
-		return true	-- indicates successful touch
-		
-	else 
-		return false ; 
+		end
 	end
 	
- 
+	return true
 end
 
 Runtime:addEventListener( "key", onKeyEvent )

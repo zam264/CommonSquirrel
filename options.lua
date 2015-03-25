@@ -36,21 +36,29 @@ function musicListener ( event )
 end
 
 local function onCreditsBtn()
+	sceneInTransition = true
 	composer.gotoScene( "gamecredits", {effect="fromLeft", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onClearScoreBtn()
 	saveScore(0)
 	addToDistance(loadDistance()*-1)
+	sceneInTransition = true
 	composer.removeScene( "menu" )
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onJournalBtn()
+	sceneInTransition = true
 	composer.gotoScene( "journal", {effect="fromRight", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 local function onBackBtn()
+	sceneInTransition = true
 	composer.gotoScene( "menu", {effect="fromRight", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 

@@ -17,7 +17,9 @@ local journalDescriptions = {
 "A damgerous bee hive, avoid it",
 "A delicous acorn, restores 1 health"}
 local function onBackBtn()
+	sceneInTransition = true
 	composer.gotoScene("options", {effect="fromRight", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
 
