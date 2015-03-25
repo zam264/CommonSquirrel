@@ -95,6 +95,7 @@ local achievementDescriptions = {
 	"I think you cheated..."}
 	
 local function onReplayBtn()
+	audio.stop(2)
 	composer.removeScene( "game" )
 	composer.removeScene( "loseScreen" )
 	composer.gotoScene( "game", {effect="fromLeft", time=1000})
