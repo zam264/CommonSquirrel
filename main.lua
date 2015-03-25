@@ -20,7 +20,7 @@ composer.gotoScene( "menu" )
 local function onKeyEvent(event)
 	local phase = event.phase
     local keyName = event.keyName 
---[[
+
     if ( "back" == keyName and phase == "up" ) then
 		if ( composer.getCurrentSceneName() == "menu" ) then
         	native.requestExit()
@@ -39,7 +39,7 @@ local function onKeyEvent(event)
 	else 
 		return false ; 
 	end
-	]]
+	
  
 end
 
