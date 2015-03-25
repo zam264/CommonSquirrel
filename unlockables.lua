@@ -9,7 +9,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText
-local backBtnBtn
+local backBtn
 
 local function onBackBtn()
 	composer.gotoScene("menu", {effect="fromRight", time=1000})
