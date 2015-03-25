@@ -36,6 +36,8 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
+	composer.removeScene( "options" )
+	
 	titleText = display.newText( "Paused" , display.contentWidth*.5, display.contentHeight *.1, "fonts/Rufscript010",  display.contentHeight * .1)
 	titleText.anchorX = .5
 	titleText.anchorY = .5

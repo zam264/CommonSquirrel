@@ -14,7 +14,8 @@ display.setDefault( "background", 0/255, 120/255, 171/255 )
 local playBtn, optionsBtn, achievementsButton, unlockablesButton
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
 local backgroundMusic = audio.loadStream("sound/Night Calm v0_4.mp3")
-
+effectsVolume = 0
+musicVolume = 0
 
 
 local function onPlayBtn()
@@ -40,8 +41,11 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-	audio.play( backgroundMusic, { channel=1, loops=-1, fadein=5000 } )
-    loadSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
+	loadSettings()
+	audio.play( backgroundMusic, { channel=1, loops=-1, volume=0} )
+	audio.setVolume(0, {channel=1})
+	audio.fade( {channel=1, time=5000, volume=musicVolume/100})
+
     sceneGroup = self.view
 	display.setDefault( "background", 0/255, 120/255, 171/255 )
 	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)

@@ -12,20 +12,25 @@ local titleText, difficultyText, easyText, normalText, hardText, movementText, v
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton, vibrationButton, journalBtn
 local btnWidth = display.contentWidth * .80
 local btnHeight = display.contentHeight * .09
-effectsVolume = 50
-musicVolume = 50
+local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
+
 swipeMovement = false
 vibrate = true
-widget.setTheme("widget_theme_android") 
+widget.setTheme("widget_theme_ios") 
 
 -- Slider listener
 function effectsListener( event )
 	effectsVolume = event.value
+	audio.setVolume(effectsVolume/100, {channel=3})
+	audio.setVolume(effectsVolume/100, {channel=4})
 	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
+	audio.play( hitSFX, { channel=4, loops=0 } )
     --print( "Effects Slider at " .. event.value .. "%" )
 end
 function musicListener ( event )
 	musicVolume = event.value
+	audio.setVolume(musicVolume/100, {channel=1})
+	audio.setVolume(musicVolume/100, {channel=2})
 	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
 	--print( "Music Slider at " .. event.value .. "%" )
 end

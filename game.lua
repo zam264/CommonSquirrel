@@ -13,8 +13,8 @@ local scene = composer.newScene()
 local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, distanceLabel
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
 local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
-local earthMusic = audio.loadStream("sound/Raining Bits_0.mp3")
-local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")
+local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
+local spaceMusic = audio.loadStream("sound/At the dimensional gate_0.mp3")
 local acornSFX = audio.loadSound("sound/Replenish.mp3")
 local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
 local contentHeight = display.contentHeight
@@ -79,6 +79,7 @@ end
 --create the stars
 for i = 1, 100, 1 do
 	stars[i] = display.newRect(math.random(1, contentWidth), 0 - math.random(1, contentHeight), 4, 4)
+	stars[i].alpha = 0
 end
 
 --Health sprite variables
@@ -162,6 +163,8 @@ local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if event.other.type == "obstacle" then   --If obstacle, do damage
 			audio.play( hitSFX, { channel=4, loops=0 } )
+			print(effectsVolume / 100)
+			audio.setVolume( effectsVolume, {channel=4})
 			if vibrate then 
 				system.vibrate()
 			end
@@ -408,6 +411,7 @@ function main(event)
 				spaceBGImgs[2]:rotate(-1.3)
 				for i=1, #stars do
 					if(stars[i].y > contentHeight)then
+						stars[i].alpha = stars[i].alpha + .2
 						stars[i].x = math.random(1, contentWidth)
 						stars[i].y = 0 - math.random(1, contentHeight)
 					else

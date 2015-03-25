@@ -42,7 +42,6 @@ function loadDistance()
 	local contents = ""
 	local file = io.open( path, "r" )
 	if ( file ) then
-		print("read open")
 		-- read all contents of file into a string
 		local contents = file:read( "*a" )
 		local distance = tonumber(contents)
