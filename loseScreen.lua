@@ -178,9 +178,14 @@ function scene:create( event )
 		sceneGroup:insert( achievementIcon )
 		
 		achievementBorder = graphics.newMask("imgs/achievementMask.png", display.contentHeight*.175, display.contentHeight*.15)
+		--[[
+		achievementBorder.anchorX = 0
+		achievementBorder.anchorY = 0
+		achievementBorder.x = 0
+		achievementBorder.y = display.contentHeight*.47
+		]]--
 		achievementIcon:setMask(achievementBorder)
-		achievementIcon.maskScaleX = display.contentHeight*.175 /130
-		achievementIcon.maskScaleY = display.contentHeight*.175 /130
+		--sceneGroup:insert(achievementBorder)
 	else	
 		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
