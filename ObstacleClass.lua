@@ -5,7 +5,7 @@ Obstacle = LCS.class({damage, spriteOptions, mySheet ,model})
 
 function Obstacle:init(posX, posY)
 	-- Initialize creatures base attributes
-	local rand = math.random(3)
+	local rand = math.random(4)
 	
 	
 	if (rand ==1 ) then
@@ -60,6 +60,25 @@ function Obstacle:init(posX, posY)
 		}
 		
 		mySheet = graphics.newImageSheet("imgs/birdHouse2.png", spriteOptions)--, 2000, 2000)
+		sequenceData = {
+			{name = "buzz", frames={1}, time = 300, loopCount = 1},
+		}	
+		
+		self.model = display.newSprite(mySheet, sequenceData)
+		self.model.type = "obstacle"  --Define the type of obstacle for collision detection
+		self.model:setSequence("buzz")
+	elseif (rand == 4) then 
+		self.damage = 1
+		
+		spriteOptions = {	
+			height = 64, 
+			width = 64, 
+			numFrames = 1, 
+			sheetContentWidth = 64, 
+			sheetContentHeight = 64 
+		}
+		
+		mySheet = graphics.newImageSheet("imgs/poisenShroom.png", spriteOptions)--, 2000, 2000)
 		sequenceData = {
 			{name = "buzz", frames={1}, time = 300, loopCount = 1},
 		}	
