@@ -42,7 +42,8 @@ bgG = 120
 bgB = 171
 local difficulty = 1
 local yTranslateModifier = 5
-
+local astroidRotation1 = (math.random(2) -1 ) * math.random()
+local astroidRotation2 = (math.random(2) -1 ) * math.random()
 
 
 --Images and sprite setup
@@ -164,8 +165,8 @@ end
 local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if event.other.type == "obstacle" then   --If obstacle, do damage
+			audio.stop({channel = 4})
 			audio.play( hitSFX, { channel=4, loops=0 } )
-			print(effectsVolume / 100)
 			audio.setVolume( effectsVolume, {channel=4})
 			if vibrate then 
 				system.vibrate()
@@ -174,7 +175,9 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (200, function() playerHit = false end)
 			player:damage(1)
 		else  --If Acorn, heal the player 
+			audio.stop({channel = 3})
 			audio.play( acornSFX, { channel=3, loops=0 } )
+			audio.setVolume( effectsVolume, {channel=3})
 			if player.health == 3 then
 				bonusScoreText.text ="+" .. math.floor(difficulty * 5)
 				bonusScoreText.alpha = 1
@@ -406,12 +409,17 @@ function main(event)
 					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height *.5)then
 						spaceBGImgs[i].x = math.random(1, contentWidth)
 						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
+						if (i == 1) then
+							astroidRotation1 = math.random(-1,1)
+						elseif (i == 2) then
+							astroidRotation2 = math.random(-1,1)
+						end
 					else
 						spaceBGImgs[i]:translate(0, yTranslate*.5)
-					end
+					end	
 				end
-				spaceBGImgs[1]:rotate(1)
-				spaceBGImgs[2]:rotate(-1.3)
+				spaceBGImgs[1]:rotate(astroidRotation1)
+				spaceBGImgs[2]:rotate(astroidRotation2)
 				for i=1, #stars do
 					if(stars[i].y > contentHeight)then
 						stars[i].alpha = stars[i].alpha + .2
