@@ -49,12 +49,7 @@ local function onClearScoreBtn()
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
-local function onJournalBtn()
-	sceneInTransition = true
-	composer.gotoScene( "journal", {effect="fromRight", time=1000})
-	timer.performWithDelay (1000, function() sceneInTransition = false end)
-	return true	-- indicates successful touch
-end
+
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene( "menu", {effect="fromRight", time=1000})
@@ -186,22 +181,6 @@ function scene:create( event )
 	clearScoreBtn.y = display.contentHeight * .76
 	sceneGroup:insert(clearScoreBtn)
 
-	journalBtn = widget.newButton{
-		label="Squirrel Journal",
-		font = "fonts/Rufscript010",
-		fontSize = display.contentWidth * .05,
-		labelColor = { default={255}, over={128} },
-		defaultFile="imgs/button.png",
-		overFile="imgs/button-over.png",
-		width=btnWidth, height=btnHeight,
-		onRelease = onJournalBtn
-	}
-	journalBtn.anchorX = .5
-	journalBtn.anchorY = .5
-	journalBtn.x = display.contentWidth * .50
-	journalBtn.y = display.contentHeight * .84
-	sceneGroup:insert(journalBtn)
-
 	backBtn = widget.newButton{
 		label="Back",
 		font = "fonts/Rufscript010",
@@ -241,7 +220,6 @@ function scene:show( event )
 	movementText.isVisible = true
 	vibrationText.isVisible = true
 	vibrationButton.isVisible = true
-	journalBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -270,7 +248,6 @@ function scene:hide( event )
 	movementText.isVisible = false
 	vibrationText.isVisible = false
 	vibrationButton.isVisible = false
-	journalBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -310,8 +287,6 @@ function scene:destroy( event )
 	vibrationText = nil
 	vibrationButton:removeSelf()
 	vibrationButton = nil
-	journalBtn:removeSelf()
-	journalBtn = nil
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.

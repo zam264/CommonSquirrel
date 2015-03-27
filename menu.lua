@@ -43,6 +43,12 @@ local function onOptionsBtn()
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+local function onJournalBtn()
+	sceneInTransition = true
+	composer.gotoScene( "journal", {effect="fromRight", time=1000})
+	timer.performWithDelay (1000, function() sceneInTransition = false end)
+	return true	-- indicates successful touch
+end
 
 
 ---------------------------------------------------------------------------------
@@ -109,12 +115,12 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .4, height=display.contentHeight * .1,
+		width=display.contentWidth * .5, height=display.contentHeight * .1,
 		onRelease = onAchievementsButton
 	}
 	achievementsButton.anchorX = .5
 	achievementsButton.anchorY = .5
-	achievementsButton.x = display.contentWidth * .50
+	achievementsButton.x = display.contentWidth * .25
 	achievementsButton.y = display.contentHeight * .8
 	sceneGroup:insert(achievementsButton)
 	
@@ -126,15 +132,30 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .4, height=display.contentHeight * .1,
+		width=display.contentWidth * .5, height=display.contentHeight * .1,
 		onRelease = onUnlockablesButton
 	}
 	unlockablesButton.anchorX = .5
 	unlockablesButton.anchorY = .5
-	unlockablesButton.x = display.contentWidth * .8
-	unlockablesButton.y = display.contentHeight * .875
+	unlockablesButton.x = display.contentWidth * .75
+	unlockablesButton.y = display.contentHeight * .9
 	sceneGroup:insert(unlockablesButton)
 	
+	journalBtn = widget.newButton{
+		label="Squirrel Journal",
+		font = "fonts/Rufscript010",
+		fontSize = display.contentWidth * .05,
+		labelColor = { default={255}, over={128} },
+		defaultFile="imgs/button.png",
+		overFile="imgs/button-over.png",
+		width=display.contentWidth * .5, height=display.contentHeight * .1,
+		onRelease = onJournalBtn
+	}
+	journalBtn.anchorX = .5
+	journalBtn.anchorY = .5
+	journalBtn.x = display.contentWidth * .75
+	journalBtn.y = display.contentHeight * .8
+	sceneGroup:insert(journalBtn)
 	
 	optionsBtn = widget.newButton{
 		label="Options",
@@ -143,13 +164,13 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .4, height=display.contentHeight * .1,
+		width=display.contentWidth * .5, height=display.contentHeight * .1,
 		onRelease = onOptionsBtn
 	}
 	optionsBtn.anchorX = .5
 	optionsBtn.anchorY = .5
-	optionsBtn.x = display.contentWidth * .2
-	optionsBtn.y = display.contentHeight * .875
+	optionsBtn.x = display.contentWidth * .25
+	optionsBtn.y = display.contentHeight * .9
 	sceneGroup:insert(optionsBtn)
 	
 	
@@ -173,6 +194,7 @@ function scene:show( event )
 		achievementsButton.isVisible = true
 		unlockablesButton.isVisible = true
 		optionsBtn.isVisible = true
+		journalBtn.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -198,6 +220,7 @@ function scene:hide( event )
 		achievementsButton.isVisible = false
 		unlockablesButton.isVisible = false
 		optionsBtn.isVisible = false
+		journalBtn.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -231,6 +254,8 @@ function scene:destroy( event )
 	unlockablesButton = nil
 	optionsBtn:removeSelf()
     optionsBtn = nil
+    journalBtn:removeSelf() 
+    optionsBtn = nil 
 	
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.

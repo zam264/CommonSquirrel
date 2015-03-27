@@ -26,9 +26,10 @@ local function onKeyEvent(event)
 			composer.gotoScene( "game", {effect="fromLeft", time=1000}) 
 		elseif ( composer.getCurrentSceneName() == "achievements" or 
 				 composer.getCurrentSceneName() == "options" 	  or 
-				 composer.getCurrentSceneName() == "unlockables") 	then
+				 composer.getCurrentSceneName() == "unlockables"  or 
+				 composer.getCurrentSceneName() == "journal") 	then
 			composer.gotoScene("menu", {effect="fromRight", time=1000})
-		elseif ( composer.getCurrentSceneName() == "gamecredits" or composer.getCurrentSceneName() == "journal") then
+		elseif ( composer.getCurrentSceneName() == "gamecredits") then
 			composer.gotoScene("options", {effect="fromRight", time=1000})
 		end
 	end
