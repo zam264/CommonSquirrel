@@ -42,9 +42,19 @@ bgG = 120
 bgB = 171
 local difficulty = 1
 local yTranslateModifier = 5
-local astroidRotation1 = (math.random(2) -1 ) * math.random()
-local astroidRotation2 = (math.random(2) -1 ) * math.random()
-
+local astroidRotation1 = math.random(-1,1) * math.random()
+local astroidRotation2 = math.random(-1,1) * math.random()
+local earthBackgroundMovement = math.random(0,1)
+if (earthBackgroundMovement == 0) then
+	earthBackgroundMovement = -1
+else
+	earthBackgroundMovement = 1
+end
+local earthBGSpeed = {}
+for i=1, 4 do
+	earthBGSpeed[i] = math.random()
+end
+local earthBGGroup
 
 --Images and sprite setup
 --Background
@@ -215,7 +225,9 @@ end
 -- "scene:create()"
 function scene:create( event )
 	loadSettings()
+	audio.setVolume( musicVolume/100, {channel=2})
 	audio.play( earthMusic, { channel=2, loops=-1, fadein=5000 } )
+	
 	local sceneGroup = self.view
 	paused = true
 	timePassedBetweenEvents = 0
@@ -303,9 +315,11 @@ function scene:create( event )
 	for i=1, #stars do
 		sceneGroup:insert(stars[i])
 	end
+	earthBGGroup = display.newGroup()
 	for i = 1, 4, 1 do
-		sceneGroup:insert(earthBGImgs[i])
+		earthBGGroup:insert(earthBGImgs[i])
 	end
+	sceneGroup:insert(earthBGGroup)
 	for i = 1, 3, 1 do
 		sceneGroup:insert(spaceBGImgs[i])
 	end
@@ -380,10 +394,21 @@ function main(event)
 		if(difficulty < spaceBoundary)then
 			for i=1, #earthBGImgs do 
 				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height *.5)then
-					earthBGImgs[i].x = math.random(1, contentWidth)
+					if (i == 4) then
+						earthBGImgs[i]:removeSelf()
+						earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3, contentWidth*.3)
+						earthBGGroup:insert(earthBGImgs[i])
+						
+					end
+					if (earthBackgroundMovement > 0) then
+						earthBGImgs[i].x = math.random(1, contentWidth*.5)
+					else
+						earthBGImgs[i].x = math.random(contentWidth*.5, contentWidth)
+					end
 					earthBGImgs[i].y = 0 - math.random(1, contentHeight)
+					earthBGSpeed[i] = math.random()
 				else
-					earthBGImgs[i]:translate(0, yTranslate*.5)
+					earthBGImgs[i]:translate(earthBackgroundMovement * earthBGSpeed[i], yTranslate*.5)
 				end
 			end
 		else 
@@ -391,7 +416,7 @@ function main(event)
 				local count = 0
 				for i=1, #earthBGImgs do --move earth images off screen
 					if(earthBGImgs[i].y < contentHeight+earthBGImgs[i].height *.5)then
-						earthBGImgs[i]:translate(0, yTranslate*.5)
+						earthBGImgs[i]:translate(earthBackgroundMovement * earthBGSpeed[i], yTranslate*.5)
 					else --when we know all earth images are off screen set bgClear to true
 						count = count + 1
 						if(count == #earthBGImgs)then
@@ -410,9 +435,9 @@ function main(event)
 						spaceBGImgs[i].x = math.random(1, contentWidth)
 						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
 						if (i == 1) then
-							astroidRotation1 = math.random(-1,1)
+							astroidRotation1 = math.random() * math.random(-1,1)
 						elseif (i == 2) then
-							astroidRotation2 = math.random(-1,1)
+							astroidRotation2 = math.random() * math.random(-1,1)
 						end
 					else
 						spaceBGImgs[i]:translate(0, yTranslate*.5)
