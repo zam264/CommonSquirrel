@@ -209,6 +209,7 @@ end
 
 -- "scene:create()"
 function scene:create( event )
+	loadSettings()
 	audio.play( earthMusic, { channel=2, loops=-1, fadein=5000 } )
 	local sceneGroup = self.view
 	paused = true
@@ -220,7 +221,7 @@ function scene:create( event )
 	difficultyTimer = 0
 	yTranslate = yTranslateModifier * difficulty
 	highScore = loadScore()
-	maxDifficulty = 5 + math.floor(highScore *.01)
+	maxDifficulty = 3
    
    	pauseBtn = widget.newButton{
 		label="",
