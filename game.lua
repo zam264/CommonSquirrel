@@ -152,11 +152,13 @@ local function move(event)
 end
 
 local function pauseGame ()
-	paused = true;
-	composer.hideOverlay("game")
-	composer.gotoScene("pause", {effect="fromRight", time=1000})
+	if player.health > 0 then
+		paused = true;
+		composer.hideOverlay("game")
+		composer.gotoScene("pause", {effect="fromRight", time=1000})
+	end
 end
-
+	
 --Function handles player collision
 --When the player collides with an "obstacle" they should lose health 
 local function hitObstacle(self, event)
