@@ -8,14 +8,29 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText1, scrollableJournal, backBtn
-local journalImages = {"journal/beeHive.png", "journal/acorn.png"}--'unachievable' score necessary to avoid out of bounds error when testing
+local journalImages = {"journal/beeHive.png", 
+"journal/acorn.png", 
+"imgs/birdhouse1.png", 
+"imgs/poisenShroom.png", 
+"imgs/slowShroom.png",
+"imgs/speedShroom.png"
+}--'unachievable' score necessary to avoid out of bounds error when testing
 local journalEntries = {
 "Bee Hive",
-"Acorn"
+"Acorn", 
+"Bird House",
+"Poisonous Mushroom", 
+"Time Slowing Mushroom",
+"Time Accelerating Mushroom"
 }
 local journalDescriptions = {
 "A damgerous bee hive, avoid it",
-"A delicous acorn, restores 1 health"}
+"A delicous acorn, restores 1 health", 
+"A well made bird house, dont hit", 
+"A highly toxic mushroom, avoid it",
+"A 'shroom that slows time, helpful", 
+"A 'shroom that speeds time, avoid"
+}
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene("menu", {effect="fromRight", time=1000})
