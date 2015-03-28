@@ -1,4 +1,5 @@
 local LCS = require 'LCS'
+local unlockables = require( "unlockables" )
 --require "options"	-- options needed for difficulty variable
 
 Player = LCS.class({health, spriteOptions, mySheet ,model})
@@ -11,11 +12,18 @@ function Player:init(posX, posY)
 	spriteOptions = {	
 		height = 64, 
 		width = 64, 
-		numFrames = 7, 
-		sheetContentWidth = 448, 
+		numFrames = 6, 
+		sheetContentWidth = 384, 
 		sheetContentHeight = 64 
 	}
-	mySheet = graphics.newImageSheet("imgs/squirrelSprite.png", spriteOptions, 50, 50)
+	local spriteSheets = {
+		"imgs/squirrelSprite.png",
+		"imgs/albinoSquirrelSheet.png",
+		"imgs/ninjaSquirrelSheet.png",
+		"imgs/coonSheet.png",
+		"imgs/spaceSquirrelSheet.png"
+	}
+	mySheet = graphics.newImageSheet(spriteSheets[loadSkin()], spriteOptions, 50, 50)
 
 	sequenceData = {
 		{name = "forward", frames={1,2,3,4,5,6}, time = 500, loopCount = 0}

@@ -131,6 +131,7 @@ function scene:create( event )
 		scoreText.anchorX = 0
 		scoreText.anchorY = 0
 		sceneGroup:insert(scoreText)
+		composer.removeScene( "unlockables" )
 	else
 		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
 		scoreText.anchorX = 0

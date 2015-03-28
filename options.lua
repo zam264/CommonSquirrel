@@ -1,4 +1,5 @@
 local composer = require( "composer" )
+local unlockables = require( "unlockables" )
 local scene = composer.newScene()
 local widget = require ("widget")		-- include Corona's "widget" library
 require('settings')
@@ -43,9 +44,11 @@ local function onCreditsBtn()
 end
 local function onClearScoreBtn()
 	saveScore(0)
+	saveSkin(1)
 	addToDistance(loadDistance()*-1)
 	sceneInTransition = true
 	composer.removeScene( "menu" )
+	composer.removeScene( "unlockables" )
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end

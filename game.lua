@@ -7,10 +7,11 @@ require('PlayerClass')
 require('AcornClass')
 require('obstacleGeneration')
 require('options')
+require( "unlockables" )
 local scene = composer.newScene()
 
 --Variables
-local scoreText, distanceText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, distanceLabel
+local scoreText,  timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
 local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
 local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
@@ -85,7 +86,7 @@ end
 for i = 1, 3, 1 do
 	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3, contentWidth*.3)
 	spaceBGImgs[i].x = math.random(1, contentWidth)
-	spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
+	spaceBGImgs[i].y = 0 - math.random(50, contentHeight)
 end
 --create the stars
 for i = 1, 100, 1 do
@@ -304,12 +305,10 @@ function scene:create( event )
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
-	scoreLabel = display.newText( "Score", contentWidth * .25, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
-	scoreText = display.newText( tostring(playerScore), contentWidth * .25, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
+	scoreLabel = display.newText( "Score", contentWidth * .5, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
+	scoreText = display.newText( tostring(playerScore), contentWidth * .5, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText = display.newText( 0, contentWidth * .25, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText.alpha = 0
-	distanceLabel = display.newText( "Distance", contentWidth * .75, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
-	distanceText = display.newText( tostring(distance), contentWidth * .75, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 
 	--insert everything into the scene group
 	for i=1, #stars do
@@ -339,8 +338,6 @@ function scene:create( event )
 	sceneGroup:insert(scoreLabel)
 	sceneGroup:insert(scoreText)
 	sceneGroup:insert(bonusScoreText)
-	sceneGroup:insert(distanceLabel)
-	sceneGroup:insert(distanceText)
 	sceneGroup:insert(healthSprite)
 	sceneGroup:insert(tutorialGroup)
 end
@@ -358,7 +355,6 @@ function main(event)
 			playerScore = playerScore + 1
 			scoreText.text = playerScore
 			distance = distance + difficulty
-			distanceText.text = distance
 		end	
 		bonusScoreText.alpha = bonusScoreText.alpha - .003
 
@@ -514,8 +510,6 @@ function scene:show( event )
 	  	scoreLabel.isVisible = true
 		scoreText.isVisible = true
 		bonusScoreText.isVisible = true
-		distanceLabel.isVisible = true
-		distanceText.isVisible = true
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
 		player.model.isVisible = true
@@ -563,8 +557,6 @@ function scene:hide( event )
 		scoreLabel.isVisible = false
 		scoreText.isVisible = false
 		bonusScoreText.isVisible = false
-		distanceLabel.isVisible = false
-		distanceText.isVisible = false
 		pauseBtn.isVisible = false
 		damageMask.isVisible = false
 		for x=1, #obstacles do
@@ -628,10 +620,6 @@ function scene:destroy( event )
 	scoreText = nil
 	bonusScoreText:removeSelf()
 	bonusScoreText = nil
-	distanceLabel:removeSelf()
-	distanceLabel = nil
-	distanceText:removeSelf()
-	distanceText = nil
 	pauseBtn:removeSelf()
 	pauseBtn = nil
 	player:delete()
