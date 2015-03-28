@@ -8,12 +8,14 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText1, scrollableJournal, backBtn
-local journalImages = {"journal/beeHive.png", 
+local journalImages = {
+"journal/beeHive.png", 
 "journal/acorn.png", 
 "imgs/birdhouse1.png", 
 "imgs/poisenShroom.png", 
 "imgs/slowShroom.png",
-"imgs/speedShroom.png"
+"imgs/speedShroom.png",
+"imgs/fire1.png"
 }--'unachievable' score necessary to avoid out of bounds error when testing
 local journalEntries = {
 "Bee Hive",
@@ -21,7 +23,8 @@ local journalEntries = {
 "Bird House",
 "Poisonous Mushroom", 
 "Time Slowing Mushroom",
-"Time Accelerating Mushroom"
+"Time Accelerating Mushroom",
+"Forrest Fire"
 }
 local journalDescriptions = {
 "A damgerous bee hive, avoid it",
@@ -29,7 +32,8 @@ local journalDescriptions = {
 "A well made bird house, dont hit", 
 "A highly toxic mushroom, avoid it",
 "A 'shroom that slows time, helpful", 
-"A 'shroom that speeds time, avoid"
+"A 'shroom that speeds time, avoid",
+"A forrest fire caused by a stray flame, \navoid"
 }
 local function onBackBtn()
 	sceneInTransition = true
