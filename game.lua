@@ -369,11 +369,12 @@ function main(event)
 		end	
 
 		--update difficulty and scroll speed
-		if (event.time - difficultyTimer > 1500 and difficulty < maxDifficulty) then
+		if (event.time - difficultyTimer > math.floor(difficulty) * 1500 and difficulty < maxDifficulty) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
 			yTranslate = yTranslateModifier * difficulty
 		end
+		print(difficulty)
 		
 		--move the tutorial away
 		if (difficulty > 1 and difficulty < 1.5) then
