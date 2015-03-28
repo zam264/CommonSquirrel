@@ -14,6 +14,11 @@ display.setDefault( "background", 0/255, 120/255, 171/255 )
 local playBtn, optionsBtn, achievementsButton, unlockablesButton, homeBG
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
 local backgroundMusic = audio.loadStream("sound/Night Calm v0_4.mp3")
+local color = 
+{
+    highlight = { r=0, g=0, b=0 },
+    shadow = { r=0, g=0, b=0 }
+}
 effectsVolume = 0
 musicVolume = 0
 
@@ -65,30 +70,38 @@ function scene:create( event )
 	menuBG = display.newImageRect( "imgs/menuBG2.png", display.contentWidth, display.contentHeight)
 	menuBG.x = display.contentWidth*.5
 	menuBG.y = display.contentHeight*.5
-	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
-	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
 	sceneGroup:insert(menuBG)
+	
+	titleText1 = display.newEmbossedText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
+	titleText1:setEmbossColor( color )
+	
+	titleText2 = display.newEmbossedText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
+	titleText2:setEmbossColor( color )
 	sceneGroup:insert(titleText1)
 	sceneGroup:insert(titleText2)
    
-   highScoreText = display.newText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, "fonts/Rufscript010",  display.contentHeight * .05)
+   highScoreText = display.newEmbossedText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, "fonts/Rufscript010",  display.contentHeight * .05)
+   highScoreText:setEmbossColor( color )
    highScoreText.anchorX = .5
    highScoreText.anchorY = .5
    sceneGroup:insert(highScoreText)
 
-   highScore = display.newText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, "fonts/Rufscript010",  display.contentHeight * .04)
+   highScore = display.newEmbossedText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, "fonts/Rufscript010",  display.contentHeight * .04)
+   highScore:setEmbossColor( color )
    highScore.anchorX = .5
    highScore.anchorY = .5
    sceneGroup:insert(highScore)
    
    
    
-   totalDistanceText = display.newText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, "fonts/Rufscript010",  display.contentHeight * .05)
+   totalDistanceText = display.newEmbossedText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, "fonts/Rufscript010",  display.contentHeight * .05)
+   totalDistanceText:setEmbossColor( color )
    totalDistanceText.anchorX = .5
    totalDistanceText.anchorY = .5
    sceneGroup:insert(totalDistanceText)
 
-   totalDistance = display.newText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, "fonts/Rufscript010",  display.contentHeight * .04)
+   totalDistance = display.newEmbossedText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, "fonts/Rufscript010",  display.contentHeight * .04)
+   totalDistance:setEmbossColor( color )
    totalDistance.anchorX = .5
    totalDistance.anchorY = .5
    sceneGroup:insert(totalDistance)
@@ -200,6 +213,7 @@ function scene:show( event )
 		optionsBtn.isVisible = true
 		journalBtn.isVisible = true
 		menuBG.isVisible = true
+		transition.to( menuBG, { time=1000, alpha=1 } )
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -226,7 +240,8 @@ function scene:hide( event )
 		unlockablesButton.isVisible = false
 		optionsBtn.isVisible = false
 		journalBtn.isVisible = false
-		menuBG.isVisible = false
+		--menuBG.isVisible = false
+		transition.to( menuBG, { time=1000, alpha=0 } )
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.

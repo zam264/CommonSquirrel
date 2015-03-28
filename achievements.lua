@@ -123,7 +123,7 @@ function scene:create( event )
 		bottomPadding = display.contentHeight * .1,
 		horizontalScrollDisabled = true,
 		verticalScrollDisabled = false,
-		backgroundColor = {0/255, 120/255, 171/255}
+		backgroundColor = {0/255, 120/255, 171/255, 0}
 	}
 	sceneGroup:insert(scrollableachievements)
 	
