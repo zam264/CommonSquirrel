@@ -8,15 +8,16 @@ local widget = require "widget"		-- include Corona's "widget" library
 
 -- local forward references should go here
 local titleText1, scrollableJournal, backBtn
+local background
 local journalImages = {
 "journal/beeHive.png", 
 "journal/acorn.png", 
-"imgs/birdhouse1.png", 
+"imgs/birdHouse1.png", 
 "imgs/poisenShroom.png", 
 "imgs/slowShroom.png",
 "imgs/speedShroom.png",
 "imgs/fire1.png"
-}--'unachievable' score necessary to avoid out of bounds error when testing
+}
 local journalEntries = {
 "Bee Hive",
 "Acorn", 
@@ -70,22 +71,8 @@ function scene:create( event )
 	
 	local i = 1  --used for journal index
 	local j = 1  --used for journal placement
-	--[[background = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.175 )
-	background.anchorX = 0
-	background.anchorY = 0
-	scrollableJournal:insert( background )
-	
-	local achievementsText = "LOCKED until " .. distance[i] .. "ft"
-	local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.2, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
-	achievementsTextObject.anchorX = 0	
-	achievementsTextObject.anchorY = 0
-	achievementsTextObject:setTextColor(1,1,1)
-	scrollableJournal:insert(achievementsTextObject)
-	i = i-1
-	j = j+1
-	print(i)
-	print("j="..j)]]
-	while i <= #journalEntries do
+
+	while i <= #journalImages do
 		local journalText = journalEntries[i] 
 		local journalTextObject = display.newText(journalText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
 		journalTextObject.anchorX = 0	
