@@ -43,8 +43,7 @@ bgG = 120
 bgB = 171
 local difficulty = 1
 local yTranslateModifier = 5
-local astroidRotation1 = math.random(-1,1) * math.random()
-local astroidRotation2 = math.random(-1,1) * math.random()
+--[[ Earth Background Modifiers ]]--
 local earthBackgroundMovement = math.random(0,1)
 if (earthBackgroundMovement == 0) then
 	earthBackgroundMovement = -1
@@ -56,6 +55,13 @@ for i=1, 4 do
 	earthBGSpeed[i] = math.random()
 end
 local earthBGGroup
+--[[ Space Background Modifiers ]]--
+local astroidRotation1 = math.random(0,1) - math.random()
+local astroidRotation2 = math.random(0,1) - math.random()
+local spaceBGSpeed = {}
+for i=1, 3 do
+	spaceBGSpeed[i] = math.random(0,1) - math.random()
+end
 
 --Images and sprite setup
 --Background
@@ -72,19 +78,21 @@ for i = 1, 6, 1 do
 end
 --create the earth images
 for i = 1, 4, 1 do
+	local sizeMod = .75 + math.random()/2 
 	if(i<=3)then
-		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. i .. ".png", contentWidth*.6, contentWidth*.3)
+		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. i .. ".png", contentWidth*.6*sizeMod, contentWidth*.3*sizeMod)
 		earthBGImgs[i].x = math.random(1, contentWidth)
 		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
 	else
-		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3, contentWidth*.3)
+		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
 		earthBGImgs[i].x = math.random(1, contentWidth)
 		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
 	end
 end
 --create the space images
 for i = 1, 3, 1 do
-	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3, contentWidth*.3)
+	local sizeMod = .75 + math.random()/2 
+	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
 	spaceBGImgs[i].x = math.random(1, contentWidth)
 	spaceBGImgs[i].y = 0 - math.random(50, contentHeight)
 end
@@ -370,7 +378,6 @@ function main(event)
 			difficulty = difficulty +.1
 			yTranslate = yTranslateModifier * difficulty
 		end
-		print(difficulty)
 		
 		--move the tutorial away
 		if (difficulty > 1 and difficulty < 1.5) then
@@ -392,8 +399,9 @@ function main(event)
 			for i=1, #earthBGImgs do 
 				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height *.5)then
 					if (i == 4) then
+						local sizeMod = .75 + math.random()/2
 						earthBGImgs[i]:removeSelf()
-						earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3, contentWidth*.3)
+						earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
 						earthBGGroup:insert(earthBGImgs[i])
 						
 					end
@@ -420,9 +428,6 @@ function main(event)
 							bgClear = true			
 							audio.stop(2)
 							audio.play( spaceMusic, { channel=2, loops=-1, fadein=5000 } )
-							--[[timer.performWithDelay(5000, function() 
-								--audio.stop(2) 
-								audio.play( spaceMusic, { channel=2, loops=-1, fadein=5000 } ) end)]]
 						end
 					end
 				end
@@ -432,12 +437,13 @@ function main(event)
 						spaceBGImgs[i].x = math.random(1, contentWidth)
 						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
 						if (i == 1) then
-							astroidRotation1 = math.random() * math.random(-1,1)
+							astroidRotation1 = math.random(0,1) - math.random()
 						elseif (i == 2) then
-							astroidRotation2 = math.random() * math.random(-1,1)
+							astroidRotation2 = math.random(0,1) - math.random()
 						end
+						spaceBGSpeed[i] = math.random(0,1) - math.random()
 					else
-						spaceBGImgs[i]:translate(0, yTranslate*.5)
+						spaceBGImgs[i]:translate(spaceBGSpeed[i], yTranslate*.5)
 					end	
 				end
 				spaceBGImgs[1]:rotate(astroidRotation1)
