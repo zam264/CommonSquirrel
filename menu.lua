@@ -11,7 +11,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 display.setDefault( "background", 0/255, 120/255, 171/255 )
 
 -- local forward references should go here
-local playBtn, optionsBtn, achievementsButton, unlockablesButton
+local playBtn, optionsBtn, achievementsButton, unlockablesButton, homeBG
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
 local backgroundMusic = audio.loadStream("sound/Night Calm v0_4.mp3")
 effectsVolume = 0
@@ -62,8 +62,12 @@ function scene:create( event )
 
     sceneGroup = self.view
 	display.setDefault( "background", 0/255, 120/255, 171/255 )
+	menuBG = display.newImageRect( "imgs/menuBG2.png", display.contentWidth, display.contentHeight)
+	menuBG.x = display.contentWidth*.5
+	menuBG.y = display.contentHeight*.5
 	titleText1 = display.newText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText2 = display.newText( "Runner", display.contentWidth * .5, display.contentHeight*.16, "fonts/Rufscript010" ,display.contentHeight * .065)
+	sceneGroup:insert(menuBG)
 	sceneGroup:insert(titleText1)
 	sceneGroup:insert(titleText2)
    
