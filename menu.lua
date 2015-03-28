@@ -199,6 +199,7 @@ function scene:show( event )
 		unlockablesButton.isVisible = true
 		optionsBtn.isVisible = true
 		journalBtn.isVisible = true
+		menuBG.isVisible = true
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -225,6 +226,7 @@ function scene:hide( event )
 		unlockablesButton.isVisible = false
 		optionsBtn.isVisible = false
 		journalBtn.isVisible = false
+		menuBG.isVisible = false
       -- Called when the scene is on screen (but is about to go off screen).
       -- Insert code here to "pause" the scene.
       -- Example: stop timers, stop animation, stop audio, etc.
@@ -260,6 +262,8 @@ function scene:destroy( event )
     optionsBtn = nil
     journalBtn:removeSelf() 
     optionsBtn = nil 
+    menuBG:removeSelf()
+    menuBG = nil
 	
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
