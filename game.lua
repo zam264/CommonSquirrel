@@ -43,6 +43,7 @@ bgG = 120
 bgB = 171
 local difficulty = 1
 local yTranslateModifier = 5
+gameSpeedModifier = 1
 --[[ Earth Background Modifiers ]]--
 local earthBackgroundMovement = math.random(0,1)
 if (earthBackgroundMovement == 0) then
@@ -193,7 +194,7 @@ local function hitObstacle(self, event)
 			playerHit = true
 			timer.performWithDelay (200, function() playerHit = false end)
 			player:damage(1)
-		else  --If Acorn, heal the player 
+		elseif (event.other.type == "acorn") then  --If Acorn, heal the player 
 			audio.stop({channel = 3})
 			audio.play( acornSFX, { channel=3, loops=0 } )
 			audio.setVolume( effectsVolume, {channel=3})
@@ -205,6 +206,37 @@ local function hitObstacle(self, event)
 				player:heal(1)
 			end
 			event.other.alpha = 0
+		elseif (event.other.type == "slow") then
+			audio.stop({channel = 3})
+			audio.play( acornSFX, { channel=3, loops=0 } )
+			audio.setVolume( effectsVolume, {channel=3})
+			event.other.alpha = 0
+			gameSpeedModifier = gameSpeedModifier -.1
+			timer.performWithDelay (100, function() gameSpeedModifier = gameSpeedModifier -.1 end)
+			timer.performWithDelay (200, function() gameSpeedModifier = gameSpeedModifier -.1 end)
+			timer.performWithDelay (300, function() gameSpeedModifier = gameSpeedModifier -.1 end)
+			timer.performWithDelay (400, function() gameSpeedModifier = gameSpeedModifier -.1 end)
+			timer.performWithDelay (1600, function() gameSpeedModifier = gameSpeedModifier +.1 end)
+			timer.performWithDelay (1700, function() gameSpeedModifier = gameSpeedModifier +.1 end)
+			timer.performWithDelay (1800, function() gameSpeedModifier = gameSpeedModifier +.1 end)
+			timer.performWithDelay (1900, function() gameSpeedModifier = gameSpeedModifier +.1 end)
+			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier +.1 end)
+		elseif (event.other.type == "speed") then
+			audio.stop({channel = 3})
+			audio.play( acornSFX, { channel=3, loops=0 } )
+			audio.setVolume( effectsVolume, {channel=3})
+			event.other.alpha = 0
+			gameSpeedModifier = gameSpeedModifier +.1
+			timer.performWithDelay (100, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
+			timer.performWithDelay (200, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
+			timer.performWithDelay (300, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
+			timer.performWithDelay (400, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
+			timer.performWithDelay (1000, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
+			timer.performWithDelay (1100, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
+			timer.performWithDelay (1200, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
+			timer.performWithDelay (1300, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
+			timer.performWithDelay (1400, function() gameSpeedModifier = gameSpeedModifier -.1 end)
+			
 		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
 		healthSprite:play()
@@ -362,7 +394,7 @@ function main(event)
 			timePassed = event.time
 			playerScore = playerScore + 1
 			scoreText.text = playerScore
-			distance = distance + difficulty
+			distance = distance + (difficulty * gameSpeedModifier)
 		end	
 		bonusScoreText.alpha = bonusScoreText.alpha - .003
 
@@ -376,8 +408,8 @@ function main(event)
 		if (event.time - difficultyTimer > math.floor(difficulty) * 1500 and difficulty < maxDifficulty) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
-			yTranslate = yTranslateModifier * difficulty
 		end
+		yTranslate = yTranslateModifier * difficulty * gameSpeedModifier
 		
 		--move the tutorial away
 		if (difficulty > 1 and difficulty < 1.5) then
