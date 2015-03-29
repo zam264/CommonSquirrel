@@ -91,7 +91,7 @@ for i = 1, 4, 1 do
 end
 --create the space images
 for i = 1, 3, 1 do
-	local sizeMod = .75 + math.random()/2 
+	local sizeMod = .75 + math.random()*.5 
 	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
 	spaceBGImgs[i].x = math.random(1, contentWidth)
 	spaceBGImgs[i].y = 0 - math.random(50, contentHeight)
@@ -398,12 +398,15 @@ function main(event)
 		if(difficulty < spaceBoundary)then
 			for i=1, #earthBGImgs do 
 				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height *.5)then
-					if (i == 4) then
-						local sizeMod = .75 + math.random()/2
+					if (i == 4) then	
+						local sizeMod = (.75 + math.random()*.5)
 						earthBGImgs[i]:removeSelf()
-						earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
+						earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3 * sizeMod, contentWidth*.3*sizeMod)
 						earthBGGroup:insert(earthBGImgs[i])
 						
+					else
+						earthBGImgs[i].width =  contentWidth*.6*(.9 + math.random()*.1)
+						earthBGImgs[i].height =  contentWidth*.3*(.9 + math.random()*.1)
 					end
 					if (earthBackgroundMovement > 0) then
 						earthBGImgs[i].x = math.random(1, contentWidth*.5)
@@ -435,11 +438,19 @@ function main(event)
 				for i=1, #spaceBGImgs do 
 					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height *.5)then
 						spaceBGImgs[i].x = math.random(1, contentWidth)
-						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)
+						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)			
 						if (i == 1) then
 							astroidRotation1 = math.random(0,1) - math.random()
+							spaceBGImgs[i].width = contentWidth*.3*(.75 + math.random()*.5)
+							spaceBGImgs[i].height = contentWidth*.3*(.75 + math.random()*.5)
 						elseif (i == 2) then
 							astroidRotation2 = math.random(0,1) - math.random()
+							spaceBGImgs[i].width = contentWidth*.3*(.75 + math.random()*.5)
+							spaceBGImgs[i].height = contentWidth*.3*(.75 + math.random()*.5)
+						else
+							local sizeMod = (.75 + math.random()*.5)
+							spaceBGImgs[i].width = contentWidth*.3*sizeMod
+							spaceBGImgs[i].height = contentWidth*.3*sizeMod
 						end
 						spaceBGSpeed[i] = math.random(0,1) - math.random()
 					else
