@@ -399,7 +399,6 @@ function main(event)
 		bonusScoreText.alpha = bonusScoreText.alpha - .003
 
 		--generate obstacles
-		if ( event.time - stageTimer > 550/(difficulty) ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
