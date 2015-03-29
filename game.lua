@@ -399,6 +399,7 @@ function main(event)
 		bonusScoreText.alpha = bonusScoreText.alpha - .003
 
 		--generate obstacles
+		if ( event.time - stageTimer > 550/(difficulty)/gameSpeedModifier ) then
 			stageTimer = event.time
 			generateObstacles(obstacles)
 		end	
@@ -492,7 +493,7 @@ function main(event)
 				spaceBGImgs[2]:rotate(astroidRotation2)
 				for i=1, #stars do
 					if(stars[i].y > contentHeight)then
-						stars[i].alpha = stars[i].alpha + .2
+						stars[i].alpha = stars[i].alpha + .2 * gameSpeedModifier
 						stars[i].x = math.random(1, contentWidth)
 						stars[i].y = 0 - math.random(1, contentHeight)
 					else
@@ -504,8 +505,8 @@ function main(event)
 
 		--transition the background to black to represent space
 		if(difficulty > spaceBoundary and (bgG > 1 or bgB > 1))then
-			bgG = bgG - spaceTransition
-			bgB = bgB - spaceTransition
+			bgG = bgG - (spaceTransition * gameSpeedModifier)
+			bgB = bgB - (spaceTransition  * gameSpeedModifier)
 			display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 		end
 
