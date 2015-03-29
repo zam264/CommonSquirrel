@@ -4,7 +4,7 @@ require "ObstacleClass"
 Acorn = Obstacle:extends()
 
 function Acorn:init(posX, posY)
-	local rand = math.random(3)
+	local rand = math.random(5)
 	self.damage = 0
 
 	if (rand > 3) then
