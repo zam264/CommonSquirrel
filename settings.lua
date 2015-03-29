@@ -1,3 +1,8 @@
+--[[
+This file handles the saving of settings to a sandbox file on the users phone
+All settings (sound, movement, and vibration) are saved so that the settings are remembered from different play throughs 
+]]
+--This function takes for a parameter all the current setting values and saves it to a file called settings.txt on the phone
 function saveSettings(effects, music, swipe, vibration) 
 	local path = system.pathForFile( "settings.txt", system.DocumentsDirectory )
 	local file = io.open(path, "w")
@@ -12,6 +17,7 @@ function saveSettings(effects, music, swipe, vibration)
 	end
 end
 
+--This function loads the settings.txt file and updates the settings variables appropriately 
 function loadSettings() 
 	local path = system.pathForFile( "settings.txt", system.DocumentsDirectory )
 	local contents = ""

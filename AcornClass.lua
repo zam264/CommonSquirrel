@@ -3,10 +3,17 @@ require "ObstacleClass"
 
 Acorn = Obstacle:extends()
 
+--[[Acorn class is actual a class that spawns unique obstacles that do not damage the enemy (not just acorns)
+Currently the 3 obstacles this class spawns are: 
+ Acorns - Which heal the player and award points 
+ Slow Shrooms - Which slow the game down for a small amount of time 
+ Speed Shrooms - Which speed the game up for a small amount of time 
+]]
 function Acorn:init(posX, posY)
 	local rand = math.random(5)
-	self.damage = 0
+	self.damage = 0 --These obstacles do not damage the player 
 
+	--Select one of the 3 unique obstacles to spawn randomly (equal chance) 
 	if (rand > 3) then
 		self.model = display.newImage("imgs/acorn.png")
 		self.model.type = "acorn"  --Define the type of obstacle for collision detection
@@ -27,6 +34,7 @@ function Acorn:init(posX, posY)
 	self.model.y = posY
 	
 
+	--Removes the obstacle 
 	function Obstacle:delete()
 		self.model:removeSelf()
 		self.model = nil

@@ -15,8 +15,8 @@ local btnWidth = display.contentWidth * .80
 local btnHeight = display.contentHeight * .09
 local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
 
-swipeMovement = false
-vibrate = true
+swipeMovement = false  --False = Tap to move, True = swipe to move 
+vibrate = true  	   --Holds whether vibration is on or off 
 widget.setTheme("widget_theme_ios") 
 
 -- Slider listener
@@ -60,11 +60,13 @@ local function onBackBtn()
 	return true	-- indicates successful touch
 end
 
+--Called when the switch for movement type is switched
 function switchMovement() 
 	swipeMovement = not swipeMovement
 	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
 end
 
+--Changes vibration setting 
 function switchVibrate() 
 	vibrate = not vibrate
 	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
@@ -93,6 +95,7 @@ function scene:create( event )
 	effectsText.anchorY = 0
 	sceneGroup:insert(effectsText)
 	
+	--Controls the volume of effects (collision sound effects)
 	effectsSlider = widget.newSlider
 	{
 		top = display.contentHeight * .225,
@@ -108,6 +111,7 @@ function scene:create( event )
 	musicText.anchorY = 0
 	sceneGroup:insert(musicText)
    
+   --Controls the volume of the in-game music
    musicSlider = widget.newSlider
 	{
 		top = display.contentHeight * .325,
@@ -123,6 +127,7 @@ function scene:create( event )
 	movementText.anchorY = 0 
 	sceneGroup:insert(movementText)
 
+	--Controls whether the movement type is swipe or tap 
 	movementButton = widget.newSwitch
 	{
 	    left = display.contentWidth * .625,
@@ -140,6 +145,7 @@ function scene:create( event )
 	vibrationText.anchorY = 0 
 	sceneGroup:insert(vibrationText)
 
+	--Controls whether vibration is on or off
 	vibrationButton = widget.newSwitch
 	{
 	    left = display.contentWidth * .625,

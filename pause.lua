@@ -22,6 +22,7 @@ local function onResumeBtn()
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--When the player chooses to quit remove all the scenes and go back to the menu screen 
 local function onQuitBtn()
 	audio.stop(2)
 	composer.removeScene( "game" )
@@ -36,10 +37,11 @@ end
 
 ---------------------------------------------------------------------------------
 
--- "scene:create()"
+--Creates the Pause Menu Screen 
 function scene:create( event )
     sceneGroup = self.view
 
+    --Create the visuals for the Pause screen 
 	composer.removeScene( "options" )
 	
 	titleText = display.newText( "Paused" , display.contentWidth*.5, display.contentHeight *.1, "fonts/Rufscript010",  display.contentHeight * .1)
@@ -73,6 +75,7 @@ function scene:create( event )
 	effectsText.anchorY = 0
 	sceneGroup:insert(effectsText)
 	
+	--Slider to control the sound of effects (ex: collision sound)
 	effectsSlider = widget.newSlider
 	{
 		top = display.contentHeight * .425,
@@ -88,6 +91,7 @@ function scene:create( event )
 	musicText.anchorY = 0
 	sceneGroup:insert(musicText)
    
+   --Slider to control the sound of the in-game music
    musicSlider = widget.newSlider
 	{
 		top = display.contentHeight * .525,
@@ -103,6 +107,7 @@ function scene:create( event )
 	movementText.anchorY = 0 
 	sceneGroup:insert(movementText)
 
+	--A switch which allows the user to choose swipe or tap mode for movement of the squirrel 
 	movementButton = widget.newSwitch
 	{
 	    left = display.contentWidth * .65,
@@ -120,6 +125,7 @@ function scene:create( event )
 	vibrationText.anchorY = 0 
 	sceneGroup:insert(vibrationText)
 
+	--A switch which turns vibration (on collision) on or off 
 	vibrationButton = widget.newSwitch
 	{
 	    left = display.contentWidth * .65,
@@ -171,6 +177,7 @@ end
 
 -- "scene:show()"
 function scene:show( event )
+	--Display everything when the scene is transitioned to 
 
    local sceneGroup = self.view
    local phase = event.phase
@@ -206,7 +213,7 @@ end
 
 -- "scene:hide()"
 function scene:hide( event )
-
+	--Hide everything when the scene is left 
    local sceneGroup = self.view
    local phase = event.phase
 
@@ -241,6 +248,7 @@ end
 -- "scene:destroy()"
 function scene:destroy( event )
 
+	--Destory everything when the scene is destroyed 
    local sceneGroup = self.view
 
 	titleText:removeSelf()
