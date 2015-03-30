@@ -11,7 +11,7 @@ require( "unlockables" )
 local scene = composer.newScene()
 
 --Variables
-local scoreText,  timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, healthBackground, livesText
+local scoreText, livesText, bonusScoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, scoreLabel, healthBackground
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
 local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
 local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
@@ -43,8 +43,8 @@ bgG = 120
 bgB = 171
 local difficulty = 1
 local yTranslateModifier = 5
-gameSpeedModifier = 1
---[[ Earth Background Modifiers ]]--
+local gameSpeedModifier = 1
+-- Earth Background Modifiers --
 local earthBackgroundMovement = math.random(0,1)
 if (earthBackgroundMovement == 0) then
 	earthBackgroundMovement = -1
@@ -135,7 +135,10 @@ livesText:setFillColor(0,0,0)
 livesText.anchorX = .5
 livesText.anchorY = .5
 
-
+--------------------------------------------
+--moveRight()
+--moves the players squirrel to the neighboring branch on the right
+--------------------------------------------
 local function moveRight() 
 	if (player.model.x == contentWidth * .25) then
 		transition.to(player.model, {rotation=30, time=100/difficulty})
@@ -148,6 +151,10 @@ local function moveRight()
 	end
 end
 
+--------------------------------------------
+--moveLeft()
+--moves the players squirrel to the neighboring branch on theleft
+--------------------------------------------
 local function moveLeft() 
 	if (player.model.x == contentWidth * .75) then
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
@@ -160,6 +167,10 @@ local function moveLeft()
 	end
 end
 
+--------------------------------------------
+--move(event)
+--
+--------------------------------------------
 local function move(event)
 	if (swipeMovement) then
 		if(event.phase == "began") then
@@ -182,6 +193,10 @@ local function move(event)
 	end
 end
 
+--------------------------------------------
+--pauseGame()
+--
+--------------------------------------------
 local function pauseGame ()
 	if player.health > 0 then
 		paused = true;
@@ -189,9 +204,15 @@ local function pauseGame ()
 		composer.gotoScene("pause", {effect="fromRight", time=1000})
 	end
 end
-	
+
+--------------------------------------------
+--hitObstacle(self, event)
 --Function handles player collision
 --When the player collides with an "obstacle" they should lose health 
+--when the player collides with an "acorn" they gain health or score depending on their current health
+--when the player collides with a "slow" mushroom, the game speed is reduced for a short duration
+--when the player collides with a "slow" mushroom, the game speed is increased for a short duration
+--------------------------------------------	
 local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if event.other.type == "obstacle" then   --If obstacle, do damage
@@ -577,7 +598,8 @@ function scene:show( event )
 
    if ( phase == "will" ) then
       -- Called when the scene is still off screen (but is about to come on screen).
-      	audio.resume(2)
+      	audio.resume(2)		-- resume the audio when game.lua is returned to
+		-- redisplay all the display objects in game
 	  	tutorialGroup.isVisible = true
 	  	scoreLabel.isVisible = true
 		scoreText.isVisible = true
@@ -604,12 +626,9 @@ function scene:show( event )
 			stars[i].isVisible = true
 		end
    elseif ( phase == "did" ) then
-		paused = false
-		Runtime:addEventListener( "touch", move)
+		paused = false	-- declase the game unpause to let the timers continue
+		Runtime:addEventListener( "touch", move)	-- re-create the event listeners that were removed on exit
 		Runtime:addEventListener( "enterFrame", main)
-      -- Called when the scene is now on screen.
-      -- Insert code here to make the scene come alive.
-      -- Example: start timers, begin animation, play audio, etc.
    end
 end
 
@@ -649,67 +668,74 @@ function scene:hide( event )
 		healthBackground.isVisible = false
 		healthSprite.isVisible = false
 		livesText.isVisible = false
-		Runtime:removeEventListener( "touch", move )
+		
+		paused = true	-- prevents the main game loop from moving obstacles and such
+		Runtime:removeEventListener( "touch", move )	-- remove event listeners to prevent actions on other scenes from changing game
 		Runtime:removeEventListener( "enterFrame", main)
-
-      -- Called when the scene is on screen (but is about to go off screen).
-      -- Insert code here to "pause" the scene.
-      -- Example: stop timers, stop animation, stop audio, etc.
    elseif ( phase == "did" ) then
-      -- Called immediately after scene goes off screen.
    end
 end
 
--- "scene:destroy()"
+-- Remove all the scene's display objects
 function scene:destroy( event )
 	local sceneGroup = self.view
 
+	-- Remove the trees, ya know, the ones that the squirrel climbs on
 	for i = 1, #trees do
 		trees[i]:removeSelf()
 		trees[i] = nil
 	end
+	-- Remove the earth stage background images (clouds and balloons)
 	for i = 1, #earthBGImgs do
 		earthBGImgs[i]:removeSelf()
 		earthBGImgs[i] = nil
 	end
+	earthBGImgs = {}
+	-- Remove the space stage background images (asteroids and ufo)
 	for i = 1, #spaceBGImgs do
 		spaceBGImgs[i]:removeSelf()
 		spaceBGImgs[i] = nil
 	end
+	spaceBGImgs = {}
+	-- Remove the space background stars
 	for i = 1, #stars do
 		stars[i]:removeSelf()
 		stars[i] = nil
 	end
+	stars = {}
+	-- Remove the obstacles that the squirrel collides with
 	for x=1,  #obstacles do
 		obstacles[x]:delete()
 	end	
-	earthBGImgs = {}
-	spaceBGImgs = {}
-	stars = {}
+	obstacles = {}
+	-- Remove health images
 	healthBackground:removeSelf()
 	healthBackground = nil
 	healthSprite:removeSelf()
 	healthSprite = nil
 	livesText:removeSelf()
 	livesText = nil
+	-- Remove damage mask
 	damageMask:removeSelf()
 	damageMask = nil
+	-- Remove the entire tutorial group
 	tutorialGroup:removeSelf()
 	tutorialGroup = nil
+	-- Remove score stuff
 	scoreLabel:removeSelf()
 	scoreLabel = nil
 	scoreText:removeSelf()
 	scoreText = nil
 	bonusScoreText:removeSelf()
 	bonusScoreText = nil
+	-- remove the only button on the screen
 	pauseBtn:removeSelf()
 	pauseBtn = nil
+	-- remove the player
 	player:delete()
+	-- Remove event listeners
 	Runtime:removeEventListener( "enterFrame", main )
 	Runtime:removeEventListener( "touch", move )
-	-- Called prior to the removal of scene's view ("sceneGroup").
-	-- Insert code here to clean up the scene.
-	-- Example: remove display objects, save state, etc.
 end
 
 ---------------------------------------------------------------------------------
@@ -720,7 +746,6 @@ scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 Runtime:addEventListener( "enterFrame", main )
---Runtime:addEventListener( "touch", swipeMove)
 Runtime:addEventListener( "touch", move)
 
 
