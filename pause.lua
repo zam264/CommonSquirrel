@@ -5,33 +5,42 @@ local game = require( "game" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
 ---------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
 
--- local forward references should go here
-local resumeBtn, quitBtn, movementButton, vibrationButton
-local titleText, scoreText, highScore, distanceText, scoreT, distanceT
-local effectsSlider, musicSlider, effectsText, musicText, movementText, vibrationText
+----------
+-- LOCAL VARIABLE DECLARATIONS
+local resumeBtn, quitBtn, movementButton, vibrationButton	--local buttons and switches
+local titleText, scoreText, highScore, distanceText, scoreT, distanceT, effectsText, musicText, movementText, vibrationText
+local effectsSlider, musicSlider	-- local sliders
 
-
+--------------------------------------------
+--onResumeBtn()
+--send the player back to the game and remove the pause scene to force the score and distance to reload
+--------------------------------------------
 local function onResumeBtn()
-	composer.removeScene( "pause" )
-	sceneInTransition = true
-	composer.gotoScene( "game", {effect="fromLeft", time=1000})
-	timer.performWithDelay (1000, function() sceneInTransition = false end)
+	composer.removeScene( "pause" )	-- remove pause so that if used again it will reload score and distance
+	
+	sceneInTransition = true	-- set the global "sceneInTransition = true" which prevents use of the back button
+	timer.performWithDelay (1000, function() sceneInTransition = false end)	-- reset "sceneInTransition" when the scene is done transitioning
+
+	composer.gotoScene( "game", {effect="fromLeft", time=1000})	-- transition back to game
 	return true	-- indicates successful touch
 end
---When the player chooses to quit remove all the scenes and go back to the menu screen 
-local function onQuitBtn()
-	audio.stop(2)
-	composer.removeScene( "game" )
-	--composer.removeScene( "menu" )
-	composer.removeScene( "pause" )
-	composer.removeScene( "options" )
-	sceneInTransition = true
-	composer.gotoScene( "menu", {effect="fromLeft", time=1000})
-	timer.performWithDelay (1000, function() sceneInTransition = false end)
+
+--------------------------------------------
+--onQuitBtn()
+--quits the game and sends the player back to the menu
+-- remove the game, pause, and options scenes to force them to reload
+--------------------------------------------
+local function onQuitBtn()	--When the player chooses to quit remove all the scenes and go back to the menu screen 
+	composer.removeScene( "game" )		-- remove game so that the player can start a new game from the menu
+	composer.removeScene( "pause" )		-- remove pause so that it can be remade by game
+	composer.removeScene( "options" )	-- remove options to force it to reload and update settings
+	
+	sceneInTransition = true	-- set the global "sceneInTransition = true" which prevents use of the back button 
+	timer.performWithDelay (1000, function() sceneInTransition = false end)	-- reset "sceneInTransition" when the scene is done transitioning
+	
+	audio.stop(2)	-- stop the games music because we are leaving to the menu
+	composer.gotoScene( "menu", {effect="fromLeft", time=1000})	-- transition back to the menu
 	return true	-- indicates successful touch
 end
 
@@ -41,35 +50,38 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
-    --Create the visuals for the Pause screen 
+--Create the visuals for the Pause screen 
 	composer.removeScene( "options" )
-	
+
+	-- Create the title text for the Pause screen
 	titleText = display.newText( "Paused" , display.contentWidth*.5, display.contentHeight *.1, "fonts/Rufscript010",  display.contentHeight * .1)
 	titleText.anchorX = .5
 	titleText.anchorY = .5
 	sceneGroup:insert(titleText)
 	
+	-- Create the score "header"
 	scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
 	scoreText.anchorX = 0
 	scoreText.anchorY = 0
 	sceneGroup:insert(scoreText)
-	
+	-- Create the players current in game score
 	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, "fonts/Rufscript010",  display.contentHeight * .05)
 	scoreT.anchorX = 1
 	scoreT.anchorY = 0
 	sceneGroup:insert(scoreT)
 	
+	-- Create the distance "header"
 	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
-	
+	-- Create the players current in-game distance
 	distanceT = display.newText (distance.." ft", display.contentWidth*.95, display.contentHeight *.33, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceT.anchorX = 1
 	distanceT.anchorY = 0
 	sceneGroup:insert(distanceT)
 	
-	
+	-- Create the sound effects "header"
 	effectsText = display.newText( "Sound Effects", display.contentWidth * .25, display.contentHeight*.375, "fonts/Rufscript010" ,display.contentHeight * .035)
 	effectsText.anchorX = 0
 	effectsText.anchorY = 0
@@ -82,10 +94,11 @@ function scene:create( event )
 		left = display.contentWidth * .25,
 		width = display.contentWidth * .5,
 		value = effectsVolume,
-		listener = effectsListener
+		listener = effectsListener	-- this calls the global function declared in options.lua
 	}
 	sceneGroup:insert(effectsSlider)
 
+	-- Create the music "header"
 	musicText = display.newText( "Music", display.contentWidth * .25, display.contentHeight*.475, "fonts/Rufscript010" ,display.contentHeight * .035)
 	musicText.anchorX = 0
 	musicText.anchorY = 0
@@ -98,46 +111,47 @@ function scene:create( event )
 		left = display.contentWidth * .25,
 		width = display.contentWidth * .5,
 		value = musicVolume,
-		listener = musicListener
+		listener = musicListener	-- this calls the global function declared in options.lua
 	}
 	sceneGroup:insert(musicSlider)
 	
+	-- Creates the movement "header"
 	movementText = display.newText( "Swipe To Move", display.contentWidth * .175, display.contentHeight * .6, "fonts/Rufscript010", display.contentHeight * .035)
 	movementText.anchorX = 0 
 	movementText.anchorY = 0 
 	sceneGroup:insert(movementText)
-
 	--A switch which allows the user to choose swipe or tap mode for movement of the squirrel 
 	movementButton = widget.newSwitch
 	{
 	    left = display.contentWidth * .65,
 	    top = display.contentHeight * .61,
 	    style = "onOff",
-	    initialSwitchState = swipeMovement,
-	    onPress = switchMovement
+	    initialSwitchState = swipeMovement,	-- swipeMovement is a global
+	    onPress = switchMovement			-- uses the global "switchMovement" function declared in options.lua
 	}
 	movementButton.width = display.contentWidth * .4
 	movementButton.height = display.contentHeight * .07
 	sceneGroup:insert( movementButton )
 	
+	-- Creates the vibration "header"
 	vibrationText = display.newText( "Vibration", display.contentWidth * .175, display.contentHeight * .68, "fonts/Rufscript010", display.contentHeight * .035)
 	vibrationText.anchorX = 0 
 	vibrationText.anchorY = 0 
 	sceneGroup:insert(vibrationText)
-
 	--A switch which turns vibration (on collision) on or off 
 	vibrationButton = widget.newSwitch
 	{
 	    left = display.contentWidth * .65,
 	    top = display.contentHeight * .69,
 	    style = "onOff",
-	    initialSwitchState = vibrate,
-	    onPress = switchVibrate
+	    initialSwitchState = vibrate,	-- vibrate is a global
+	    onPress = switchVibrate			-- uses the global "switchVibrate" function declared in options.lua
 	}
 	vibrationButton.width = display.contentWidth * .4
 	vibrationButton.height = display.contentHeight * .07
 	sceneGroup:insert( vibrationButton )
 	
+	-- Creates a button that will resume the game where the player left off
 	resumeBtn = widget.newButton{
 		label="Resume Game",
 		font = "fonts/Rufscript010",
@@ -146,7 +160,7 @@ function scene:create( event )
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
 		width=display.contentWidth * .50, height=display.contentHeight * .1,
-		onRelease = onResumeBtn
+		onRelease = onResumeBtn		-- takes the player back to game.lua
 	}
 	resumeBtn.anchorX = .5
 	resumeBtn.anchorY = .5
@@ -154,7 +168,7 @@ function scene:create( event )
 	resumeBtn.y = display.contentHeight * .80
 	sceneGroup:insert(resumeBtn)
 	
-	
+	-- Creates a button that quits out of the game and returns the player to the menu
 	quitBtn = widget.newButton{
 		label="Give up...",
 		font = "fonts/Rufscript010",
@@ -163,16 +177,13 @@ function scene:create( event )
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
 		width=display.contentWidth * .5, height=display.contentHeight * .1,
-		onRelease = onQuitBtn
+		onRelease = onQuitBtn	-- takes the player to menu.lua
 	}
 	quitBtn.anchorX = .5
 	quitBtn.anchorY = .5
 	quitBtn.x = display.contentWidth * .50
 	quitBtn.y = display.contentHeight * .93
 	sceneGroup:insert(quitBtn)
-	
-	
-   -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
 
 -- "scene:show()"
@@ -183,31 +194,26 @@ function scene:show( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		-- show text 
 		titleText.isVisible = true
 		scoreText.isVisible = true
 		scoreT.isVisible = true
 		distanceText.isVisible = true
 		distanceT.isVisible = true
-		
-		effectsSlider.isVisible = true
-		
-		
+		-- show sliders and slider related text
+		effectsSlider.isVisible = true		
 		effectsText.isVisible = true
 		musicSlider.isVisible = true
 		musicText.isVisible = true
-		
+		-- show switches and switch related text
 		movementText.isVisible = true
 		movementButton.isVisible = true
 		vibrationText.isVisible = true
 		vibrationButton.isVisible = true
-		
+		-- show buttons
 		resumeBtn.isVisible = true
 		quitBtn.isVisible = true
-      -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
-      -- Called when the scene is now on screen.
-      -- Insert code here to make the scene come alive.
-      -- Example: start timers, begin animation, play audio, etc.
    end
 end
 
@@ -218,30 +224,26 @@ function scene:hide( event )
    local phase = event.phase
 
    if ( phase == "will" ) then
+		-- hide text
 		titleText.isVisible = false
 		scoreText.isVisible = false
 		scoreT.isVisible = false
 		distanceText.isVisible = false
 		distanceT.isVisible = false
-		
+		-- hide sliders and related text
 		effectsSlider.isVisible = false
-
 		effectsText.isVisible = false
 		musicSlider.isVisible = false
 		musicText.isVisible = false
-		
+		-- hide switches and related text
 		movementText.isVisible = false
 		movementButton.isVisible = false
 		vibrationText.isVisible = false
 		vibrationButton.isVisible = false
-		
+		-- hide buttons
 		resumeBtn.isVisible = false
 		quitBtn.isVisible = false
-      -- Called when the scene is on screen (but is about to go off screen).
-      -- Insert code here to "pause" the scene.
-      -- Example: stop timers, stop animation, stop audio, etc.
    elseif ( phase == "did" ) then
-      -- Called immediately after scene goes off screen.
    end
 end
 
@@ -250,7 +252,7 @@ function scene:destroy( event )
 
 	--Destory everything when the scene is destroyed 
    local sceneGroup = self.view
-
+	-- destroy text
 	titleText:removeSelf()
 	titleText = nil
 	scoreText:removeSelf()
@@ -261,7 +263,7 @@ function scene:destroy( event )
 	distanceText = nil
 	distanceT:removeSelf()
 	distanceT = nil
-	
+	-- destroy sliders and related text
 	effectsSlider:removeSelf()
 	effectsSlider = nil
 	effectsText:removeSelf()
@@ -270,7 +272,7 @@ function scene:destroy( event )
 	musicSlider = nil
 	musicText:removeSelf()
 	musicText = nil	
-	
+	-- destroy switches and related text
 	movementText:removeSelf()
 	movementText = nil
 	movementButton:removeSelf()
@@ -279,20 +281,11 @@ function scene:destroy( event )
 	vibrationText = nil
 	vibrationButton:removeSelf()
 	vibrationButton = nil
-	
+	-- destroy buttons
 	resumeBtn:removeSelf()
 	resumeBtn = nil
 	quitBtn:removeSelf()
     quitBtn = nil
-
-    --movementButton:removeSelf()
-    --movementButton = nil 
-    --movementText:removeSelf() 
-    --movementText = nil 
-	
-   -- Called prior to the removal of scene's view ("sceneGroup").
-   -- Insert code here to clean up the scene.
-   -- Example: remove display objects, save state, etc.
 end
 
 ---------------------------------------------------------------------------------
