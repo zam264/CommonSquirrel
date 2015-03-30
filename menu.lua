@@ -67,7 +67,7 @@ function scene:create( event )
 
     sceneGroup = self.view
 	display.setDefault( "background", 0/255, 120/255, 171/255 )
-	menuBG = display.newImageRect( "imgs/menuBG2.png", display.contentWidth, display.contentHeight)
+	menuBG = display.newImageRect( "imgs/menuBG.png", display.contentWidth, display.contentHeight)
 	menuBG.x = display.contentWidth*.5
 	menuBG.y = display.contentHeight*.5
 	sceneGroup:insert(menuBG)
