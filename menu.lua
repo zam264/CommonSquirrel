@@ -216,6 +216,8 @@ function scene:show( event )
 		journalBtn.isVisible = true
 		menuBG.isVisible = true
 		transition.to( menuBG, { time=1000, alpha=1 } )
+		--transition.to( "background", {time=1000, r=0, g=120/255, g=171/255})
+		display.setDefault( "background", 0/255, 120/255, 171/255 )
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
