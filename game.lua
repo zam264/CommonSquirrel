@@ -13,7 +13,7 @@ local scene = composer.newScene()
 --Variables
 local scoreText, livesText, bonusScoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, scoreLabel, healthBackground
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
-local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon, treeBase
+local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon, treeBase, invulnAura
 local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
 local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")
 local acornSFX = audio.loadSound("sound/Replenish.mp3")
@@ -147,12 +147,18 @@ livesText.anchorY = .5
 local function moveRight() 
 	if (player.model.x == contentWidth * .25) then
 		transition.to(player.model, {rotation=30, time=100/difficulty})
+		transition.to(invulnAura, {rotation=30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
+		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
+		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.5})
 	elseif (player.model.x == contentWidth * .5) then
 		transition.to(player.model, {rotation=30, time=100/difficulty})
+		transition.to(invulnAura, {rotation=30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
+		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
+		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.75})
 	end
 end
 
@@ -163,12 +169,18 @@ end
 local function moveLeft() 
 	if (player.model.x == contentWidth * .75) then
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
+		transition.to(invulnAura, {rotation=-30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
+		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
+		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.5})
 	elseif (player.model.x == contentWidth * .5) then
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
+		transition.to(invulnAura, {rotation=-30, time=100/difficulty})
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
+		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.25})
+		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.25})
 	end
 end
 
@@ -285,7 +297,7 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (1900, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier -.05 end)
 		elseif (event.other.type == "red") then 
-			bonusScoreText:setFillColor(.7,0,.7)
+			bonusScoreText:setFillColor(1,0,0)
 			bonusScoreText.text ="INVINCIBLE!"
 			bonusScoreText.alpha = 1
 			audio.stop({channel = 3})
@@ -294,7 +306,8 @@ local function hitObstacle(self, event)
 			event.other.alpha = 0
 			player.invincible = true
 			timer.performWithDelay(2000, function() player.invincible = false end)
-			
+			transition.to(invulnAura, {time = 100, alpha=1})
+			timer.performWithDelay(1500, function() transition.to(invulnAura, {time = 500, alpha=0, transition=easing.outInBounce}) end)
 		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
 		healthSprite:play()
@@ -403,6 +416,14 @@ function scene:create( event )
 	player.model:addEventListener("collision", player.model)
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
+	-- Create invincibility aura
+	invulnAura = display.newImageRect("imgs/invulnAura.png", contentWidth * .2, contentWidth * .4)
+	invulnAura.x = player.model.x
+	invulnAura.y = player.model.y
+	invulnAura.anchorX = .5
+	invulnAura.anchorY = .5
+	invulnAura.alpha = 0
+	
 	scoreLabel = display.newText( "Score", contentWidth * .5, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	scoreText = display.newText( tostring(playerScore), contentWidth * .5, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText = display.newText( 0, contentWidth * .5, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
@@ -432,6 +453,7 @@ function scene:create( event )
 	damageMask.alpha = 0
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(damageMask)
+	sceneGroup:insert(invulnAura)
 	sceneGroup:insert(player.model)
 	sceneGroup:insert(scoreLabel)
 	sceneGroup:insert(scoreText)
@@ -441,6 +463,9 @@ function scene:create( event )
 	sceneGroup:insert(livesText)
 	sceneGroup:insert(tutorialGroup)
 end
+
+
+
 
 function main(event)
 	if  ( paused ) then --Check if the game is paused
