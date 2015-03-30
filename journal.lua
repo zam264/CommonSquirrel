@@ -16,7 +16,8 @@ local journalImages = {
 "imgs/poisenShroom.png", 
 "imgs/slowShroom.png",
 "imgs/speedShroom.png",
-"imgs/fire1.png"
+"imgs/fire1.png",
+"imgs/healthShroom.png"
 }
 local journalEntries = {
 "Bee Hive",
@@ -25,7 +26,8 @@ local journalEntries = {
 "Poisonous Mushroom", 
 "Time Slowing Mushroom",
 "Time Accelerating Mushroom",
-"Forrest Fire"
+"Forrest Fire",
+"Invincibility Mushroom"
 }
 local journalDescriptions = {
 "A dangerous bee hive, avoid it",
@@ -34,7 +36,8 @@ local journalDescriptions = {
 "A 'shroom that is highly toxic , avoid it",
 "A 'shroom that slows time, helpful", 
 "A 'shroom that speeds time, avoid",
-"A forrest fire caused by a stray flame, \navoid it"
+"A forrest fire caused by a stray flame, \navoid it",
+"A mushroom that makes the squirrel \ninvincible to damage"
 }
 local function onBackBtn()
 	sceneInTransition = true

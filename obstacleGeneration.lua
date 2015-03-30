@@ -1,4 +1,3 @@
---local emptyCols = {}
 
 function generateObstacles(collection)
 	local rand = math.random(10)
@@ -28,7 +27,9 @@ function createItem()
 	end
 	return obj
 end
+
 --[[
+--OLD OBSTACLE GENERATION --- NOT USED
 function generateObstacles(collection)
 	for i = 0, 4 do 
 		if i > 0 then 
@@ -51,7 +52,6 @@ function generateObstacles(collection)
 		end
 	end
 end
-]]--
 
 function generateRow(chance0, chance1, chance2, empty, row, collection) 
 	local random = math.random(100) 
@@ -118,3 +118,4 @@ function newObstacle(row, col, collection)
 	
 	return obj
 end
+]]--

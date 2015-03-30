@@ -217,10 +217,11 @@ end
 --when the player collides with an "acorn" they gain health or score depending on their current health
 --when the player collides with a "slow" mushroom, the game speed is reduced for a short duration
 --when the player collides with a "slow" mushroom, the game speed is increased for a short duration
+--When the player collides with a "red" mushroom, the player becomes invulnerable
 --------------------------------------------	
 local function hitObstacle(self, event)
 	if event.phase == "began" then
-		if event.other.type == "obstacle" then   --If obstacle, do damage
+		if event.other.type == "obstacle" and not player.invincible then   --If obstacle, do damage
 			audio.stop({channel = 4})
 			audio.play( hitSFX, { channel=4, loops=0 } )
 			audio.setVolume( effectsVolume, {channel=4})
@@ -283,6 +284,16 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (1800, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
 			timer.performWithDelay (1900, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier -.05 end)
+		elseif (event.other.type == "red") then 
+			bonusScoreText:setFillColor(.7,0,.7)
+			bonusScoreText.text ="INVINCIBLE!"
+			bonusScoreText.alpha = 1
+			audio.stop({channel = 3})
+			audio.play( acornSFX, { channel=3, loops=0 } )
+			audio.setVolume( effectsVolume, {channel=3})
+			event.other.alpha = 0
+			player.invincible = true
+			timer.performWithDelay(2000, function() player.invincible = false end)
 			
 		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
