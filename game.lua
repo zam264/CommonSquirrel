@@ -143,6 +143,7 @@ livesText.anchorY = .5
 --------------------------------------------
 --moveRight()
 --moves the players squirrel to the neighboring branch on the right
+-- the player can only move if the squirrel is on a branch
 --------------------------------------------
 local function moveRight() 
 	if (player.model.x == contentWidth * .25) then
@@ -164,7 +165,8 @@ end
 
 --------------------------------------------
 --moveLeft()
---moves the players squirrel to the neighboring branch on theleft
+--moves the players squirrel to the neighboring branch on the left
+-- the player can only move if the squirrel is on a branch
 --------------------------------------------
 local function moveLeft() 
 	if (player.model.x == contentWidth * .75) then
@@ -186,6 +188,7 @@ end
 
 --------------------------------------------
 --move(event)
+--function handles for both movement types and both directions
 --
 --------------------------------------------
 local function move(event)
@@ -212,7 +215,7 @@ end
 
 --------------------------------------------
 --pauseGame()
---
+--set the pause flag to handle the game timers
 --------------------------------------------
 local function pauseGame ()
 	if player.health > 0 then
@@ -227,22 +230,26 @@ end
 --Function handles player collision
 --When the player collides with an "obstacle" they should lose health 
 --when the player collides with an "acorn" they gain health or score depending on their current health
---when the player collides with a "slow" mushroom, the game speed is reduced for a short duration
---when the player collides with a "slow" mushroom, the game speed is increased for a short duration
+--when the player collides with a "slow (gold)" mushroom, the game speed is reduced for a short duration
+--when the player collides with a "speed (purple)" mushroom, the game speed is increased for a short duration
 --When the player collides with a "red" mushroom, the player becomes invulnerable
 --------------------------------------------	
 local function hitObstacle(self, event)
 	if event.phase == "began" then
-		if event.other.type == "obstacle" and not player.invincible then   --If obstacle, do damage
-			audio.stop({channel = 4})
-			audio.play( hitSFX, { channel=4, loops=0 } )
-			audio.setVolume( effectsVolume, {channel=4})
-			if vibrate then 
-				system.vibrate()
-			end
-			playerHit = true
-			timer.performWithDelay (200, function() playerHit = false end)
-			player:damage(1)
+		if (event.other.type == "obstacle") then   --If obstacle, do damage				
+				audio.stop({channel = 4})
+				audio.play( hitSFX, { channel=4, loops=0 } )
+				audio.setVolume( effectsVolume, {channel=4})
+				if (not player.invincible) then
+					if vibrate then 
+						system.vibrate()
+					end
+					playerHit = true
+					timer.performWithDelay (200, function() playerHit = false end)
+					player:damage(1)
+				else
+					event.other.alpha = 0
+				end
 		elseif (event.other.type == "acorn") then  --If Acorn, heal the player 
 			audio.stop({channel = 3})
 			audio.play( acornSFX, { channel=3, loops=0 } )
@@ -307,7 +314,7 @@ local function hitObstacle(self, event)
 			player.invincible = true
 			timer.performWithDelay(2000, function() player.invincible = false end)
 			transition.to(invulnAura, {time = 100, alpha=1})
-			timer.performWithDelay(1500, function() transition.to(invulnAura, {time = 500, alpha=0, transition=easing.outInBounce}) end)
+			timer.performWithDelay(1500, function() transition.to(invulnAura, {time = 500, alpha=0, transition=easing.outCirc}) end)
 		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
 		healthSprite:play()
