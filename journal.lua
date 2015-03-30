@@ -28,13 +28,13 @@ local journalEntries = {
 "Forrest Fire"
 }
 local journalDescriptions = {
-"A damgerous bee hive, avoid it",
+"A dangerous bee hive, avoid it",
 "A delicous acorn, restores 1 health", 
 "A well made bird house, dont hit", 
-"A highly toxic mushroom, avoid it",
+"A 'shroom that is highly toxic , avoid it",
 "A 'shroom that slows time, helpful", 
 "A 'shroom that speeds time, avoid",
-"A forrest fire caused by a stray flame, \navoid"
+"A forrest fire caused by a stray flame, \navoid it"
 }
 local function onBackBtn()
 	sceneInTransition = true

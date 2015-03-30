@@ -13,7 +13,7 @@ local scene = composer.newScene()
 --Variables
 local scoreText, livesText, bonusScoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, scoreLabel, healthBackground
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
-local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
+local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon, treeBase
 local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
 local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")
 local acornSFX = audio.loadSound("sound/Replenish.mp3")
@@ -67,6 +67,11 @@ end
 --Images and sprite setup
 --Background
 display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
+--start ground image
+treeBase = display.newImageRect( "imgs/treeBase.png", display.contentWidth, display.contentHeight)
+treeBase.x = display.contentWidth*.5
+treeBase.y = display.contentHeight*.5
+
 --create the trees
 for i = 1, 6, 1 do
 	trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
@@ -393,6 +398,7 @@ function scene:create( event )
 	bonusScoreText.alpha = 0
 
 	--insert everything into the scene group
+	sceneGroup:insert(treeBase)
 	for i=1, #stars do
 		sceneGroup:insert(stars[i])
 	end
@@ -413,7 +419,6 @@ function scene:create( event )
 	damageMask.anchorX = 0
 	damageMask.anchorY = 0
 	damageMask.alpha = 0
-
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(damageMask)
 	sceneGroup:insert(player.model)
@@ -576,6 +581,10 @@ function main(event)
 			trees[i]:translate(0, yTranslate)
 		end
 
+		if(treeBase.x < contentHeight)then
+			treeBase:translate(0, yTranslate)
+		end
+
 		--Obstacle Handling
 		for x=#obstacles, 1, -1 do
 			obstacles[x].model:translate(0,yTranslate)
@@ -600,6 +609,7 @@ function scene:show( event )
       -- Called when the scene is still off screen (but is about to come on screen).
       	audio.resume(2)		-- resume the audio when game.lua is returned to
 		-- redisplay all the display objects in game
+		treeBase.isVisible = true
 	  	tutorialGroup.isVisible = true
 	  	scoreLabel.isVisible = true
 		scoreText.isVisible = true
@@ -643,6 +653,7 @@ function scene:hide( event )
 	end
    
    if ( phase == "will" ) then
+   		treeBase.isVisible = false
 		for x=1, #trees do
 			trees[x].isVisible = false
 		end
@@ -679,7 +690,8 @@ end
 -- Remove all the scene's display objects
 function scene:destroy( event )
 	local sceneGroup = self.view
-
+	treeBase:removeSelf()
+	treeBase = nil
 	-- Remove the trees, ya know, the ones that the squirrel climbs on
 	for i = 1, #trees do
 		trees[i]:removeSelf()
