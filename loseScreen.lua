@@ -106,7 +106,7 @@ end
 local function onQuitBtn()
 	audio.stop(2)
 	composer.removeScene( "game" )
-	composer.removeScene( "menu" )
+	--composer.removeScene( "menu" )
 	composer.removeScene( "loseScreen" )
 	sceneInTransition = true
 	composer.gotoScene( "menu", {effect="fromLeft", time=1000})

@@ -26,7 +26,7 @@ end
 local function onQuitBtn()
 	audio.stop(2)
 	composer.removeScene( "game" )
-	composer.removeScene( "menu" )
+	--composer.removeScene( "menu" )
 	composer.removeScene( "pause" )
 	composer.removeScene( "options" )
 	sceneInTransition = true

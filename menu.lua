@@ -205,8 +205,10 @@ function scene:show( event )
 		titleText2.isVisible = true
 		highScoreText.isVisible = true
 		highScore.isVisible = true
+		highScore.text = loadScore()
 		totalDistanceText.isVisible = true
 		totalDistance.isVisible = true
+		totalDistance.text = loadDistance()
 		playBtn.isVisible = true
 		achievementsButton.isVisible = true
 		unlockablesButton.isVisible = true
