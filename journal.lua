@@ -10,8 +10,8 @@ local widget = require "widget"		-- include Corona's "widget" library
 local titleText1, scrollableJournal, backBtn
 local background
 local journalImages = {
-"journal/beeHive.png", 
-"journal/acorn.png", 
+"imgs/beeHive.png", 
+"imgs/acorn.png", 
 "imgs/birdHouse1.png", 
 "imgs/poisenShroom.png", 
 "imgs/slowShroom.png",
