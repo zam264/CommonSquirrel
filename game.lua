@@ -15,7 +15,7 @@ local scoreText,  timePassedBetweenEvents, timePassed, stageTimer, difficultytim
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
 local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
 local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
-local spaceMusic = audio.loadStream("sound/At the dimensional gate_0.mp3")
+local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")
 local acornSFX = audio.loadSound("sound/Replenish.mp3")
 local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
 local contentHeight = display.contentHeight
