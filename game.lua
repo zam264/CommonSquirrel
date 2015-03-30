@@ -347,7 +347,7 @@ function scene:create( event )
 	
 	scoreLabel = display.newText( "Score", contentWidth * .5, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	scoreText = display.newText( tostring(playerScore), contentWidth * .5, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
-	bonusScoreText = display.newText( 0, contentWidth * .25, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
+	bonusScoreText = display.newText( 0, contentWidth * .5, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText.alpha = 0
 
 	--insert everything into the scene group
