@@ -95,7 +95,7 @@ for i = 1, 3, 1 do
 	local sizeMod = .75 + math.random()*.5 
 	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
 	spaceBGImgs[i].x = math.random(1, contentWidth)
-	spaceBGImgs[i].y = 0 - math.random(50, contentHeight)
+	spaceBGImgs[i].y = 0 - math.random(contentHeight*.1, contentHeight)
 end
 --create the stars
 for i = 1, 100, 1 do
