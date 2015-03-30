@@ -12,6 +12,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 local replayBtn, quitBtn
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
 local achievementText, achievementIcon, achievementTitle, achivementSubtext, achievementBorder
+--Array of the distances that relate to an achievement
 local achievementDistance = {
 	2,		8,
 	26,		60,
@@ -29,6 +30,7 @@ local achievementDistance = {
 	327000,	1360000,
 	5443680, 1200000000,
 	9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
+--Array of achievement names
 local achievementNames = {
 	"Tree Sapling",
 	"Tallest Man",
@@ -61,6 +63,7 @@ local achievementNames = {
 	"Sputnik 2",
 	"Moon",
 	"Good Luck..."	}
+--Array of achievement descriptions
 local achievementDescriptions = {
 	"Just a sapling",
 	"High five, mate",
@@ -94,6 +97,7 @@ local achievementDescriptions = {
 	"One small step for \nman, one giant leap \nfor a squirrel",
 	"I think you cheated..."}
 	
+--When the replay button is clicked, restart the game
 local function onReplayBtn()
 	audio.stop(2)
 	composer.removeScene( "game" )
@@ -103,6 +107,7 @@ local function onReplayBtn()
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--When the quit button is clicked, return to the menu screen 
 local function onQuitBtn()
 	audio.stop(2)
 	composer.removeScene( "game" )
@@ -116,16 +121,18 @@ end
 
 ---------------------------------------------------------------------------------
 
--- "scene:create()"
+--Creates the lose screen
 function scene:create( event )
     sceneGroup = self.view
 
+    --Display text telling the player that they lost
 	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.1, "fonts/Rufscript010",  display.contentHeight * .1)
 	titleText.anchorX = .5
 	titleText.anchorY = .5
 	sceneGroup:insert(titleText)
 	
-	if (loadScore() <= playerScore) then	--new highscore has been set
+	--The score stored on the players device is lower than their current score -> so a new score has been achieved
+	if (loadScore() <= playerScore) then	--new highscore has been set -> Inform the player
 		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
 		scoreText.anchorX = 0
 		scoreText.anchorY = 0
@@ -137,11 +144,13 @@ function scene:create( event )
 		scoreText.anchorY = 0
 		sceneGroup:insert(scoreText)
 	end
+	--Displays the score of the player
 	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, "fonts/Rufscript010",  display.contentHeight * .05)
 	scoreT.anchorX = 1
 	scoreT.anchorY = 0
 	sceneGroup:insert(scoreT)
 	
+	--Display the total distance travelled -> Distance accumlates to unlock achievements
 	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
