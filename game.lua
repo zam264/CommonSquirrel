@@ -11,7 +11,7 @@ require( "unlockables" )
 local scene = composer.newScene()
 
 --Variables
-local scoreText,  timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel
+local scoreText,  timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, bonusScoreText, scoreLabel, healthBackground, livesText
 local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
 local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon
 local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
@@ -117,14 +117,24 @@ local sequenceData = {
 	{name = "health0", start=4, count=1, time=0, loopCount=1}
 }
 local healthSprite = display.newSprite( healthSheet, sequenceData )
-healthSprite.anchorX = 0
-healthSprite.anchorY = 0
-healthSprite.x = contentWidth * .005
-healthSprite.y = contentWidth * .015
+healthSprite.anchorX = .5
+healthSprite.anchorY = .5
+healthSprite.x = contentWidth * .1
+healthSprite.y = contentWidth * .075
 healthSprite.xScale = contentWidth * .001
 healthSprite.yScale = contentWidth * .001
 healthSprite:setSequence( "health" .. 3 )
 healthSprite:play()
+
+healthBackground = display.newRoundedRect(healthSprite.x, contentWidth * .09, contentWidth * .19, contentWidth * .115, contentWidth * .1 *.5)
+healthBackground.anchorX = .5
+healthBackground.anchorY = .5
+
+livesText = display.newText( "Lives", healthBackground.x, contentWidth * .12, "fonts/Rufscript010", contentWidth * .05)
+livesText:setFillColor(0,0,0)
+livesText.anchorX = .5
+livesText.anchorY = .5
+
 
 local function moveRight() 
 	if (player.model.x == contentWidth * .25) then
@@ -378,7 +388,9 @@ function scene:create( event )
 	sceneGroup:insert(scoreLabel)
 	sceneGroup:insert(scoreText)
 	sceneGroup:insert(bonusScoreText)
+	sceneGroup:insert(healthBackground)
 	sceneGroup:insert(healthSprite)
+	sceneGroup:insert(livesText)
 	sceneGroup:insert(tutorialGroup)
 end
 
@@ -562,7 +574,9 @@ function scene:show( event )
 		pauseBtn.isVisible = true
 		damageMask.isVisible = true
 		player.model.isVisible = true
+		healthBackground.isVisible = true
 		healthSprite.isVisible = true
+		livesText.isVisible = true
 		for x=1,  #obstacles do
 			obstacles[x].model.isVisible = true
 		end
@@ -621,7 +635,9 @@ function scene:hide( event )
 			stars[i].isVisible = false
 		end
 		player.model.isVisible = false
+		healthBackground.isVisible = false
 		healthSprite.isVisible = false
+		livesText.isVisible = false
 		Runtime:removeEventListener( "touch", move )
 		Runtime:removeEventListener( "enterFrame", main)
 
@@ -659,6 +675,12 @@ function scene:destroy( event )
 	earthBGImgs = {}
 	spaceBGImgs = {}
 	stars = {}
+	healthBackground:removeSelf()
+	healthBackground = nil
+	healthSprite:removeSelf()
+	healthSprite = nil
+	livesText:removeSelf()
+	livesText = nil
 	damageMask:removeSelf()
 	damageMask = nil
 	tutorialGroup:removeSelf()
