@@ -209,14 +209,22 @@ local function hitObstacle(self, event)
 			audio.play( acornSFX, { channel=3, loops=0 } )
 			audio.setVolume( effectsVolume, {channel=3})
 			if player.health == 3 then
+				bonusScoreText:setFillColor(1,1,1)
 				bonusScoreText.text ="+" .. math.floor(difficulty * 5)
 				bonusScoreText.alpha = 1
 				playerScore = playerScore + math.floor(difficulty * 5)
 			else
+				bonusScoreText:setFillColor(1,1,1)
+				bonusScoreText.text ="1 up!"
+				bonusScoreText.alpha = 1
 				player:heal(1)
 			end
 			event.other.alpha = 0
 		elseif (event.other.type == "slow") then
+			bonusScoreText:setFillColor(1,1,0)
+			bonusScoreText.text ="slow"
+			bonusScoreText.alpha = 1
+			
 			audio.stop({channel = 3})
 			audio.play( acornSFX, { channel=3, loops=0 } )
 			audio.setVolume( effectsVolume, {channel=3})
@@ -232,20 +240,23 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (1900, function() gameSpeedModifier = gameSpeedModifier +.1 end)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier +.1 end)
 		elseif (event.other.type == "speed") then
+			bonusScoreText:setFillColor(.7,0,.7)
+			bonusScoreText.text ="SPEED!"
+			bonusScoreText.alpha = 1
 			audio.stop({channel = 3})
 			audio.play( acornSFX, { channel=3, loops=0 } )
 			audio.setVolume( effectsVolume, {channel=3})
 			event.other.alpha = 0
-			gameSpeedModifier = gameSpeedModifier +.1
-			timer.performWithDelay (100, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
-			timer.performWithDelay (200, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
-			timer.performWithDelay (300, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
-			timer.performWithDelay (400, function() gameSpeedModifier =  gameSpeedModifier +.1 end)
-			timer.performWithDelay (1000, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
-			timer.performWithDelay (1100, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
-			timer.performWithDelay (1200, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
-			timer.performWithDelay (1300, function() gameSpeedModifier =  gameSpeedModifier -.1 end)
-			timer.performWithDelay (1400, function() gameSpeedModifier = gameSpeedModifier -.1 end)
+			gameSpeedModifier = gameSpeedModifier +.05
+			timer.performWithDelay (100, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
+			timer.performWithDelay (200, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
+			timer.performWithDelay (300, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
+			timer.performWithDelay (400, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
+			timer.performWithDelay (1600, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
+			timer.performWithDelay (1700, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
+			timer.performWithDelay (1800, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
+			timer.performWithDelay (1900, function() gameSpeedModifier =  gameSpeedModifier -.05 end)
+			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier -.05 end)
 			
 		end
 		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
