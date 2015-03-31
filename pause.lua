@@ -1,3 +1,8 @@
+--[[
+pause.lua
+William Botzer, Steven Zamborsky, Zachary Petrusch
+]]--
+
 local composer = require( "composer" )
 local score = require( "score" )
 local options = require("options")

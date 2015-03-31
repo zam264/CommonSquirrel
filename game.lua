@@ -1,3 +1,6 @@
+--[[
+game.lua by William Botzer, Steven Zamborsky, Zachary Petrusch
+]]--
 local composer = require( "composer" )
 local physics = require("physics")
 local score = require( "score" )
@@ -10,41 +13,100 @@ require('options')
 require( "unlockables" )
 local scene = composer.newScene()
 
---Variables
-local scoreText, livesText, bonusScoreText, timePassedBetweenEvents, timePassed, stageTimer, difficultytimer, maxDifficulty, scoreLabel, healthBackground
-local highScore, pauseBtn, damageMask, tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup, bgR, bgG, bgB
-local screenTop, screenBottom, screenLeft, screenRight, spaceBoundary, spaceTransition, balloon, treeBase, invulnAura
-local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")
-local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")
-local acornSFX = audio.loadSound("sound/Replenish.mp3")
-local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
-local contentHeight = display.contentHeight
-local contentWidth = display.contentWidth
-local player
-local trees = {}
-local earthBGImgs = {}
-local spaceBGImgs = {}
-local stars = {}
-local obstacles = {} --Holds obstacles
-local yTranslate
-local contentHeight = contentHeight
-local contentWidth = contentWidth
-local playerHit = false
-local maskAlpha = 0
-local bgClear = false
-local beginX = contentWidth *0.5 	--Used to track swiping movements, represents initial user touch position on screen 
-spaceBoundary = 2 --level of difficulty which you enter space
-spaceTransition = .25
-paused = false
-playerScore = 0
-distance = 0
-bgR = 0
-bgG = 120
-bgB = 171
-local difficulty = 1
-local yTranslateModifier = 5
-local gameSpeedModifier = 1
--- Earth Background Modifiers --
+
+-- Global variables
+paused = false		-- if the game is paused or not
+					-- paused helps manage timers to prevent the player from manipulating the pause screen
+playerScore = 0	-- the players score as a number
+distance = 0	-- the players distance as a number
+
+-- Local Variable Declarations
+local scoreText, livesText, bonusScoreText	-- General text objects
+local tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup	-- objects specifically for the tutorial
+local scoreLabel	-- the text "Score" at the top of the screen ( variable 'scoreText' contains the text of the players score)
+local pauseBtn		-- the pause button widget in the top right
+local playerHit = false	-- Set to true when the player is hit by an obstacle THAT DOES DAMAGE
+local beginX 			-- Used to track swiping movements, represents initial user touch position on screen 
+
+--Game Timers
+local timePassedBetweenEvents	-- the amount of time passed between calls to   main(event)
+local timePassed		-- used to check when .25 seconds pass in order to increment score
+local stageTimer		-- used to check when enough time has passed to generate obstacles
+local difficultyTimer	-- used to check when enough time has passed to increase the difficulty
+
+-- Default background colors
+local bgR = 0		-- default red value of the background
+local bgG = 120	-- default green value of the background
+local bgB = 171	-- default blue value of the background
+
+-- Space stage variables
+local spaceBoundary = 2		-- level of difficulty which you enter space
+local spaceTransition = .25	-- the rate at which the game transitions to space after the spaceBoundary is reached
+local bgClear = false	-- Used to test if the earth stage background is clear before moving the space background on screen
+
+-- Audio
+local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")	-- music for the earth stage
+local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")		-- music for the space stage
+local acornSFX = audio.loadSound("sound/Replenish.mp3")		-- sound effect when a powerup is acquired
+local hitSFX = audio.loadSound("sound/atari_boom3.mp3")		-- sound effect when the player hits an obstacle
+
+-- Constants
+local contentHeight = display.contentHeight	-- local variables were said to improve performance
+local contentWidth = display.contentWidth	-- I don't know how much of a difference this actually makes
+local highScore = loadScore()		-- the player's current highscore
+local maxDifficulty = 3			-- the games max difficulty
+
+-- Collision Objects
+local player			-- the players squirrel
+local obstacles = {}	-- Holds obstacles
+
+-- Background object groups
+local earthBGGroup, spaceBGGroup, treesBGGroup, starsBGGroup
+
+-- Background images/display objects
+local trees = {}	-- array containing the trees that the squirrel is climbing (there are 6 of these)
+local earthBGImgs = {}	-- the clouds and balloon that are seen before the space stage is reached
+local spaceBGImgs = {}	-- array containing the asteroids and ufo that are seen after reaching space
+local stars = {}	-- array containing the stars in the background of the space stage
+local treeBase		-- the grassy ground that appears at the start of each game
+local invulnAura	-- the white and gold aura that surrounds the squirrel when a red mushroom is picked up
+local damageMask	-- the white border around the screen when the player takes damage
+
+-- Game difficulty and speed variables
+local difficulty = 1	-- the current difficulty of the game ranges from [1,3] 
+						-- it takes 15 seconds to go from difficulty 1 ->2 and 30 seconds to go from 2 -> 3
+local yTranslateModifier = 5	-- we use this to assist in calculated how far to move the objects each frame
+local yTranslate	-- how far we move the objects each frame (difficulty * yTranslateModifier * gameSpeedModifier)
+					-- the background objects use half of this value to create a parallax effect
+local gameSpeedModifier = 1		-- Used when "slow" and "speed" mushrooms are hit to adjust the speed of the game
+
+-- Health Sprite sheet variables
+local healthSheetOptions = {
+	width = 192,
+	height = 64,
+	numFrames = 4
+}
+local healthSheet = graphics.newImageSheet("imgs/acornSprites.png", healthSheetOptions)
+local healthSheetSequenceData = {
+	{name = "health3", start=1, count=1, time=0, loopCount=1},
+	{name = "health2", start=2, count=1, time=0, loopCount=1},
+	{name = "health1", start=3, count=1, time=0, loopCount=1},
+	{name = "health0", start=4, count=1, time=0, loopCount=1}
+}
+local healthSprite = display.newSprite( healthSheet, healthSheetSequenceData )
+	healthSprite.x = contentWidth * .1
+	healthSprite.y = contentWidth * .075
+	healthSprite.xScale = contentWidth * .001
+	healthSprite.yScale = contentWidth * .001
+	healthSprite:setSequence( "health" .. 3 )
+	healthSprite:play()
+local healthBackground
+	healthBackground = display.newRoundedRect(healthSprite.x, contentWidth * .09, contentWidth * .19, contentWidth * .115, contentWidth * .1 *.5)
+livesText = display.newText( "Lives", healthBackground.x, contentWidth * .12, "fonts/Rufscript010", contentWidth * .05)
+	livesText:setFillColor(0,0,0)
+
+
+-- Earth Background Modifiers
 local earthBackgroundMovement = math.random(0,1)
 if (earthBackgroundMovement == 0) then
 	earthBackgroundMovement = -1
@@ -55,7 +117,7 @@ local earthBGSpeed = {}
 for i=1, 4 do
 	earthBGSpeed[i] = math.random()
 end
-local earthBGGroup
+
 --[[ Space Background Modifiers ]]--
 local astroidRotation1 = math.random(0,1) - math.random()
 local astroidRotation2 = math.random(0,1) - math.random()
@@ -64,81 +126,9 @@ for i=1, 3 do
 	spaceBGSpeed[i] = math.random(0,1) - math.random()
 end
 
---Images and sprite setup
---Background
-display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
---start ground image
-treeBase = display.newImageRect( "imgs/treeBase.png", display.contentWidth, display.contentHeight)
-treeBase.x = display.contentWidth*.5
-treeBase.y = display.contentHeight*.5
+-- End of Variable Declarations
+---------------------------------------------------------------------------
 
---create the trees
-for i = 1, 6, 1 do
-	trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
-	trees[i].x = contentWidth *.25 * (i%3 + 1)
-	if(i<=3)then
-		trees[i].y = contentHeight+(-i * contentHeight * .33)
-	else
-		trees[i].y = trees[i-3].y - (contentHeight * .95) * 2
-	end
-end
---create the earth images
-for i = 1, 4, 1 do
-	local sizeMod = .75 + math.random()/2 
-	if(i<=3)then
-		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. i .. ".png", contentWidth*.6*sizeMod, contentWidth*.3*sizeMod)
-		earthBGImgs[i].x = math.random(1, contentWidth)
-		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
-	else
-		earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
-		earthBGImgs[i].x = math.random(1, contentWidth)
-		earthBGImgs[i].y = 0 - math.random(1, contentHeight)
-	end
-end
---create the space images
-for i = 1, 3, 1 do
-	local sizeMod = .75 + math.random()*.5 
-	spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
-	spaceBGImgs[i].x = math.random(1, contentWidth)
-	spaceBGImgs[i].y = 0 - math.random(contentHeight*.1, contentHeight)
-end
---create the stars
-for i = 1, 100, 1 do
-	stars[i] = display.newRect(math.random(1, contentWidth), 0 - math.random(1, contentHeight), 4, 4)
-	stars[i].alpha = 0
-end
-
---Health sprite variables
-local options = {
-	width = 192,
-	height = 64,
-	numFrames = 4
-}
-local healthSheet = graphics.newImageSheet("imgs/acornSprites.png", options)
-local sequenceData = {
-	{name = "health3", start=1, count=1, time=0, loopCount=1},
-	{name = "health2", start=2, count=1, time=0, loopCount=1},
-	{name = "health1", start=3, count=1, time=0, loopCount=1},
-	{name = "health0", start=4, count=1, time=0, loopCount=1}
-}
-local healthSprite = display.newSprite( healthSheet, sequenceData )
-healthSprite.anchorX = .5
-healthSprite.anchorY = .5
-healthSprite.x = contentWidth * .1
-healthSprite.y = contentWidth * .075
-healthSprite.xScale = contentWidth * .001
-healthSprite.yScale = contentWidth * .001
-healthSprite:setSequence( "health" .. 3 )
-healthSprite:play()
-
-healthBackground = display.newRoundedRect(healthSprite.x, contentWidth * .09, contentWidth * .19, contentWidth * .115, contentWidth * .1 *.5)
-healthBackground.anchorX = .5
-healthBackground.anchorY = .5
-
-livesText = display.newText( "Lives", healthBackground.x, contentWidth * .12, "fonts/Rufscript010", contentWidth * .05)
-livesText:setFillColor(0,0,0)
-livesText.anchorX = .5
-livesText.anchorY = .5
 
 --------------------------------------------
 --moveRight()
@@ -237,44 +227,45 @@ end
 local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if (event.other.type == "obstacle") then   --If obstacle, do damage				
-				audio.stop({channel = 4})
-				audio.play( hitSFX, { channel=4, loops=0 } )
-				audio.setVolume( effectsVolume, {channel=4})
+				audio.stop({channel = 4})	-- stop any old "damage" sound effects
+				audio.play( hitSFX, { channel=4, loops=0 } )	-- play a new "damage" sound effect
+				audio.setVolume( effectsVolume, {channel=4})	-- set the sound effects volume
 				if (not player.invincible) then
 					if vibrate then 
-						system.vibrate()
+						system.vibrate()	-- vibrate to signify damage
 					end
-					playerHit = true
-					timer.performWithDelay (200, function() playerHit = false end)
-					player:damage(1)
-				else
-					event.other.alpha = 0
+					playerHit = true		-- set to use the damageMask
+					timer.performWithDelay (200, function() playerHit = false end)	-- reset the damage mask after .2 seconds
+					player:damage(1)	-- player takes damage
+				else	-- invincibility is on
+					event.other.alpha = 0	-- "destroy" the collided object 
 				end
-		elseif (event.other.type == "acorn") then  --If Acorn, heal the player 
-			audio.stop({channel = 3})
-			audio.play( acornSFX, { channel=3, loops=0 } )
-			audio.setVolume( effectsVolume, {channel=3})
+		elseif (event.other.type == "acorn") then  --If Acorn
+			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
 			if player.health == 3 then
 				bonusScoreText:setFillColor(1,1,1)
-				bonusScoreText.text ="+" .. math.floor(difficulty * 5)
+				bonusScoreText.text ="+" .. math.floor(difficulty * 5)	-- display some status text
 				bonusScoreText.alpha = 1
-				playerScore = playerScore + math.floor(difficulty * 5)
+				playerScore = playerScore + math.floor(difficulty * 5)	-- increment player score
 			else
 				bonusScoreText:setFillColor(1,1,1)
-				bonusScoreText.text ="1 up!"
+				bonusScoreText.text ="1 up!"		-- display some status text
 				bonusScoreText.alpha = 1
 				player:heal(1)
 			end
-			event.other.alpha = 0
+			event.other.alpha = 0	-- "destroy" the collided object 
 		elseif (event.other.type == "slow") then
 			bonusScoreText:setFillColor(1,1,0)
-			bonusScoreText.text ="slow"
+			bonusScoreText.text ="slow..."		-- display some status text
 			bonusScoreText.alpha = 1
 			
-			audio.stop({channel = 3})
-			audio.play( acornSFX, { channel=3, loops=0 } )
-			audio.setVolume( effectsVolume, {channel=3})
-			event.other.alpha = 0
+			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			event.other.alpha = 0	-- "destroy" the collided object 
+			-- change the gameSpeedModifier to slow down the game
 			gameSpeedModifier = gameSpeedModifier -.1
 			timer.performWithDelay (100, function() gameSpeedModifier = gameSpeedModifier -.1 end)
 			timer.performWithDelay (200, function() gameSpeedModifier = gameSpeedModifier -.1 end)
@@ -287,12 +278,13 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier +.1 end)
 		elseif (event.other.type == "speed") then
 			bonusScoreText:setFillColor(.7,0,.7)
-			bonusScoreText.text ="SPEED!"
+			bonusScoreText.text ="SPEED!"		-- display some status text
 			bonusScoreText.alpha = 1
-			audio.stop({channel = 3})
-			audio.play( acornSFX, { channel=3, loops=0 } )
-			audio.setVolume( effectsVolume, {channel=3})
-			event.other.alpha = 0
+			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			event.other.alpha = 0	-- "destroy" the collided object 
+			-- change the gameSpeedModifier to speed up the game
 			gameSpeedModifier = gameSpeedModifier +.05
 			timer.performWithDelay (100, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
 			timer.performWithDelay (200, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
@@ -305,28 +297,32 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier -.05 end)
 		elseif (event.other.type == "red") then 
 			bonusScoreText:setFillColor(1,0,0)
-			bonusScoreText.text ="INVINCIBLE!"
+			bonusScoreText.text ="INVINCIBLE!"		-- display some status text
 			bonusScoreText.alpha = 1
-			audio.stop({channel = 3})
-			audio.play( acornSFX, { channel=3, loops=0 } )
-			audio.setVolume( effectsVolume, {channel=3})
-			event.other.alpha = 0
-			player.invincible = true
-			timer.performWithDelay(2000, function() player.invincible = false end)
+			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			event.other.alpha = 0		-- "destroy" the collided object 
+			player.invincible = true	-- make the player invincible
+			timer.performWithDelay(2000, function() player.invincible = false end)	-- after 2 seconds the player is no longer invincible
+			-- make the aura visible then invisible after some time
 			transition.to(invulnAura, {time = 100, alpha=1})
 			timer.performWithDelay(1500, function() transition.to(invulnAura, {time = 500, alpha=0, transition=easing.outCirc}) end)
 		end
-		healthSprite:setSequence("health" .. player.health) --Play a sprite sequence to reflect how much health is left
-		healthSprite:play()
+		healthSprite:setSequence("health" .. player.health)
+		healthSprite:play() --Play a sprite sequence to reflect how much health is left
 
 		if player.health == 0 then 
-			saveScore(playerScore)
-			addToDistance(distance)
+			saveScore(playerScore)	-- save the player's score
+			addToDistance(distance)	-- increment the player's distance
 			for x=1,  #obstacles do
-				obstacles[x]:delete()
+				obstacles[x]:delete()	-- remove all obstacles
 			end
 			obstacles = {}
+			-- wait 2 seconds and go to the loseScreen
 			timer.performWithDelay (2000, function() composer.gotoScene( "loseScreen", {effect="fromRight", time=1000}) end)
+			
+			-- while waiting, send the squirrel spinning off the tree
 			physics.setGravity(0,20)
 			local xDir = (contentWidth*.5 - player.model.x)
 			if xDir > 0 then
@@ -343,22 +339,25 @@ end
 
 -- "scene:create()"
 function scene:create( event )
+	paused = true	-- keep the game paused until the transition ends
+
+	-- Initialize Timers
+	timePassedBetweenEvents = 0
+	timePassed = 0
+	stageTimer = 0
+	difficultyTimer = 0
+	
+	-- Initialize Player score and distance
+	playerScore = 0
+	distance = 0
+	
 	loadSettings()
 	audio.setVolume( musicVolume/100, {channel=2})
 	audio.play( earthMusic, { channel=2, loops=-1, fadein=5000 } )
 	
 	local sceneGroup = self.view
-	paused = true
-	timePassedBetweenEvents = 0
-	playerScore = 0
-	distance = 0
-	timePassed = 0
-	stageTimer = 0
-	difficultyTimer = 0
-	yTranslate = yTranslateModifier * difficulty
-	highScore = loadScore()
-	maxDifficulty = 3
-   
+	
+	--Pause button
    	pauseBtn = widget.newButton{
 		label="",
 		fontSize = contentWidth * .05,
@@ -366,56 +365,42 @@ function scene:create( event )
 		defaultFile="imgs/pauseBtn.png",
 		overFile="imgs/pauseBtn.png",
 		width=contentWidth * .085, height=contentWidth * .085,
-		onRelease = pauseGame
+		onRelease = pauseGame,	-- sends the player to pause.lua
+		x = contentWidth,
+		y = 0
 	}
-	--Pause button
-	pauseBtn.anchorX = 1
-	pauseBtn.anchorY = 0
-	pauseBtn.x = contentWidth
-	pauseBtn.y = 0
+		pauseBtn.anchorX = 1
+		pauseBtn.anchorY = 0
 	
-	-- create tutorial
+-- Create tutorial (based on movement type)
 	tutorialGroup = display.newGroup()
 	tutorialBackground = display.newImageRect("imgs/tutorialBackground.png", contentWidth *.75, contentWidth * .15  )
 	tutorialBackground.x = contentWidth *.5
 	tutorialBackground.y = contentHeight *.35
-	tutorialBackground.anchorX = .5
-	tutorialBackground.anchorY = .5
 	tutorialGroup:insert(tutorialBackground)
+	
 	if (swipeMovement) then
 		tutorialText =  display.newText( "Swipe       to jump Left\nSwipe       to jump Right", contentWidth * .5, contentHeight*.35, "fonts/Rufscript010", contentWidth * .05)
-		tutorialText.anchorX = .5
-		tutorialText.anchorY = .5
 		
 		tutorialArrowR = display.newImageRect("imgs/arrow.png", contentWidth*.08, contentWidth*.04)
 		tutorialArrowR.x = contentWidth * .42
 		tutorialArrowR.y = contentHeight*.335
-		tutorialArrowR.anchorX = .5
-		tutorialArrowR.anchorY = .5
 		tutorialGroup:insert(tutorialArrowR)
 		
 		tutorialArrowL = display.newImageRect("imgs/arrow.png", contentWidth*.08, contentWidth*.04)
 		tutorialArrowL.x = contentWidth * .42
 		tutorialArrowL.y = contentHeight*.365
-		tutorialArrowL.anchorX = .5
-		tutorialArrowL.anchorY = .5
-		tutorialArrowL:rotate(180)
+		tutorialArrowL:rotate(180)		-- Rotate the arrow so it points the opposite direction
 		tutorialGroup:insert(tutorialArrowL)
 	else
 		tutorialText =  display.newText( "   Tap Here   |   Tap Here\n to Jump Left  |  to Jump Right", contentWidth * .5, contentHeight*.35, "fonts/Rufscript010", contentWidth * .05)
-		tutorialText.anchorX = .5
-		tutorialText.anchorY = .5
 	end
 	tutorialGroup:insert(tutorialText)
-	-- end tutorial
+-- End tutorial
 
 	--Physics and physics vars
    	physics.start()
    	physics.setGravity(0,0)
-	screenTop = display.screenOriginY
-	screenBottom = display.viewableContentHeight + display.screenOriginY
-	screenLeft = display.screenOriginX
-	screenRight = display.viewableContentWidth + display.screenOriginX
 	
 	--Collision detection
 	player = Player(contentWidth*.5, contentHeight*.75)
@@ -424,40 +409,86 @@ function scene:create( event )
 	physics.addBody(player.model, "dynamic",{isSensor=true})
 	
 	-- Create invincibility aura
-	invulnAura = display.newImageRect("imgs/invulnAura.png", contentWidth * .2, contentWidth * .4)
+	invulnAura = display.newImageRect("imgs/invulnAura.png", contentWidth * .2, contentWidth * .35)
 	invulnAura.x = player.model.x
 	invulnAura.y = player.model.y
-	invulnAura.anchorX = .5
-	invulnAura.anchorY = .5
 	invulnAura.alpha = 0
 	
+	-- scorelabel only displays the "Score" text at the top of game
 	scoreLabel = display.newText( "Score", contentWidth * .5, contentHeight*.05, "fonts/Rufscript010", contentHeight * .045)
 	scoreText = display.newText( tostring(playerScore), contentWidth * .5, contentHeight*.1, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText = display.newText( 0, contentWidth * .5, contentHeight*.2, "fonts/Rufscript010", contentHeight * .065)
 	bonusScoreText.alpha = 0
+	
+	-- set the default Background to a light blue
+	display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 
-	--insert everything into the scene group
-	sceneGroup:insert(treeBase)
-	for i=1, #stars do
-		sceneGroup:insert(stars[i])
+	-- Create the ground image
+	treeBase = display.newImageRect( "imgs/treeBase.png", display.contentWidth, display.contentHeight)
+	treeBase.x = display.contentWidth*.5
+	treeBase.y = display.contentHeight*.5
+	
+	-- Create the stars and insert them into the scene group
+	starsBGGroup = display.newGroup()
+	for i=1, 100 do
+		stars[i] = display.newRect(math.random(1, contentWidth), 0 - math.random(1, contentHeight), 4, 4)
+		stars[i].alpha = 0
+		starsBGGroup:insert(stars[i])
 	end
+	
+	-- Create the earth background objects and insert them into the earthBGGroup
 	earthBGGroup = display.newGroup()
 	for i = 1, 4, 1 do
+		local sizeMod = .75 + math.random()*.5
+		if(i<=3)then
+			earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. i .. ".png", contentWidth*.6*sizeMod, contentWidth*.3*sizeMod)
+			earthBGImgs[i].x = math.random(1, contentWidth)
+			earthBGImgs[i].y = 0 - math.random(1, contentHeight)
+		else
+			earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
+			earthBGImgs[i].x = math.random(1, contentWidth)
+			earthBGImgs[i].y = 0 - math.random(1, contentHeight)
+		end
 		earthBGGroup:insert(earthBGImgs[i])
 	end
-	sceneGroup:insert(earthBGGroup)
+	
+	-- Create the space background objects and insert them into the spaceBGGroup
+	spaceBGGroup = display.newGroup()
 	for i = 1, 3, 1 do
-		sceneGroup:insert(spaceBGImgs[i])
+		local sizeMod = .75 + math.random()*.5 
+		spaceBGImgs[i] = display.newImageRect("imgs/spaceBGImg" .. i .. ".png", contentWidth*.3*sizeMod, contentWidth*.3*sizeMod)
+		spaceBGImgs[i].x = math.random(1, contentWidth)
+		spaceBGImgs[i].y = 0 - math.random(contentHeight*.1, contentHeight)
+		spaceBGGroup:insert(spaceBGImgs[i])
 	end
+	
+	-- Create the trees and insert them into the treeBGGroup
+	-- the trees are created staggered for performance reasons 
+	-- trees also are stacked so that only one tree has to reset to the top at a time
+	treesBGGroup = display.newGroup()
 	for i = 1, 6, 1 do
-		sceneGroup:insert(trees[i])
+		trees[i] = display.newImageRect("imgs/tree" .. i%3+1 .. ".png", contentWidth*.1, contentHeight*2 )
+		trees[i].x = contentWidth *.25 * (i%3 + 1)
+		if(i<=3)then
+			trees[i].y = contentHeight+(-i * contentHeight * .33)
+		else
+			trees[i].y = trees[i-3].y - (contentHeight * .95) * 2
+		end
+		treesBGGroup:insert(trees[i])
 	end
 
-	--create the image mask
+	--create the damage mask
 	damageMask = display.newImageRect("imgs/damageMask.png", contentWidth, contentHeight)
 	damageMask.anchorX = 0
 	damageMask.anchorY = 0
 	damageMask.alpha = 0
+	
+	--insert everything into the scene group
+	sceneGroup:insert(treeBase)
+	sceneGroup:insert(starsBGGroup)
+	sceneGroup:insert(earthBGGroup)
+	sceneGroup:insert(spaceBGGroup)
+	sceneGroup:insert(treesBGGroup)
 	sceneGroup:insert(pauseBtn)
 	sceneGroup:insert(damageMask)
 	sceneGroup:insert(invulnAura)
@@ -472,6 +503,7 @@ function scene:create( event )
 end
 
 
+---------------------------------------------------------------------------------------------------------
 
 
 function main(event)
@@ -510,12 +542,11 @@ function main(event)
 		end
 			
 		--display mask on hit
-		if (playerHit and maskAlpha < 1) then
-			maskAlpha = maskAlpha + .2
-		elseif (maskAlpha > (3-player.health) * .3) then
-			maskAlpha = maskAlpha - .05
+		if (playerHit and damageMask.alpha < 1) then
+			damageMask.alpha = damageMask.alpha + .2
+		elseif (damageMask.alpha > (3-player.health) * .3) then
+			damageMask.alpha = damageMask.alpha - .05
 		end
-		damageMask.alpha = maskAlpha
 		
 		--background
 		--spawn normal earthly background images
@@ -589,7 +620,7 @@ function main(event)
 						stars[i].x = math.random(1, contentWidth)
 						stars[i].y = 0 - math.random(1, contentHeight)
 					else
-						stars[i]:translate(0, yTranslate*.5)
+						stars[i]:translate(0, yTranslate*.4)
 					end
 				end
 			end
@@ -678,6 +709,7 @@ function scene:show( event )
 		for i = 1, #stars do
 			stars[i].isVisible = true
 		end
+		invulnAura.isVisible = true
    elseif ( phase == "did" ) then
 		paused = false	-- declase the game unpause to let the timers continue
 		Runtime:addEventListener( "touch", move)	-- re-create the event listeners that were removed on exit
@@ -722,7 +754,7 @@ function scene:hide( event )
 		healthBackground.isVisible = false
 		healthSprite.isVisible = false
 		livesText.isVisible = false
-		
+		invulnAura.isVisible = false
 		paused = true	-- prevents the main game loop from moving obstacles and such
 		Runtime:removeEventListener( "touch", move )	-- remove event listeners to prevent actions on other scenes from changing game
 		Runtime:removeEventListener( "enterFrame", main)
@@ -788,6 +820,9 @@ function scene:destroy( event )
 	pauseBtn = nil
 	-- remove the player
 	player:delete()
+	-- remove the squirrel's invuln aura
+	invulnAura:removeSelf()
+	invulnAura = nil
 	-- Remove event listeners
 	Runtime:removeEventListener( "enterFrame", main )
 	Runtime:removeEventListener( "touch", move )
