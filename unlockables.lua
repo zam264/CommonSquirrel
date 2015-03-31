@@ -1,13 +1,11 @@
+--[[This page allows the user to select from a variety of skins which are unlocked by achieving certain predetermine high scores.
+]]
 local composer = require( "composer" )
 local score = require( "score" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
----------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
 
--- local forward references should go here
+-- local variables are located here
 local titleText
 local backBtn
 local contentWidth = display.contentWidth
@@ -16,12 +14,13 @@ local horizontalOffset = contentWidth * .25
 local verticalOffset = contentHeight * .2
 local skinSheets = {}
 local skinSprites = {}
-local lockedText = display.newText( "", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .04)
+local lockedText = display.newText( "", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .04)--text informing the user when the next skin is unlocked
 local options = {
 	width = 64,
 	height = 64,
 	numFrames = 6
 }
+--sprite sheet sources for the skins
 local spriteSheetsSrc = {
 	"imgs/squirrelSprite.png",
 	"imgs/albinoSquirrelSheet.png",
@@ -29,10 +28,12 @@ local spriteSheetsSrc = {
 	"imgs/coonSheet.png",
 	"imgs/spaceSquirrelSheet.png"
 }
+--animation sequences for the images in the unlock scene
 local sequenceData = {
-	{name = "staticImage", frames={1}, time=0, loopCount=1},
-	{name = "movingImage", start=1, count=6, time=500, loopCount=0},
+	{name = "staticImage", frames={1}, time=0, loopCount=1},--sequence when skin not selected
+	{name = "movingImage", start=1, count=6, time=500, loopCount=0},--skin of currently selected skin
 }
+--score's which must be achieved to unlock the respective skins
 local unlockScore = {
 	0,
 	50,
@@ -40,7 +41,9 @@ local unlockScore = {
 	150,
 	200
 }
-
+--load the skin from the skinfile.txt located in the project sandbox
+--skins are stored in this file as a digit ranging from 1-n
+--the digit to a skin at the respective index equal to the digit
 function loadSkin()
 	local path = system.pathForFile( "skinfile.txt", system.DocumentsDirectory )
 	local contents = ""
@@ -60,7 +63,7 @@ function loadSkin()
 	end
 	return 0
 end
-
+--save the skin value to the sandbox file
 function saveSkin(skin)
 	local path = system.pathForFile( "skinfile.txt", system.DocumentsDirectory )
 	local file = io.open(path, "w")
@@ -74,7 +77,7 @@ function saveSkin(skin)
 		return false
 	end
 end
-
+--check if the user taps a skin; if so save this as our new current skin and animate it
 local function tap(event)
 	if(event.phase == "began")then
 		for i=1, #skinSprites do
@@ -88,8 +91,7 @@ local function tap(event)
 		end
 	end
 end
-
-
+--return us back to the menu
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene("menu", {effect="fromRight", time=1000})
@@ -97,22 +99,19 @@ local function onBackBtn()
 	return true	-- indicates successful touch
 end
 
-
 ---------------------------------------------------------------------------------
 
 -- "scene:create()"
 function scene:create( event )
 	--composer.getScene("menu"):destroy()
-
-   local sceneGroup = self.view
-
+    local sceneGroup = self.view
 	titleText = display.newText( "Unlockables", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText.anchorX = 0
 	titleText.anchorY = 0
 	sceneGroup:insert(titleText)
-
+	--dynamically create and position all of the unlocked skin sprites on the unlockables page, initializing them to the static sequence
 	local i = 1
-	while i <= #spriteSheetsSrc and loadScore() >= unlockScore[i] do
+	while i <= #spriteSheetsSrc and loadScore() >= unlockScore[i] do--ensure that score is checked with every iteration to only provide unlocked choices
 		skinSheets[i] = graphics.newImageSheet(spriteSheetsSrc[i], options)
 		skinSprites[i] = display.newSprite( skinSheets[i], sequenceData )
 		sceneGroup:insert(skinSprites[i])
@@ -132,17 +131,13 @@ function scene:create( event )
 		skinSprites[i]:play()
 		i = i + 1
 	end
-
+	--if not all of the skins are unlocked, inform the user what score is needed to unlock the next one
 	if (#skinSprites < #spriteSheetsSrc) then
  		lockedText.text =  "Next skin unlocked with a\n high score exceeding: " .. unlockScore[i]
-		--lockedText.anchorX = 0
-		--lockedText.anchorY = 0
 		lockedText.x = contentWidth * .5
 		lockedText.y = contentHeight * .75
 		sceneGroup:insert(lockedText)
 	end
-
-
    -- Initialize the scene here.
 	backBtn = widget.newButton{
 		label="Back",
@@ -159,70 +154,54 @@ function scene:create( event )
 	backBtn.x = display.contentWidth * .50
 	backBtn.y = display.contentHeight * .95
 	sceneGroup:insert(backBtn)
-	
-	
-   -- Example: add display objects to "sceneGroup", add touch listeners, etc.
+   	-- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
 
 -- "scene:show()"
 function scene:show( event )
-   local sceneGroup = self.view
-   local phase = event.phase
-
-   if ( phase == "will" ) then
-		skinSprites[loadSkin()]:setSequence( "movingImage" )
+	local sceneGroup = self.view
+	local phase = event.phase
+	if ( phase == "will" ) then
+		skinSprites[loadSkin()]:setSequence( "movingImage" )--set the currently selected sprite to be animated (there will always be 1 skin animated/selected)
 		skinSprites[loadSkin()]:play()
-
 		titleText.isVisible = true
 		lockedText.isVisible = true
 		backBtn.isVisible = true
 		for i=1, #skinSprites do
 			skinSprites[i].isVisible = true
 		end
-      -- Called when the scene is still off screen (but is about to come on screen).
-   elseif ( phase == "did" ) then
-      -- Called when the scene is now on screen.
-      -- Insert code here to make the scene come alive.
-      -- Example: start timers, begin animation, play audio, etc.
-   end
+	  -- Called when the scene is still off screen (but is about to come on screen).
+	elseif ( phase == "did" ) then
+	  -- Called when the scene is now on screen.
+	  -- Insert code here to make the scene come alive.
+	  -- Example: start timers, begin animation, play audio, etc.
+	end
 end
 
 -- "scene:hide()"
 function scene:hide( event )
-
-   local sceneGroup = self.view
-   local phase = event.phase
-
-   if ( phase == "will" ) then
+	local sceneGroup = self.view
+	local phase = event.phase
+	if ( phase == "will" ) then
 		titleText.isVisible = false
 		lockedText.isVisible = false
 		backBtn.isVisible = false
 		for i=1, #skinSprites do
 			skinSprites[i].isVisible = false
 		end
-      -- Called when the scene is on screen (but is about to go off screen).
-      -- Insert code here to "pause" the scene.
-      -- Example: stop timers, stop animation, stop audio, etc.
-   elseif ( phase == "did" ) then
+	  -- Called when the scene is on screen (but is about to go off screen).
+	  -- Insert code here to "pause" the scene.
+	  -- Example: stop timers, stop animation, stop audio, etc.
+	elseif ( phase == "did" ) then
 
-      -- Called immediately after scene goes off screen.
-   end
+	  -- Called immediately after scene goes off screen.
+	end
 end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
   	local sceneGroup = self.view
-	--for x=1,  #skinSheets do
-		--skinSheets[i]:removeSelf()
-	--	skinSheets[i] = nil
-	--end
 	skinSheets = {}
-
-	--for x=1,  #skinSprites do
-		--skinSheets[i]:removeSelf()
-		--skinSheets[i] = nil
-	--end
 	skinSprites = {}
 	titleText:removeSelf()
 	titleText = nil

@@ -36,7 +36,7 @@ local achievementNames = {
 	"Tallest Man",
 	"Great Wall of China",
 	"Average Oak Tree",
-	"Rockefellar Xmas Tree",
+	"Rockefeller Xmas Tree",
 	"New Years Eve Ball",
 	"Pine Tree",
 	"Giant Sequoia Tree",
@@ -92,7 +92,7 @@ local achievementDescriptions = {
 	"I should be hibernating\n right now",
 	"Now seating squirrels",
 	"Where no squirrel has\n gone before",
-	"No racoons allowed",
+	"No raccoons allowed",
 	"Squilnit the Soviet\n Squirrel",
 	"One small step for \nman, one giant leap \nfor a squirrel",
 	"I think you cheated..."}
@@ -150,8 +150,8 @@ function scene:create( event )
 	scoreT.anchorY = 0
 	sceneGroup:insert(scoreT)
 	
-	--Display the total distance travelled -> Distance accumlates to unlock achievements
-	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
+	--Display the total distance traveled -> Distance accumulates to unlock achievements
+	distanceText = display.newText ("Distance Traveled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
@@ -197,7 +197,7 @@ function scene:create( event )
 		achievementIcon.maskScaleX = display.contentHeight*.175 /130
 		achievementIcon.maskScaleY = display.contentHeight*.175 /130
 	else	
-		achievementText = display.newText( "Next Achievment At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
+		achievementText = display.newText( "Next Achievement At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)

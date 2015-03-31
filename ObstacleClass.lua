@@ -115,7 +115,7 @@ function Obstacle:init(posX, posY)
 		self.model:setSequence("buzz")
 	end
 	
-	self.model:play()    --Play the animiation 
+	self.model:play()    --Play the animation 
 	self.model.x = posX  --Place the sprite at the passed X Coord
 	self.model.y = posY  --Place the sprite at the passed Y Coord
 	--Scale the x and y of the sprite 

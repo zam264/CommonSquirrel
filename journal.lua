@@ -1,14 +1,12 @@
+--[[This page lists all of the objects that the player can potentially come into interaction with during game-play]]
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
----------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
 
 -- local forward references should go here
 local titleText1, scrollableJournal, backBtn
 local background
+--image sources for the journal
 local journalImages = {
 "imgs/beeHive.png", 
 "imgs/acorn.png", 
@@ -19,6 +17,7 @@ local journalImages = {
 "imgs/fire1.png",
 "imgs/healthShroom.png"
 }
+--names for the journal entries
 local journalEntries = {
 "Bee Hive",
 "Acorn", 
@@ -29,16 +28,18 @@ local journalEntries = {
 "Forrest Fire",
 "Invincibility Mushroom"
 }
+--descriptions for the journal entries
 local journalDescriptions = {
 "A dangerous bee hive, avoid it",
-"A delicous acorn, restores 1 health", 
-"A well made bird house, dont hit", 
+"A delicious acorn, restores 1 health", 
+"A well made bird house, don't hit", 
 "A 'shroom that is highly toxic , avoid it",
 "A 'shroom that slows time, helpful", 
-"A 'shroom that speeds time, avoid",
-"A forrest fire caused by a stray flame, \navoid it",
-"A mushroom that makes the squirrel \ninvincible to damage"
+"A 'shroom that speeds time, avoid it",
+"A forest fire caused by a stray flame, \navoid it",
+"A 'shroom that makes the squirrel \ninvincible to damage, helpful"
 }
+--navigate us back to the menu
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene("menu", {effect="fromRight", time=1000})
@@ -50,15 +51,11 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-	--composer.getScene("menu"):destroy()
-
    local sceneGroup = self.view
-
 	titleText1 = display.newText( "Journal", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText1.anchorX = 0
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
-
 	scrollableJournal = widget.newScrollView {
 		left = 0, top = display.contentHeight*.08, --display.contentHeight*.065,
 		width = display.contentWidth,
@@ -74,7 +71,7 @@ function scene:create( event )
 	
 	local i = 1  --used for journal index
 	local j = 1  --used for journal placement
-
+	--loop through and dynamically create the journal entries including the journal title, image and description using i and j to traverse arrays and place items
 	while i <= #journalImages do
 		local journalText = journalEntries[i] 
 		local journalTextObject = display.newText(journalText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
@@ -114,8 +111,6 @@ function scene:create( event )
 	backBtn.x = display.contentWidth * .50
 	backBtn.y = display.contentHeight * .95
 	sceneGroup:insert(backBtn)
-	
-	
    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
 

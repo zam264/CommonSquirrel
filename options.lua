@@ -1,24 +1,21 @@
+--[[This page allows the user to change option and settings all of which are automatically saved.
+This includes the audio options, swipe to move functionality, vibration and the ability to clear distance and score.]]
 local composer = require( "composer" )
 local unlockables = require( "unlockables" )
 local scene = composer.newScene()
 local widget = require ("widget")		-- include Corona's "widget" library
 require('settings')
----------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
 
--- local forward references should go here
+-- local variable definition
 local titleText, difficultyText, easyText, normalText, hardText, movementText, vibrationText
 local creditsBtn, backBtn, effectsSlider, musicSlider, achievmentsBtn, movementButton, vibrationButton, journalBtn
-local btnWidth = display.contentWidth * .80
-local btnHeight = display.contentHeight * .09
+local btnWidth = display.contentWidth * .80 --variable to modify width of all buttons
+local btnHeight = display.contentHeight * .09 --variable to modify width of all buttons
 local hitSFX = audio.loadSound("sound/atari_boom3.mp3")
 
 swipeMovement = false  --False = Tap to move, True = swipe to move 
 vibrate = true  	   --Holds whether vibration is on or off 
 widget.setTheme("widget_theme_ios") 
-
 -- Slider listener
 function effectsListener( event )
 	effectsVolume = event.value
@@ -35,13 +32,14 @@ function musicListener ( event )
 	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
 	--print( "Music Slider at " .. event.value .. "%" )
 end
-
+--goto credits screen
 local function onCreditsBtn()
 	sceneInTransition = true
 	composer.gotoScene( "gamecredits", {effect="fromLeft", time=1000})
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--clear score and distance; also resets skins and achievements
 local function onClearScoreBtn()
 	saveScore(0)
 	saveSkin(1)
@@ -52,20 +50,18 @@ local function onClearScoreBtn()
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
-
+--go back to main menu
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene( "menu", {effect="fromRight", time=1000})
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
-
 --Called when the switch for movement type is switched
 function switchMovement() 
 	swipeMovement = not swipeMovement
 	saveSettings(effectsVolume, musicVolume, swipeMovement, vibrate)
 end
-
 --Changes vibration setting 
 function switchVibrate() 
 	vibrate = not vibrate
@@ -76,9 +72,8 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-	--composer.getScene("menu"):destroy()
    local sceneGroup = self.view
-
+   --create text objects
 	titleText = display.newText( "Options", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText.anchorX = 0
 	titleText.anchorY = 0
@@ -157,7 +152,7 @@ function scene:create( event )
 	vibrationButton.width = display.contentWidth * .4
 	vibrationButton.height = display.contentHeight * .07
 	sceneGroup:insert( vibrationButton )
-
+	--creation of the option buttons
 	creditsBtn = widget.newButton{
 		label="Credits",
 		font = "fonts/Rufscript010",
@@ -211,10 +206,8 @@ end
 
 -- "scene:show()"
 function scene:show( event )
-
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
   	titleText.isVisible = true
 	difficultyText.isVisible = true
@@ -239,10 +232,8 @@ end
 
 -- "scene:hide()"
 function scene:hide( event )
-
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
     titleText.isVisible = false
 	difficultyText.isVisible = false
@@ -267,9 +258,7 @@ end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
    local sceneGroup = self.view
-
 	titleText:removeSelf()
 	titleText = nil
 	difficultyText:removeSelf()

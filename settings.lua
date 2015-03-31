@@ -1,6 +1,6 @@
 --[[
 This file handles the saving of settings to a sandbox file on the users phone
-All settings (sound, movement, and vibration) are saved so that the settings are remembered from different play throughs 
+All settings (sound, movement, and vibration) are saved so that the settings are remembered from after exiting the screen.
 ]]
 --This function takes for a parameter all the current setting values and saves it to a file called settings.txt on the phone
 function saveSettings(effects, music, swipe, vibration) 

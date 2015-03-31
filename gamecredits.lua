@@ -1,17 +1,14 @@
+--[[This page displays the credits for all the resources used in our game
+within a scroll view]]
 local composer = require( "composer" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
----------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
 
--- local forward references should go here
+-- locally defined variables
 local titleText1
 local backBtn
-local scrollableCredits
-
-
+local scrollableCredits--
+--go back to options
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene("options", {effect="fromRight", time=1000})
@@ -19,21 +16,17 @@ local function onBackBtn()
 	return true	-- indicates successful touch
 end
 
-
 ---------------------------------------------------------------------------------
 
 -- "scene:create()"
 function scene:create( event )
 	--composer.getScene("menu"):destroy()
-
-   local sceneGroup = self.view
-
+   	local sceneGroup = self.view
 	titleText1 = display.newText( "Credits", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText1.anchorX = 0
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
-	
-	
+	--a scrollview which holds all of our credits
 	scrollableCredits = widget.newScrollView {
 		left = 0, top = display.contentHeight*.08,
 		width = display.contentWidth,
@@ -45,7 +38,7 @@ function scene:create( event )
 		backgroundColor = {0/255, 120/255, 171/255}
 	}
 	sceneGroup:insert(scrollableCredits)
-	local creditsText="Creators:	\nWilliam Botzer	\nZachary Petrusch	\nSteven Zamborsky	\n\nArtwork:	\nCasey Squires	\n\nAchievement images:	\nFortunella_margarita_(small_tree).JPG - Public Domain	\nSimon A. Eugster - Tape_measure_colored.jpeg - CC-BY-SA 3.0	\nJakub Hałun - 20090529 Great Wall 8185.jpg - CC BY-SA 3.0	\nBenjaminb - Quercus stellata.jpg - CC BY 2.5	\nUrban - Rockefeller Center christmas tree.jpg - CC BY-SA 3.0	\nSusan Serra - TSB2010 cropped.jpg - CC BY-SA 2.0	\nMenchi - Pine cones, male and female.jpg - CC BY-SA 3.0	\nAlec Perkins - 47_SAM_3000_(4842775734).jpg - CC BY 2.0	\nStatue of Liberty - Open Source	\nAlvesgaspar - Big Ben 2007-1.jpg - CC BY-SA 3.0	\nbabyknight - New Meadowlands Stadium Mezz Corner.jpg - CC BY 2.0	\nMichael Schweppe - Redwood National Park, fog in the forest.jpg - CC BY-SA 2.0	\nHajor - Egypt.Giza.Menkaure.01.jpg - CC BY-SA 3.0	\nWashington Monument - Open Source	\nUS Steel Tower - Open Source	\nEiffel Tower - Open Source	\nDavid Shankbone - Empire State Building by David Shankbone crop.jpg - CC BY-SA 3.0	\nVinceB - Sears_Tower_ss.jpg - No rights claimed or reserved	\nDonaldytong - Burj Khalifa.jpg - CC BY-SA 3.0	\nPiccoloNamek - GoldenMedows.jpg - CC BY-SA 3.0	\nhttp://imgarcade.com/ - Occupied sign - non-listed	\nAkira Toriyama (Dragon Ball Z, Program creator) - Scouter - Fair Use	\nSvickova - Botzer von Nordosten.JPG - CC BY-SA 3.0	\nBalloons - Public Domain	\nLuca Galuzzi - Everest North Face toward Base Camp Tibet Luca Galuzzi 2006.jpg - CC BY-SA 2.5	\nBarcex - Boeing_757-256_-_Iberia_-_EC-HDU_-_LEMD.jpg - CC BY-SA 3.0	\nAstronaut - Open Source	\nISS - Open Source	\nV. Vizu - Space dogs - CC BY-SA 3.0	\nGregory H. Revera - FullMoon2010.jpg - CC BY-SA 3.0 \n\nMusic and sound effects:\nReplenish - CC-BY 3.0 - qubodup \nnight-calm - CC-BY 3.0 - FoxSynergy \nblue-meadow-in-green-sky - Public Domain - yd  \nAtari sound effects - CC-BY 3.0 - dklon  \nBattle in the Winter - CC-By 3.0 - jobromedia"
+	local creditsText="Creators:	\nWilliam Botzer	\nZachary Petrusch	\nSteven Zamborsky	\n\nArtwork:	\nCasey Squires	\n\nAchievement images:	\nFortunella_margarita_(small_tree).JPG - Public Domain	\nSimon A. Eugster - Tape_measure_colored.jpeg - CC-BY-SA 3.0	\nJakub Hałun - 20090529 Great Wall 8185.jpg - CC BY-SA 3.0	\nBenjaminb - Quercus stellata.jpg - CC BY 2.5	\nUrban - Rockefeller Center Christmas tree.jpg - CC BY-SA 3.0	\nSusan Serra - TSB2010 cropped.jpg - CC BY-SA 2.0	\nMenchi - Pine cones, male and female.jpg - CC BY-SA 3.0	\nAlec Perkins - 47_SAM_3000_(4842775734).jpg - CC BY 2.0	\nStatue of Liberty - Open Source	\nAlvesgaspar - Big Ben 2007-1.jpg - CC BY-SA 3.0	\nbabyknight - New Meadowlands Stadium Mezz Corner.jpg - CC BY 2.0	\nMichael Schweppe - Redwood National Park, fog in the forest.jpg - CC BY-SA 2.0	\nHajor - Egypt.Giza.Menkaure.01.jpg - CC BY-SA 3.0	\nWashington Monument - Open Source	\nUS Steel Tower - Open Source	\nEiffel Tower - Open Source	\nDavid Shankbone - Empire State Building by David Shankbone crop.jpg - CC BY-SA 3.0	\nVinceB - Sears_Tower_ss.jpg - No rights claimed or reserved	\nDonaldytong - Burj Khalifa.jpg - CC BY-SA 3.0	\nPiccoloNamek - GoldenMedows.jpg - CC BY-SA 3.0	\nhttp://imgarcade.com/ - Occupied sign - non-listed	\nAkira Toriyama (Dragon Ball Z, Program creator) - Scouter - Fair Use	\nSvickova - Botzer von Nordosten.JPG - CC BY-SA 3.0	\nBalloons - Public Domain	\nLuca Galuzzi - Everest North Face toward Base Camp Tibet Luca Galuzzi 2006.jpg - CC BY-SA 2.5	\nBarcex - Boeing_757-256_-_Iberia_-_EC-HDU_-_LEMD.jpg - CC BY-SA 3.0	\nAstronaut - Open Source	\nISS - Open Source	\nV. Vizu - Space dogs - CC BY-SA 3.0	\nGregory H. Revera - FullMoon2010.jpg - CC BY-SA 3.0 \n\nMusic and sound effects:\nReplenish - CC-BY 3.0 - qubodup \nnight-calm - CC-BY 3.0 - FoxSynergy \nblue-meadow-in-green-sky - Public Domain - yd  \nAtari sound effects - CC-BY 3.0 - dklon  \nBattle in the Winter - CC-By 3.0 - jobromedia"
 	local creditsTextObject = display.newText(creditsText, 0, 0, "fonts/Rufscript010" ,display.contentHeight * .025)
 	creditsTextObject.anchorX = 0
 	creditsTextObject.anchorY = 0
@@ -75,10 +68,8 @@ end
 
 -- "scene:show()"
 function scene:show( event )
-
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
 		titleText1.isVisible = true
 		backBtn.isVisible = true
@@ -93,10 +84,8 @@ end
 
 -- "scene:hide()"
 function scene:hide( event )
-
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
 		titleText1.isVisible = false
 		backBtn.isVisible = false
@@ -111,9 +100,7 @@ end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
    local sceneGroup = self.view
-
    titleText1:removeSelf()
    titleText1 = nil
    scrollableCredits:removeSelf()

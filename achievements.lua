@@ -1,16 +1,15 @@
+--[[This page shows the user which achievements they have unlocked.  Unlocked achievements are strictly based on
+the players total distance traveled.]]
 local composer = require( "composer" )
 local score = require( "score" )
 local scene = composer.newScene()
-local widget = require "widget"		-- include Corona's "widget" library
----------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
+local widget = require "widget"		
 
--- local forward references should go here
+-- local variable definitions
 local titleText1, scrollableachievements, achievementIcon, achievementBorder
 local backBtnBtn
 
+--define the distance requirements to unlock achievements
 local distance = {
 2,		8,
 26,		60,
@@ -28,12 +27,14 @@ local distance = {
 327000,	1360000,
 5443680, 1200000000,
 9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
+
+--achievement names
 local achievementNames = {
 "Tree Sapling",
 "Tallest Man",
 "Great Wall of China",
 "Average Oak Tree",
-"Rockefellar Xmas Tree",
+"Rockefeller Xmas Tree",
 "New Years Eve Ball",
 "Pine Tree",
 "Giant Sequoia Tree",
@@ -61,6 +62,8 @@ local achievementNames = {
 "Moon",
 "Good Luck..."
 }
+
+--achievement descriptions
 local achievementDescriptions = {
 "Just a sapling",
 "High five, mate",
@@ -89,25 +92,22 @@ local achievementDescriptions = {
 "I should be hibernating right now",
 "Now seating squirrels",
 "Where no squirrel has gone before",
-"No racoons allowed",
+"No raccoons allowed",
 "Squilnit the Soviet Squirrel",
 "One small step for man, one giant leap for a squirrel",
 "I think you cheated..."}
 
+--navigate back to main menu
 local function onBackBtn()
 	sceneInTransition = true
 	composer.gotoScene("menu", {effect="fromRight", time=1000})
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
-
-
 ---------------------------------------------------------------------------------
 
 -- "scene:create()"
 function scene:create( event )
-	--composer.getScene("menu"):destroy()
-
    local sceneGroup = self.view
 
 	titleText1 = display.newText( "Achievements", 0, 0, "fonts/Rufscript010" ,display.contentHeight * .065)
@@ -115,6 +115,7 @@ function scene:create( event )
 	titleText1.anchorY = 0
 	sceneGroup:insert(titleText1)
 	
+	--a widget to hold all of our achievements
 	scrollableachievements = widget.newScrollView {
 		left = 0, top = display.contentHeight*.08, --display.contentHeight*.065,
 		width = display.contentWidth,
@@ -133,6 +134,8 @@ function scene:create( event )
 	while distance[i] < loadDistance()do --find the next unlockable achievement
 		i = i+1
 	end
+
+	--locked achievement icon informing the user when the next achievement can be unlocked
 	achievementIcon = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.175 )
 	achievementIcon.anchorX = 0
 	achievementIcon.anchorY = 0
@@ -156,8 +159,7 @@ function scene:create( event )
 	
 	i = i-1
 	j = j+1
-	print(i)
-	print("j="..j)
+	--loop through and dynamically create each unlocked achievement using i and j for spacing and achievement names and images
 	while i>=1 do
 		local achievementsText = achievementNames[i] .. " " .. distance[i] .. "ft"
 		local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
@@ -205,14 +207,11 @@ function scene:create( event )
 	backBtn.x = display.contentWidth * .50
 	backBtn.y = display.contentHeight * .95
 	sceneGroup:insert(backBtn)
-	
-	
    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
 
 -- "scene:show()"
 function scene:show( event )
-
    local sceneGroup = self.view
    local phase = event.phase
 
@@ -220,8 +219,6 @@ function scene:show( event )
 		titleText1.isVisible = true
 		scrollableachievements.isVisible = true
 		backBtn.isVisible = true
-
-
       -- Called when the scene is still off screen (but is about to come on screen).
    elseif ( phase == "did" ) then
       -- Called when the scene is now on screen.
@@ -232,10 +229,8 @@ end
 
 -- "scene:hide()"
 function scene:hide( event )
-
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
 		titleText1.isVisible = false
 		scrollableachievements.isVisible = false
@@ -250,9 +245,7 @@ end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
    local sceneGroup = self.view
-
    titleText1:removeSelf()
    titleText1 = nil
    backBtn:removeSelf()

@@ -76,7 +76,7 @@ function scene:create( event )
 	sceneGroup:insert(scoreT)
 	
 	-- Create the distance "header"
-	distanceText = display.newText ("Distance Travelled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
+	distanceText = display.newText ("Distance Traveled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)

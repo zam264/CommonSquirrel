@@ -49,7 +49,7 @@ local function isA(thing,kind)
   return false
 end
 
--- tostring
+-- to-string
 local function __tostring(self,...)
   if self.describe then return self:describe(...) end
   local is = isA(self)
@@ -59,7 +59,7 @@ local function __tostring(self,...)
   return tostring(self)
 end
 
--- Base metatable
+-- Base meta-table
 local baseClassMt = {
   __call = function (self,...) return self:new(...) end,
   __tostring = __tostring
@@ -120,14 +120,14 @@ local function extendsFromClass(self,extra_params)
   return setmetatable(class,self)
 end
 
--- Abstract class deriviation
+-- Abstract class derivation
 local function abstractExtendsFromClass(self, extra_params)
   local c = self:extends(extra_params)
   _register.class[c].__system.__abstract = true
   return c
 end
 
--- Final class deriviation
+-- Final class derivation
 local function finalExtendsFromClass(self, extra_params)
   local c = self:extends(extra_params)
   _register.class[c].__system.__final = true
@@ -188,15 +188,15 @@ Class = function(members)
     }
   }
 
-  newClass.new = instantiateFromClass                                                -- class instanciation
+  newClass.new = instantiateFromClass                                                -- class instantiation
   newClass.extends = extendsFromClass                                                -- class derivation
-  newClass.abstractExtends = abstractExtendsFromClass                                -- abstract class deriviation
-  newClass.finalExtends = finalExtendsFromClass                                      -- final class deriviation
+  newClass.abstractExtends = abstractExtendsFromClass                                -- abstract class derivation
+  newClass.finalExtends = finalExtendsFromClass                                      -- final class derivation
   newClass.__call = baseClassMt.__call                                               -- shortcut for instantiation with class() call
   newClass.super = callFromSuperClass                                                -- super method calls handling
   newClass.getClass = getSuperClass                                                  -- gets the superclass
   newClass.getSubClasses = getSubClasses                                             -- gets the subclasses
-  newClass.__tostring = __tostring                                                   -- tostring
+  newClass.__tostring = __tostring                                                   -- to string
   newClass.is_A = function(self,aClass,shallow)                                              -- Object's class checking
     assert(isA(self,'object'),'is_A() must be called from an object')
     if aClass then

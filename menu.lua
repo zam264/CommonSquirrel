@@ -1,16 +1,14 @@
+--[[This page gives the player the ability to navigate to any of the resources in the game including the game itself,
+achievements, options, unlockables as well as the journal.]]
 local composer = require( "composer" )
 local score = require( "score" )
 require("settings")
 require("options")
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
----------------------------------------------------------------------------------
--- All code outside of the listener functions will only be executed ONCE
--- unless "composer.removeScene()" is called.
----------------------------------------------------------------------------------
 display.setDefault( "background", 0/255, 120/255, 171/255 )
 
--- local forward references should go here
+-- local variable definitions
 local playBtn, optionsBtn, achievementsButton, unlockablesButton, homeBG
 local titleText1, titleText2, highScoreText, highScore, totalDistance, totalDistanceText
 local backgroundMusic = audio.loadStream("sound/Night Calm v0_4.mp3")
@@ -22,7 +20,7 @@ local color =
 effectsVolume = 0
 musicVolume = 0
 
-
+--enter the game screen
 local function onPlayBtn()
 	audio.stop(1)
 	sceneInTransition = true
@@ -30,24 +28,28 @@ local function onPlayBtn()
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--go to ghe achievements screen
 local function onAchievementsButton()
 	sceneInTransition = true
 	composer.gotoScene( "achievements", {effect="fromLeft", time=1000})
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--go to the unlockable skins screen
 local function onUnlockablesButton()
 	sceneInTransition = true
 	composer.gotoScene( "unlockables", {effect="fromLeft", time=1000})
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--go to ghe options screen
 local function onOptionsBtn()
 	sceneInTransition = true
 	composer.gotoScene( "options", {effect="fromLeft", time=1000})
 	timer.performWithDelay (1000, function() sceneInTransition = false end)
 	return true	-- indicates successful touch
 end
+--go to ghe journal screen
 local function onJournalBtn()
 	sceneInTransition = true
 	composer.gotoScene( "journal", {effect="fromRight", time=1000})
@@ -60,18 +62,18 @@ end
 
 -- "scene:create()"
 function scene:create( event )
-	loadSettings()
-	audio.play( backgroundMusic, { channel=1, loops=-1, volume=0} )
+	loadSettings()--load our saved settings
+	audio.play( backgroundMusic, { channel=1, loops=-1, volume=0} )--play our looping background music
 	audio.setVolume(0, {channel=1})
 	audio.fade( {channel=1, time=5000, volume=musicVolume/100})
-
+	--load in our background images
     sceneGroup = self.view
 	display.setDefault( "background", 0/255, 120/255, 171/255 )
 	menuBG = display.newImageRect( "imgs/menuBG.png", display.contentWidth, display.contentHeight)
 	menuBG.x = display.contentWidth*.5
 	menuBG.y = display.contentHeight*.5
 	sceneGroup:insert(menuBG)
-	
+	--create text on the screen
 	titleText1 = display.newEmbossedText( "Common Squirrel", display.contentWidth * .5, display.contentHeight*.1, "fonts/Rufscript010" ,display.contentHeight * .065)
 	titleText1:setEmbossColor( color )
 	
@@ -80,33 +82,30 @@ function scene:create( event )
 	sceneGroup:insert(titleText1)
 	sceneGroup:insert(titleText2)
    
-   highScoreText = display.newEmbossedText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, "fonts/Rufscript010",  display.contentHeight * .05)
-   highScoreText:setEmbossColor( color )
-   highScoreText.anchorX = .5
-   highScoreText.anchorY = .5
-   sceneGroup:insert(highScoreText)
+	highScoreText = display.newEmbossedText( "HighScore", display.contentWidth*.5, display.contentHeight *.3, "fonts/Rufscript010",  display.contentHeight * .05)
+	highScoreText:setEmbossColor( color )
+	highScoreText.anchorX = .5
+	highScoreText.anchorY = .5
+	sceneGroup:insert(highScoreText)
 
-   highScore = display.newEmbossedText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, "fonts/Rufscript010",  display.contentHeight * .04)
-   highScore:setEmbossColor( color )
-   highScore.anchorX = .5
-   highScore.anchorY = .5
-   sceneGroup:insert(highScore)
-   
-   
-   
-   totalDistanceText = display.newEmbossedText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, "fonts/Rufscript010",  display.contentHeight * .05)
-   totalDistanceText:setEmbossColor( color )
-   totalDistanceText.anchorX = .5
-   totalDistanceText.anchorY = .5
-   sceneGroup:insert(totalDistanceText)
+	highScore = display.newEmbossedText(loadScore() or 0, display.contentWidth*.5, display.contentHeight *.35, "fonts/Rufscript010",  display.contentHeight * .04)
+	highScore:setEmbossColor( color )
+	highScore.anchorX = .5
+	highScore.anchorY = .5
+	sceneGroup:insert(highScore)
 
-   totalDistance = display.newEmbossedText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, "fonts/Rufscript010",  display.contentHeight * .04)
-   totalDistance:setEmbossColor( color )
-   totalDistance.anchorX = .5
-   totalDistance.anchorY = .5
-   sceneGroup:insert(totalDistance)
+	totalDistanceText = display.newEmbossedText( "Total Distance", display.contentWidth*.5, display.contentHeight *.45, "fonts/Rufscript010",  display.contentHeight * .05)
+	totalDistanceText:setEmbossColor( color )
+	totalDistanceText.anchorX = .5
+	totalDistanceText.anchorY = .5
+	sceneGroup:insert(totalDistanceText)
+
+	totalDistance = display.newEmbossedText(loadDistance() or 0, display.contentWidth*.5, display.contentHeight *.5, "fonts/Rufscript010",  display.contentHeight * .04)
+	totalDistance:setEmbossColor( color )
+	totalDistance.anchorX = .5
+	totalDistance.anchorY = .5
+  	sceneGroup:insert(totalDistance)
    
-   -- Initialize the scene here.
 	playBtn = widget.newButton{
 		label="Play",
 		font = "fonts/Rufscript010",
@@ -124,7 +123,7 @@ function scene:create( event )
 	sceneGroup:insert(playBtn)
 	
 	
-	--achievementsButton, unlockablesButton
+	--achievementsButton, unlockablesButton, journalButton, optionsButton
 	achievementsButton = widget.newButton{
 		label="Achievements",
 		font = "fonts/Rufscript010",
@@ -198,7 +197,6 @@ end
 function scene:show( event )
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
    		audio.resume(1)
 		titleText1.isVisible = true
@@ -227,10 +225,8 @@ end
 
 -- "scene:hide()"
 function scene:hide( event )
-
    local sceneGroup = self.view
    local phase = event.phase
-
    if ( phase == "will" ) then
 		titleText1.isVisible = false
 		titleText2.isVisible = false
@@ -255,9 +251,7 @@ end
 
 -- "scene:destroy()"
 function scene:destroy( event )
-
    local sceneGroup = self.view
-
 	titleText1:removeSelf()
 	titleText1 = nil
 	titleText2:removeSelf()
@@ -282,7 +276,6 @@ function scene:destroy( event )
     optionsBtn = nil 
     menuBG:removeSelf()
     menuBG = nil
-	
    -- Called prior to the removal of scene's view ("sceneGroup").
    -- Insert code here to clean up the scene.
    -- Example: remove display objects, save state, etc.

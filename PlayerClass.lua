@@ -50,7 +50,7 @@ function Player:init(posX, posY)
 	--This function takes away "amt" lives from the player, called when the player collides with an obstacle
 	function Player:damage(amt)
 		self.health = self.health - amt
-		--Dont let health drop below 0 
+		--Don't let health drop below 0 
 		if self.health < 0 then 
 			self.health = 0 
 		end
