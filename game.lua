@@ -15,69 +15,69 @@ local scene = composer.newScene()
 
 
 -- Global variables
-paused = false		-- if the game is paused or not
-					-- paused helps manage timers to prevent the player from manipulating the pause screen
-playerScore = 0	-- the players score as a number
-distance = 0	-- the players distance as a number
+paused = false		-- If the game is paused or not
+					-- Paused helps manage timers to prevent the player from manipulating the pause screen
+playerScore = 0		-- The players score as a number
+distance = 0		-- The players distance as a number
 
 -- Local Variable Declarations
 local scoreText, livesText, bonusScoreText	-- General text objects
-local tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup	-- objects specifically for the tutorial
-local scoreLabel	-- the text "Score" at the top of the screen ( variable 'scoreText' contains the text of the players score)
-local pauseBtn		-- the pause button widget in the top right
+local tutorialText, tutorialBackground, tutorialArrowR, tutorialArrowL, tutorialGroup	-- Objects specifically for the tutorial
+local scoreLabel	-- The text "Score" at the top of the screen ( variable 'scoreText' contains the text of the players score)
+local pauseBtn		-- The pause button widget in the top right
 local playerHit = false	-- Set to true when the player is hit by an obstacle THAT DOES DAMAGE
 local beginX 			-- Used to track swiping movements, represents initial user touch position on screen 
 
 --Game Timers
 local timePassedBetweenEvents	-- the amount of time passed between calls to   main(event)
-local timePassed		-- used to check when .25 seconds pass in order to increment score
-local stageTimer		-- used to check when enough time has passed to generate obstacles
-local difficultyTimer	-- used to check when enough time has passed to increase the difficulty
+local timePassed		-- Used to check when .25 seconds pass in order to increment score
+local stageTimer		-- Used to check when enough time has passed to generate obstacles
+local difficultyTimer	-- Used to check when enough time has passed to increase the difficulty
 
 -- Default background colors
-local bgR = 0		-- default red value of the background
-local bgG = 120	-- default green value of the background
-local bgB = 171	-- default blue value of the background
+local bgR = 0	-- Default red value of the background
+local bgG = 120	-- Default green value of the background
+local bgB = 171	-- Default blue value of the background
 
 -- Space stage variables
-local spaceBoundary = 2		-- level of difficulty which you enter space
-local spaceTransition = .25	-- the rate at which the game transitions to space after the spaceBoundary is reached
+local spaceBoundary = 2		-- Level of difficulty which you enter space
+local spaceTransition = .25	-- The rate at which the game transitions to space after the spaceBoundary is reached
 local bgClear = false	-- Used to test if the earth stage background is clear before moving the space background on screen
 
 -- Audio
-local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")	-- music for the earth stage
-local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")		-- music for the space stage
-local acornSFX = audio.loadSound("sound/Replenish.mp3")		-- sound effect when a powerup is acquired
-local hitSFX = audio.loadSound("sound/atari_boom3.mp3")		-- sound effect when the player hits an obstacle
+local earthMusic = audio.loadStream("sound/Battle in the winter.mp3")	-- Music for the earth stage
+local spaceMusic = audio.loadStream("sound/BMGS_0.mp3")		-- Music for the space stage
+local acornSFX = audio.loadSound("sound/Replenish.mp3")		-- Sound effect when a powerup is acquired
+local hitSFX = audio.loadSound("sound/atari_boom3.mp3")		-- Sound effect when the player hits an obstacle
 
 -- Constants
-local contentHeight = display.contentHeight	-- local variables were said to improve performance
+local contentHeight = display.contentHeight	-- Local variables were said to improve performance
 local contentWidth = display.contentWidth	-- I don't know how much of a difference this actually makes
-local highScore = loadScore()		-- the player's current highscore
-local maxDifficulty = 3			-- the games max difficulty
+local highScore = loadScore()		-- The player's current highscore
+local maxDifficulty = 3			-- The games max difficulty
 
 -- Collision Objects
-local player			-- the players squirrel
+local player			-- The players squirrel object
 local obstacles = {}	-- Holds obstacles
 
 -- Background object groups
 local earthBGGroup, spaceBGGroup, treesBGGroup, starsBGGroup
 
 -- Background images/display objects
-local trees = {}	-- array containing the trees that the squirrel is climbing (there are 6 of these)
-local earthBGImgs = {}	-- the clouds and balloon that are seen before the space stage is reached
-local spaceBGImgs = {}	-- array containing the asteroids and ufo that are seen after reaching space
-local stars = {}	-- array containing the stars in the background of the space stage
-local treeBase		-- the grassy ground that appears at the start of each game
-local invulnAura	-- the white and gold aura that surrounds the squirrel when a red mushroom is picked up
-local damageMask	-- the white border around the screen when the player takes damage
+local trees = {}	-- Array containing the trees that the squirrel is climbing (there are 6 of these)
+local earthBGImgs = {}	-- Array containing the clouds and balloon that are seen before the space stage is reached
+local spaceBGImgs = {}	-- Array containing the asteroids and ufo that are seen after reaching space
+local stars = {}	-- Array containing the stars in the background of the space stage
+local treeBase		-- The grassy ground that appears at the start of each game
+local invulnAura	-- The white and gold aura that surrounds the squirrel when a red mushroom is picked up
+local damageMask	-- The white border around the screen when the player takes damage
 
 -- Game difficulty and speed variables
-local difficulty = 1	-- the current difficulty of the game ranges from [1,3] 
-						-- it takes 15 seconds to go from difficulty 1 ->2 and 30 seconds to go from 2 -> 3
-local yTranslateModifier = 5	-- we use this to assist in calculated how far to move the objects each frame
-local yTranslate	-- how far we move the objects each frame (difficulty * yTranslateModifier * gameSpeedModifier)
-					-- the background objects use half of this value to create a parallax effect
+local difficulty = 1	-- The current difficulty of the game ranges from [1,3] 
+						-- It takes 15 seconds to go from difficulty 1 ->2 and 30 seconds to go from 2 -> 3
+local yTranslateModifier = 5	-- Used to assist in calculated how far to move the objects each frame
+local yTranslate	-- How far we move the objects each frame (difficulty * yTranslateModifier * gameSpeedModifier)
+					-- The background objects use half of this value to create a parallax effect
 local gameSpeedModifier = 1		-- Used when "slow" and "speed" mushrooms are hit to adjust the speed of the game
 
 -- Health Sprite sheet variables
@@ -118,7 +118,7 @@ for i=1, 4 do
 	earthBGSpeed[i] = math.random()
 end
 
---[[ Space Background Modifiers ]]--
+-- Space Background Modifiers
 local astroidRotation1 = math.random(0,1) - math.random()
 local astroidRotation2 = math.random(0,1) - math.random()
 local spaceBGSpeed = {}
@@ -132,22 +132,28 @@ end
 
 --------------------------------------------
 --moveRight()
---moves the players squirrel to the neighboring branch on the right
--- the player can only move if the squirrel is on a branch
+-- Moves the players squirrel to the neighboring branch on the right
+-- The player can only move if the squirrel is on a branch
 --------------------------------------------
 local function moveRight() 
-	if (player.model.x == contentWidth * .25) then
+	if (player.model.x == contentWidth * .25) then	-- Player is on the left most tree
+		-- Rotate the player and the underlying invulnAura to the right
 		transition.to(player.model, {rotation=30, time=100/difficulty})
 		transition.to(invulnAura, {rotation=30, time=100/difficulty})
+		-- Rotate the player and invulnAura back after the squirrel reaches the tree
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
+		-- Move the player and the underlying invulnAura right
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
 		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.5})
-	elseif (player.model.x == contentWidth * .5) then
+	elseif (player.model.x == contentWidth * .5) then	-- Player is on the center tree
+		-- Rotate the player and the underlying invulnAura to the right
 		transition.to(player.model, {rotation=30, time=100/difficulty})
 		transition.to(invulnAura, {rotation=30, time=100/difficulty})
+		-- Rotate the player and invulnAura back after the squirrel reaches the tree
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
+		-- Move the player and the underlying invulnAura right
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.75})
 		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.75})
 	end
@@ -155,22 +161,28 @@ end
 
 --------------------------------------------
 --moveLeft()
---moves the players squirrel to the neighboring branch on the left
--- the player can only move if the squirrel is on a branch
+-- Moves the players squirrel to the neighboring branch on the left
+-- The player can only move if the squirrel is on a branch
 --------------------------------------------
 local function moveLeft() 
-	if (player.model.x == contentWidth * .75) then
+	if (player.model.x == contentWidth * .75) then	-- Player is on the right most tree
+		-- Rotate the player and the underlying invulnAura to the left
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
 		transition.to(invulnAura, {rotation=-30, time=100/difficulty})
+		-- Rotate the player and invulnAura back after the squirrel reaches the tree
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
+		-- Move the player and the underlying invulnAura left
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.5})
 		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.5})
-	elseif (player.model.x == contentWidth * .5) then
+	elseif (player.model.x == contentWidth * .5) then	-- Player is on the center tree
+		-- Rotate the player and the underlying invulnAura to the left
 		transition.to(player.model, {rotation=-30, time=100/difficulty})
 		transition.to(invulnAura, {rotation=-30, time=100/difficulty})
+		-- Rotate the player and invulnAura back after the squirrel reaches the tree
 		timer.performWithDelay (200/difficulty, function() transition.to(player.model, {rotation=0, time=100/difficulty}) end)
 		timer.performWithDelay (200/difficulty, function() transition.to(invulnAura, {rotation=0, time=100/difficulty}) end)
+		-- Move the player and the underlying invulnAura left
 		transition.to(player.model, {time=200/difficulty, x=contentWidth*0.25})
 		transition.to(invulnAura, {time=200/difficulty, x=contentWidth*0.25})
 	end
@@ -178,25 +190,24 @@ end
 
 --------------------------------------------
 --move(event)
---function handles for both movement types and both directions
---
+-- Function handles for both movement types and both directions
 --------------------------------------------
 local function move(event)
-	if (swipeMovement) then
+	if (swipeMovement) then		-- If the player was swipe to move enabled
 		if(event.phase == "began") then
-			beginX = event.x 
+			beginX = event.x 				-- Record the start of the swipe
 		elseif(event.phase == "ended") then 
-			if(beginX > event.x) then 
+			if(beginX > event.x) then 		-- The swipe ended left of where it started
 				moveLeft()
-			elseif (beginX < event.x) then
+			elseif (beginX < event.x) then	-- The swipe ended right of where it started
 				moveRight()
 			end
 		end
-	else
+	else		-- Tap to move is enabled
 		if(event.phase == "began")then
-			if(event.x > contentWidth*0.5)then
+			if(event.x > contentWidth*0.5)then	-- Player tapped the right side of the screen
 				moveRight()
-			elseif(event.x < contentWidth*0.5)then
+			elseif(event.x < contentWidth*0.5)then	-- Player tapped the left side of the screen
 				moveLeft()
 			end	
 		end	
@@ -205,7 +216,8 @@ end
 
 --------------------------------------------
 --pauseGame()
---set the pause flag to handle the game timers
+-- Set the pause flag to handle the game timers
+-- Game will not pause if the player is dead
 --------------------------------------------
 local function pauseGame ()
 	if player.health > 0 then
@@ -227,45 +239,45 @@ end
 local function hitObstacle(self, event)
 	if event.phase == "began" then
 		if (event.other.type == "obstacle") then   --If obstacle, do damage				
-				audio.stop({channel = 4})	-- stop any old "damage" sound effects
-				audio.play( hitSFX, { channel=4, loops=0 } )	-- play a new "damage" sound effect
-				audio.setVolume( effectsVolume, {channel=4})	-- set the sound effects volume
+				audio.stop({channel = 4})	-- Stop any old "damage" sound effects
+				audio.play( hitSFX, { channel=4, loops=0 } )	-- Play a new "damage" sound effect
+				audio.setVolume( effectsVolume, {channel=4})	-- Set the sound effects volume
 				if (not player.invincible) then
 					if vibrate then 
-						system.vibrate()	-- vibrate to signify damage
+						system.vibrate()	-- Vibrate to signify damage
 					end
-					playerHit = true		-- set to use the damageMask
-					timer.performWithDelay (200, function() playerHit = false end)	-- reset the damage mask after .2 seconds
-					player:damage(1)	-- player takes damage
-				else	-- invincibility is on
+					playerHit = true		-- Set to use the damageMask
+					timer.performWithDelay (200, function() playerHit = false end)	-- Reset the damage mask after .2 seconds
+					player:damage(1)	-- Player takes damage
+				else	-- Invincibility is on
 					event.other.alpha = 0	-- "destroy" the collided object 
 				end
 		elseif (event.other.type == "acorn") then  --If Acorn
-			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
-			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
 			if player.health == 3 then
 				bonusScoreText:setFillColor(1,1,1)
-				bonusScoreText.text ="+" .. math.floor(difficulty * 5)	-- display some status text
+				bonusScoreText.text ="+" .. math.floor(difficulty * 5)	-- Display some status text
 				bonusScoreText.alpha = 1
-				playerScore = playerScore + math.floor(difficulty * 5)	-- increment player score
+				playerScore = playerScore + math.floor(difficulty * 5)	-- Increment player score
 			else
 				bonusScoreText:setFillColor(1,1,1)
-				bonusScoreText.text ="1 up!"		-- display some status text
+				bonusScoreText.text ="1 up!"		-- Display some status text
 				bonusScoreText.alpha = 1
 				player:heal(1)
 			end
 			event.other.alpha = 0	-- "destroy" the collided object 
 		elseif (event.other.type == "slow") then
 			bonusScoreText:setFillColor(1,1,0)
-			bonusScoreText.text ="slow..."		-- display some status text
+			bonusScoreText.text ="slow..."		-- Display some status text
 			bonusScoreText.alpha = 1
 			
-			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
-			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0	-- "destroy" the collided object 
-			-- change the gameSpeedModifier to slow down the game
+			-- Change the gameSpeedModifier to slow down the game
 			gameSpeedModifier = gameSpeedModifier -.1
 			timer.performWithDelay (100, function() gameSpeedModifier = gameSpeedModifier -.1 end)
 			timer.performWithDelay (200, function() gameSpeedModifier = gameSpeedModifier -.1 end)
@@ -278,13 +290,13 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier +.1 end)
 		elseif (event.other.type == "speed") then
 			bonusScoreText:setFillColor(.7,0,.7)
-			bonusScoreText.text ="SPEED!"		-- display some status text
+			bonusScoreText.text ="SPEED!"		-- dDisplay some status text
 			bonusScoreText.alpha = 1
-			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
-			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0	-- "destroy" the collided object 
-			-- change the gameSpeedModifier to speed up the game
+			-- Change the gameSpeedModifier to speed up the game
 			gameSpeedModifier = gameSpeedModifier +.05
 			timer.performWithDelay (100, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
 			timer.performWithDelay (200, function() gameSpeedModifier =  gameSpeedModifier +.05 end)
@@ -297,15 +309,15 @@ local function hitObstacle(self, event)
 			timer.performWithDelay (2000, function() gameSpeedModifier = gameSpeedModifier -.05 end)
 		elseif (event.other.type == "red") then 
 			bonusScoreText:setFillColor(1,0,0)
-			bonusScoreText.text ="INVINCIBLE!"		-- display some status text
+			bonusScoreText.text ="INVINCIBLE!"		-- Display some status text
 			bonusScoreText.alpha = 1
-			audio.stop({channel = 3})	-- stop any old "powerup" sound effects
-			audio.play( acornSFX, { channel=3, loops=0 } )	-- play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- set the sound effects volume
+			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
+			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
+			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0		-- "destroy" the collided object 
 			player.invincible = true	-- make the player invincible
-			timer.performWithDelay(2000, function() player.invincible = false end)	-- after 2 seconds the player is no longer invincible
-			-- make the aura visible then invisible after some time
+			timer.performWithDelay(2000, function() player.invincible = false end)	-- After 2 seconds the player is no longer invincible
+			-- Make the aura visible then invisible after some time
 			transition.to(invulnAura, {time = 100, alpha=1})
 			timer.performWithDelay(1500, function() transition.to(invulnAura, {time = 500, alpha=0, transition=easing.outCirc}) end)
 		end
@@ -313,16 +325,16 @@ local function hitObstacle(self, event)
 		healthSprite:play() --Play a sprite sequence to reflect how much health is left
 
 		if player.health == 0 then 
-			saveScore(playerScore)	-- save the player's score
-			addToDistance(distance)	-- increment the player's distance
+			saveScore(playerScore)	-- Save the player's score
+			addToDistance(distance)	-- Increment the player's distance
 			for x=1,  #obstacles do
-				obstacles[x]:delete()	-- remove all obstacles
+				obstacles[x]:delete()	-- Remove all obstacles
 			end
 			obstacles = {}
-			-- wait 2 seconds and go to the loseScreen
+			-- Wait 2 seconds and go to the loseScreen
 			timer.performWithDelay (2000, function() composer.gotoScene( "loseScreen", {effect="fromRight", time=1000}) end)
 			
-			-- while waiting, send the squirrel spinning off the tree
+			-- While waiting, send the squirrel spinning off the tree
 			physics.setGravity(0,20)
 			local xDir = (contentWidth*.5 - player.model.x)
 			if xDir > 0 then
@@ -331,7 +343,7 @@ local function hitObstacle(self, event)
 				xDir = -1
 			end
 			player.model:applyForce( 5* xDir, -20, player.model.x, player.model.y)
-			transition.to(player.model, {rotation=720*xDir, time=2000})
+			transition.to(player.model, {rotation=720*xDir, time=2000})		-- Spin the squirrel!
 		end
 	end
 end
@@ -503,16 +515,15 @@ function scene:create( event )
 end
 
 
----------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 
 
 function main(event)
 	if  ( paused ) then --Check if the game is paused
-		timePassed = timePassed + (event.time - timePassedBetweenEvents)
-		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)
+		timePassed = timePassed + (event.time - timePassedBetweenEvents)	-- adjusts variables to keep variable relevant when the game resumes
+		stageTimer = stageTimer + (event.time - timePassedBetweenEvents)	-- or else the event.time continues to increase and it can force the game to improperly scale
 		difficultyTimer = difficultyTimer + (event.time - timePassedBetweenEvents)
 	elseif (player.health > 0) then --Game isn't paused; Normal Gameplay
-
 		--update gameplay variables
 		if (event.time - timePassed > 250) then 
 			timePassed = event.time
@@ -528,112 +539,112 @@ function main(event)
 			generateObstacles(obstacles)
 		end	
 
-		--update difficulty and scroll speed
+		--update difficulty (when difficulty reaches 2, the game scales at half speed)
 		if (event.time - difficultyTimer > math.floor(difficulty) * 1500 and difficulty < maxDifficulty) then
 			difficultyTimer = event.time
 			difficulty = difficulty +.1
 		end
-		yTranslate = yTranslateModifier * difficulty * gameSpeedModifier
+		yTranslate = yTranslateModifier * difficulty * gameSpeedModifier	-- recalculate the yTranslate for moving objects
 		
-		--move the tutorial away
+		-- display tutorial for 1.5 seconds and then move it away with fade
 		if (difficulty > 1 and difficulty < 1.5) then
 			tutorialGroup:translate(0, yTranslate)
 			tutorialGroup.alpha = tutorialGroup.alpha - .015
 		end
 			
-		--display mask on hit
+		-- Display damage mask when player is hit
 		if (playerHit and damageMask.alpha < 1) then
-			damageMask.alpha = damageMask.alpha + .2
-		elseif (damageMask.alpha > (3-player.health) * .3) then
-			damageMask.alpha = damageMask.alpha - .05
+			damageMask.alpha = damageMask.alpha + .2	-- Scale mask into view
+		elseif (damageMask.alpha > (3-player.health) * .3) then	-- Scale damage mask away (keeps some mask if health isn't full)
+			damageMask.alpha = damageMask.alpha - .05	-- Scale mask out of view
 		end
 		
-		--background
-		--spawn normal earthly background images
-		if(difficulty < spaceBoundary)then
+		-- Background
+		if(difficulty < spaceBoundary)then	-- Spawn normal earth background images
 			for i=1, #earthBGImgs do 
 				if(earthBGImgs[i].y > contentHeight+earthBGImgs[i].height *.5)then
-					if (i == 4) then	
-						local sizeMod = (.75 + math.random()*.5)
-						earthBGImgs[i]:removeSelf()
+					if (i == 4) then	-- If the earth background image is a balloon
+						local sizeMod = (.75 + math.random()*.5)	-- Give it a random size modifier
+						earthBGImgs[i]:removeSelf()		-- Remove the old display object
+						earthBGImgs[i] = nil
+						-- Create a new display object with a random balloon image, with a width and height based on the size modifier
 						earthBGImgs[i] = display.newImageRect("imgs/earthBGImg" .. math.random(4, 7) .. ".png", contentWidth*.3 * sizeMod, contentWidth*.3*sizeMod)
-						earthBGGroup:insert(earthBGImgs[i])
-						
-					else
-						earthBGImgs[i].width =  contentWidth*.6*(.9 + math.random()*.1)
-						earthBGImgs[i].height =  contentWidth*.3*(.9 + math.random()*.1)
+						earthBGGroup:insert(earthBGImgs[i])	-- Insert the new balloon back into the display group
+					else	-- All the clouds
+						earthBGImgs[i].width =  contentWidth*.6*(.9 + math.random()*.1)		-- Random width
+						earthBGImgs[i].height =  contentWidth*.3*(.9 + math.random()*.1)	-- Random height
 					end
-					if (earthBackgroundMovement > 0) then
-						earthBGImgs[i].x = math.random(1, contentWidth*.5)
-					else
-						earthBGImgs[i].x = math.random(contentWidth*.5, contentWidth)
+					if (earthBackgroundMovement > 0) then	-- If the earth background images are moving to the right
+						earthBGImgs[i].x = math.random(1, contentWidth*.5)	-- Place them of the left side of the screen
+					else	-- Earth background images are moving to the left
+						earthBGImgs[i].x = math.random(contentWidth*.5, contentWidth)	-- Place them of the right side of the screen
 					end
-					earthBGImgs[i].y = 0 - math.random(1, contentHeight)
-					earthBGSpeed[i] = math.random()
+					earthBGImgs[i].y = 0 - math.random(1, contentHeight)	-- Place them above the top of the screen
+					earthBGSpeed[i] = math.random()	-- Give it a new random x velocity
 				else
-					earthBGImgs[i]:translate(earthBackgroundMovement * earthBGSpeed[i], yTranslate*.5)
+					earthBGImgs[i]:translate(earthBackgroundMovement * earthBGSpeed[i], yTranslate*.5)	-- Move the object if it is not below the screen
 				end
 			end
 		else 
-			if(bgClear == false)then --clear old earth images
+			if(bgClear == false)then -- Clear old earth images
 				local count = 0
-				for i=1, #earthBGImgs do --move earth images off screen
+				for i=1, #earthBGImgs do
 					if(earthBGImgs[i].y < contentHeight+earthBGImgs[i].height *.5)then
-						earthBGImgs[i]:translate(earthBackgroundMovement * earthBGSpeed[i], yTranslate*.5)
-					else --when we know all earth images are off screen set bgClear to true
-						count = count + 1
+						earthBGImgs[i]:translate(earthBackgroundMovement * earthBGSpeed[i], yTranslate*.5)  -- Move earth objects that are not below the screen
+					else -- When we know all earth images are off screen set bgClear to true
+						count = count + 1	-- Increment for each earth image that is moved off screen
 						if(count == #earthBGImgs)then
-							bgClear = true			
-							audio.stop(2)
-							audio.play( spaceMusic, { channel=2, loops=-1, fadein=5000 } )
+							bgClear = true	-- Earth background objects are all off screen, time to start space
+							audio.stop(2)	-- Stop the earth music
+							audio.play( spaceMusic, { channel=2, loops=-1, fadein=5000 } )	-- Play the space music
 						end
 					end
 				end
-			else  --old images are cleared, begin to utilize space images	
+			else  -- Old earth images are cleared, begin to utilize space images	
 				for i=1, #spaceBGImgs do 
-					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height *.5)then
-						spaceBGImgs[i].x = math.random(1, contentWidth)
-						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)			
+					if(spaceBGImgs[i].y > contentHeight+spaceBGImgs[i].height *.5)then	-- Space images are below the screen
+						spaceBGImgs[i].x = math.random(1, contentWidth)			-- Give space background image random x coordinate
+						spaceBGImgs[i].y = 0 - math.random(1, contentHeight)	-- Move space background image back above the top of the screen
 						if (i == 1) then
-							astroidRotation1 = math.random(0,1) - math.random()
-							spaceBGImgs[i].width = contentWidth*.3*(.75 + math.random()*.5)
-							spaceBGImgs[i].height = contentWidth*.3*(.75 + math.random()*.5)
+							astroidRotation1 = math.random(0,1) - math.random()			-- Randomize asteroid rotation
+							spaceBGImgs[i].width = contentWidth*.3*(.75 + math.random()*.5)	-- Generate a new random width for the asteroid
+							spaceBGImgs[i].height = contentWidth*.3*(.75 + math.random()*.5)-- Generate a new random height for the asteroid
 						elseif (i == 2) then
-							astroidRotation2 = math.random(0,1) - math.random()
-							spaceBGImgs[i].width = contentWidth*.3*(.75 + math.random()*.5)
-							spaceBGImgs[i].height = contentWidth*.3*(.75 + math.random()*.5)
+							astroidRotation2 = math.random(0,1) - math.random()			-- Randomize asteroid rotation
+							spaceBGImgs[i].width = contentWidth*.3*(.75 + math.random()*.5)	-- Generate a new random width for the asteroid
+							spaceBGImgs[i].height = contentWidth*.3*(.75 + math.random()*.5)-- Generate a new random height for the asteroid
 						else
-							local sizeMod = (.75 + math.random()*.5)
-							spaceBGImgs[i].width = contentWidth*.3*sizeMod
-							spaceBGImgs[i].height = contentWidth*.3*sizeMod
+							local sizeMod = (.75 + math.random()*.5)	-- Randomize size of ufo
+							spaceBGImgs[i].width = contentWidth * .3 * sizeMod	-- Set new width for the ufo
+							spaceBGImgs[i].height = contentWidth * .3 * sizeMod	-- Set new height for the ufo
 						end
-						spaceBGSpeed[i] = math.random(0,1) - math.random()
+						spaceBGSpeed[i] = math.random(0,1) - math.random()	--Set a new x velocity for the off screen image
 					else
-						spaceBGImgs[i]:translate(spaceBGSpeed[i], yTranslate*.5)
+						spaceBGImgs[i]:translate(spaceBGSpeed[i], yTranslate*.5)	-- Move space images that are still on screen
 					end	
 				end
-				spaceBGImgs[1]:rotate(astroidRotation1)
-				spaceBGImgs[2]:rotate(astroidRotation2)
+				spaceBGImgs[1]:rotate(astroidRotation1)	-- Rotate asteroid1
+				spaceBGImgs[2]:rotate(astroidRotation2)	-- Rotate asteroid2
 				for i=1, #stars do
-					if(stars[i].y > contentHeight)then
-						stars[i].alpha = stars[i].alpha + .2 * gameSpeedModifier
-						stars[i].x = math.random(1, contentWidth)
-						stars[i].y = 0 - math.random(1, contentHeight)
+					if(stars[i].y > contentHeight)then	-- When a star is off the bottom of the screen
+						stars[i].alpha = stars[i].alpha + .2 * gameSpeedModifier	-- Increment the stars alpha till it reaches 1 (makes for a smooth star transition into space)
+						stars[i].x = math.random(1, contentWidth)		-- Give the star a new x coordinate
+						stars[i].y = 0 - math.random(1, contentHeight)	-- Move the star back above the top of the screen
 					else
-						stars[i]:translate(0, yTranslate*.4)
+						stars[i]:translate(0, yTranslate*.4)	-- Move the stars that are still on screen down
 					end
 				end
 			end
 		end
 
-		--transition the background to black to represent space
+		-- Transition the background to black to represent space
 		if(difficulty > spaceBoundary and (bgG > 1 or bgB > 1))then
-			bgG = bgG - (spaceTransition * gameSpeedModifier)
-			bgB = bgB - (spaceTransition  * gameSpeedModifier)
+			bgG = bgG - (spaceTransition * gameSpeedModifier)	-- Decrement the green of the background until black
+			bgB = bgB - (spaceTransition  * gameSpeedModifier)	-- Decrement the blue of the background until black
 			display.setDefault( "background", bgR/255, bgG/255, bgB/255 )
 		end
 
-		--reset tree location if trees travel off-screen
+		-- Reset tree location if trees travel off-screen
 		if(trees[1].y >= 2*contentHeight)then 
 			trees[1].y = trees[4].y - (contentHeight * .95) * 2
 		elseif (trees[4].y >= 2*contentHeight) then
@@ -650,19 +661,20 @@ function main(event)
 			trees[6].y = trees[3].y - (contentHeight * .95) * 2	
 		end
 		
-		--move the trees
+		-- Move the trees
 		for i = 1, #trees do
 			trees[i]:translate(0, yTranslate)
 		end
 
-		if(treeBase.x < contentHeight)then
+		-- Move the ground that is displayed at the start of the game
+		if(treeBase.x > -contentHeight)then
 			treeBase:translate(0, yTranslate)
 		end
 
-		--Obstacle Handling
+		-- Obstacle Handling
 		for x=#obstacles, 1, -1 do
-			obstacles[x].model:translate(0,yTranslate)
-			if (obstacles[x].model.y > contentHeight + 100) then
+			obstacles[x].model:translate(0,yTranslate)	-- Move all obstacles
+			if (obstacles[x].model.y > contentHeight + obstacles[x].model.height) then
 				-- kill obstacle that is now off the screen
 				physics.removeBody(obstacles[x].model)
 				obstacles[x]:delete()
@@ -670,8 +682,10 @@ function main(event)
 			end
 		end
 	end
-	timePassedBetweenEvents = event.time
+	timePassedBetweenEvents = event.time	-- used to maintain the previous time to calculate the time passed between events
 end
+
+---------------------------------------------------------------------------------
 
 -- "scene:show()"
 function scene:show( event )
@@ -837,7 +851,6 @@ scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 Runtime:addEventListener( "enterFrame", main )
 Runtime:addEventListener( "touch", move)
-
 
 ---------------------------------------------------------------------------------
 
