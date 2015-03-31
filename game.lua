@@ -241,7 +241,7 @@ local function hitObstacle(self, event)
 		if (event.other.type == "obstacle") then   --If obstacle, do damage				
 				audio.stop({channel = 4})	-- Stop any old "damage" sound effects
 				audio.play( hitSFX, { channel=4, loops=0 } )	-- Play a new "damage" sound effect
-				audio.setVolume( effectsVolume, {channel=4})	-- Set the sound effects volume
+				audio.setVolume( effectsVolume/100, {channel=4})	-- Set the sound effects volume
 				if (not player.invincible) then
 					if vibrate then 
 						system.vibrate()	-- Vibrate to signify damage
@@ -255,7 +255,7 @@ local function hitObstacle(self, event)
 		elseif (event.other.type == "acorn") then  --If Acorn
 			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
 			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
+			audio.setVolume( effectsVolume/100, {channel=3})	-- Set the sound effects volume
 			if player.health == 3 then
 				bonusScoreText:setFillColor(1,1,1)
 				bonusScoreText.text ="+" .. math.floor(difficulty * 5)	-- Display some status text
@@ -275,7 +275,7 @@ local function hitObstacle(self, event)
 			
 			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
 			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
+			audio.setVolume( effectsVolume/100, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0	-- "destroy" the collided object 
 			-- Change the gameSpeedModifier to slow down the game
 			gameSpeedModifier = gameSpeedModifier -.1
@@ -294,7 +294,7 @@ local function hitObstacle(self, event)
 			bonusScoreText.alpha = 1
 			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
 			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
+			audio.setVolume( effectsVolume/100, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0	-- "destroy" the collided object 
 			-- Change the gameSpeedModifier to speed up the game
 			gameSpeedModifier = gameSpeedModifier +.05
@@ -313,7 +313,7 @@ local function hitObstacle(self, event)
 			bonusScoreText.alpha = 1
 			audio.stop({channel = 3})	-- Stop any old "powerup" sound effects
 			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
-			audio.setVolume( effectsVolume, {channel=3})	-- Set the sound effects volume
+			audio.setVolume( effectsVolume/100, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0		-- "destroy" the collided object 
 			player.invincible = true	-- make the player invincible
 			timer.performWithDelay(2000, function() player.invincible = false end)	-- After 2 seconds the player is no longer invincible
