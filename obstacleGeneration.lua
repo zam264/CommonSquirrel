@@ -1,28 +1,34 @@
-
+--This function randomly generates obstacles and unique items and adds them to the passed collection array 
+--The collection array is the array which all the items currently on the trees are stored in 
 function generateObstacles(collection)
-	local rand = math.random(10)
+	local rand = math.random(10)  --Generate a random # 1-10 
 	local obstacle 
-	if rand <= 2 then
+	if rand <= 2 then    --If the number is 1 or 2 (so 20% chance) create a unique item instead of an obstacle
 		obstacle = createItem()
-	else
+	elseif				--Create an obstacle the other 80% of the time
 		obstacle = createObstacle()
 	end
-	table.insert(collection, obstacle)
+	table.insert(collection, obstacle)  --Insert the item created into the array 
 end
+--Creates an obstacle on one of the three trees randomly 
 function createObstacle()
 	local yPos = -150
 	local col = math.random(3)
-	local obj = Obstacle( display.contentWidth * .25 * col, yPos)
-	physics.addBody(obj.model, "dynamic", {isSensor=true})
+	--X Pos is determined by col which is randomly generated # between 1 and 3, representing the three trees
+	--The tree number times 1/4*contentWidth places the item onto the tree properly 
+	--Y Pos is slighlty off screen (the obstacles will be moved down in game.lua)
+	local obj = Obstacle( display.contentWidth * .25 * col, yPos)   --Creates an obstacle that damages the player (see Obstacle Class for more info)
+	physics.addBody(obj.model, "dynamic", {isSensor=true})  --Add physics to this item so that collision can be detected 
 	return obj
 end
+--Create either a unique item or leave the space blank (50% chance of unique item)
 function createItem()
 	local rand = math.random(4)
 	local yPos = -150
 	local obj
 	if rand > 3 then
-		local col = math.random(3)
-		obj = Acorn(display.contentWidth * .25 * col, yPos)	
+		local col = math.random(3)    --Randomly pick one of the three trees to place item on (same as in createObstacle)
+		obj = Acorn(display.contentWidth * .25 * col, yPos)	  --Creates a unique item (see Acorn Class for more info)
 		physics.addBody(obj.model, "dynamic", {isSensor=true})		
 	end
 	return obj
