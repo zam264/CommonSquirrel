@@ -5,7 +5,7 @@ function generateObstacles(collection)
 	local obstacle 
 	if rand <= 2 then    --If the number is 1 or 2 (so 20% chance) create a unique item instead of an obstacle
 		obstacle = createItem()
-	elseif				--Create an obstacle the other 80% of the time
+	else				--Create an obstacle the other 80% of the time
 		obstacle = createObstacle()
 	end
 	table.insert(collection, obstacle)  --Insert the item created into the array 
