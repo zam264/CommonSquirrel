@@ -315,8 +315,13 @@ local function hitObstacle(self, event)
 			audio.play( acornSFX, { channel=3, loops=0 } )	-- Play a new "powerup" sound effect
 			audio.setVolume( effectsVolume/100, {channel=3})	-- Set the sound effects volume
 			event.other.alpha = 0		-- "destroy" the collided object 
+			--To allow invincibility to stack remove the previous timer if the player is already invicible 
+			--Then create a new timer to refresh the timer
+			if(player.invincible) then 
+					timer.cancel(invinTimer)
+			end
 			player.invincible = true	-- make the player invincible
-			timer.performWithDelay(2000, function() player.invincible = false end)	-- After 2 seconds the player is no longer invincible
+			invinTimer = timer.performWithDelay(2000, function() player.invincible = false end)	-- After 2 seconds the player is no longer invincible
 			-- Make the aura visible then invisible after some time
 			transition.to(invulnAura, {time = 100, alpha=1})
 			timer.performWithDelay(1500, function() transition.to(invulnAura, {time = 500, alpha=0, transition=easing.outCirc}) end)
