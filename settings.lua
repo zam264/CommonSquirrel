@@ -50,7 +50,7 @@ function loadSettings()
 		if musicVolume == nil then 
 			musicVolume = 50 
 		end 
-		if vibration == nil then 
+		if vibrate == nil then 
 			vibrate = true
 		end
 	else
