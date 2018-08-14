@@ -4,7 +4,7 @@ require("btnActions")
 local btnOptions = {
     menuPlayBtnOptions = {
         label = "Play",
-		font = "fonts/Rufscript010",
+		font = font,
 		fontSize = display.contentWidth * .1,
 		labelColor = { 
             default = { 255 }, 
@@ -21,7 +21,7 @@ local btnOptions = {
     
     menuAchievementsBtnOptions = {
 		label = "Achievements",
-		font = "fonts/Rufscript010",
+		font = font,
 		fontSize = display.contentWidth * .05,
 		labelColor = { 
             default = { 255 }, 
@@ -38,7 +38,7 @@ local btnOptions = {
 
     menuUnlockablesBtnOptions = {
 		label = "Unlockables",
-		font = "fonts/Rufscript010",
+		font = font,
 		fontSize = display.contentWidth * .05,
 		labelColor = { 
             default = { 255 }, 
@@ -55,7 +55,7 @@ local btnOptions = {
 
     menuJournalBtnOptions = {
         label = "Squirrel Journal",
-		font = "fonts/Rufscript010",
+		font = font,
 		fontSize = display.contentWidth * .05,
 		labelColor = { 
             default = { 255 }, 
@@ -72,7 +72,7 @@ local btnOptions = {
 
     menuOptionsBtnOptions = {
         label = "Options",
-		font = "fonts/Rufscript010",
+		font = font,
 		fontSize = display.contentWidth * .05,
 		labelColor = { 
             default={ 255 }, 
