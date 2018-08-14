@@ -1,4 +1,6 @@
 local font = "fonts/Rufscript010"
+local defaultFile = "imgs/button.png"
+local overFile = "imgs/button-over.png"
 require("btnActions")
 
 local btnOptions = {
@@ -8,10 +10,10 @@ local btnOptions = {
 		fontSize = display.contentWidth * .1,
 		labelColor = { 
             default = { 255 }, 
-            over = { 128}  
+            over = { 128 }  
         },
-		defaultFile = "imgs/button.png",
-		overFile = "imgs/button-over.png",
+		defaultFile = defaultFile,
+		overFile = overFile,
         width = display.contentWidth, 
         height = display.contentHeight * .125,
         onRelease = onPlayBtn,
@@ -27,8 +29,8 @@ local btnOptions = {
             default = { 255 }, 
             over = { 128 } 
         },
-		defaultFile = "imgs/button.png",
-		overFile = "imgs/button-over.png",
+		defaultFile = defaultFile,
+		overFile = overFile,
         width = display.contentWidth * .5, 
         height = display.contentHeight * .1,
         onRelease = onAchievementsButton,
@@ -44,8 +46,8 @@ local btnOptions = {
             default = { 255 }, 
             over = { 128 } 
         },
-		defaultFile ="imgs/button.png",
-		overFile ="imgs/button-over.png",
+		defaultFile =defaultFile,
+		overFile = overFile,
         width = display.contentWidth * .5,
         height = display.contentHeight * .1,
         onRelease = onUnlockablesButton,
@@ -61,8 +63,8 @@ local btnOptions = {
             default = { 255 }, 
             over = { 128 } 
         },
-		defaultFile = "imgs/button.png",
-		overFile = "imgs/button-over.png",
+		defaultFile = defaultFile,
+		overFile = overFile,
         width = display.contentWidth * .5, 
         height = display.contentHeight * .1,
         onRelease = onJournalBtn,
@@ -78,8 +80,8 @@ local btnOptions = {
             default={ 255 }, 
             over={ 128 } 
         },
-		defaultFile = "imgs/button.png",
-		overFile = "imgs/button-over.png",
+		defaultFile = defaultFile,
+		overFile = overFile,
         width = display.contentWidth * .5, 
         height = display.contentHeight * .1,
         onRelease = onOptionsBtn,
