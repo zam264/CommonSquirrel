@@ -42,41 +42,55 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
+	local titleTextOptions = {
+		text 		= "You Lose", 
+		x 			= display.contentWidth  * .5, 
+		y 			= display.contentHeight * .1, 
+		font 		= "fonts/Rufscript010", 
+		fontSize 	= display.contentHeight * .1,
+		anchorX		= .5,
+		anchorY		= .5
+	}
+
+	local scoreTextOptions = {
+		text 		= "", 
+		x 			= display.contentWidth  * .025, 
+		y 			= titleTextOptions["y"] + (display.contentHeight * .05), 
+		font 		= "fonts/Rufscript010", 
+		fontSize 	= display.contentHeight * .05
+	}
+
+	local distanceTextOptions = {
+		text 		= "", 
+		x 			= display.contentWidth  * .025, 
+		y 			= scoreTextOptions["y"] + (display.contentHeight * .05), 
+		font 		= "fonts/Rufscript010", 
+		fontSize 	= display.contentHeight * .05
+	}
+
     --Display text telling the player that they lost
-	titleText = display.newText( "You Lose" , display.contentWidth*.5, display.contentHeight *.1, "fonts/Rufscript010",  display.contentHeight * .1)
-	titleText.anchorX = .5
-	titleText.anchorY = .5
+	titleText = display.newText(titleTextOptions)
 	sceneGroup:insert(titleText)
 	
 	--The score stored on the players device is lower than their current score -> so a new score has been achieved
 	if (loadScore() <= playerScore) then	--new highscore has been set -> Inform the player
-		scoreText = display.newText( "New HighScore!" , display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
-		scoreText.anchorX = 0
-		scoreText.anchorY = 0
-		sceneGroup:insert(scoreText)
+		scoreTextOptions["text"] = "New HighScore: " .. playerScore
 		composer.removeScene( "unlockables" )
 	else
-		scoreText = display.newText( "Score: ", display.contentWidth*.025, display.contentHeight *.14, "fonts/Rufscript010",  display.contentHeight * .05)
-		scoreText.anchorX = 0
-		scoreText.anchorY = 0
-		sceneGroup:insert(scoreText)
+		scoreTextOptions["text"] = "Score: " .. playerScore
 	end
-	--Displays the score of the player
-	scoreT = display.newText(playerScore, display.contentWidth*.975, display.contentHeight *.205, "fonts/Rufscript010",  display.contentHeight * .05)
-	scoreT.anchorX = 1
-	scoreT.anchorY = 0
-	sceneGroup:insert(scoreT)
-	
-	--Display the total distance traveled -> Distance accumulates to unlock achievements
-	distanceText = display.newText ("Distance Traveled: ", display.contentWidth*.025, display.contentHeight *.265, "fonts/Rufscript010",  display.contentHeight * .05)
+	scoreText = display.newText(scoreTextOptions)
+	scoreText.anchorX = 0
+	scoreText.anchorY = 0
+	sceneGroup:insert(scoreText)
+
+	--Display the distance traveled during gameplay -> Distance accumulates to unlock achievements
+	distanceTextOptions["text"] = "Distance: " .. distance .. " ft"
+	distanceText = display.newText(distanceTextOptions)
 	distanceText.anchorX = 0
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
 	
-	distanceT = display.newText (distance.." ft", display.contentWidth*.95, display.contentHeight *.330, "fonts/Rufscript010",  display.contentHeight * .05)
-	distanceT.anchorX = 1
-	distanceT.anchorY = 0
-	sceneGroup:insert(distanceT)
 	
 	local x = 2
 	local totalDist = loadDistance()
@@ -146,8 +160,8 @@ function scene:create( event )
 	}
 	replayBtn.anchorX = .5
 	replayBtn.anchorY = .5
-	replayBtn.x = display.contentWidth * .50
-	replayBtn.y = display.contentHeight * .75
+	replayBtn.x = display.contentWidth * .25
+	replayBtn.y = display.contentHeight * .95
 	sceneGroup:insert(replayBtn)
 	
 	
@@ -158,13 +172,13 @@ function scene:create( event )
 		labelColor = { default={255}, over={128} },
 		defaultFile="imgs/button.png",
 		overFile="imgs/button-over.png",
-		width=display.contentWidth * .5, height=display.contentHeight * .1,
+		width=display.contentWidth * .50, height=display.contentHeight * .1,
 		onRelease = onQuitBtn
 	}
 	quitBtn.anchorX = .5
 	quitBtn.anchorY = .5
-	quitBtn.x = display.contentWidth * .50
-	quitBtn.y = display.contentHeight * .85
+	quitBtn.x = display.contentWidth * .75
+	quitBtn.y = display.contentHeight * .95
 	sceneGroup:insert(quitBtn)
 	
 	
@@ -181,7 +195,7 @@ function scene:show( event )
       -- Called when the scene is still off screen (but is about to come on screen).
 	  titleText.isVisible = true
 	  scoreText.isVisible = true
-	  scoreT.isVisible = true
+	--   scoreT.isVisible = true
 	  distanceText.isVisible = true
 	  achievementText.isVisible = true
 	  achievementTitle.isVisible = true
