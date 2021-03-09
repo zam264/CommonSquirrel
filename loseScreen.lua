@@ -11,7 +11,7 @@ require "achievements.achievementTable"
 
 -- local forward references should go here
 local replayBtn, quitBtn
-local titleText, scoreText, highScore, distanceText, scoreT, distanceT
+local titleText, scoreText, highScore, distanceText
 local achievementText, achievementIcon, achievementTitle, achivementSubtext, achievementBorder
 
 --When the replay button is clicked, restart the game
@@ -42,14 +42,16 @@ end
 function scene:create( event )
     sceneGroup = self.view
 
+	--[[
+		Start: Setup the general information section of the lose screen.
+	]]
+
 	local titleTextOptions = {
 		text 		= "You Lose", 
 		x 			= display.contentWidth  * .5, 
 		y 			= display.contentHeight * .1, 
 		font 		= "fonts/Rufscript010", 
-		fontSize 	= display.contentHeight * .1,
-		anchorX		= .5,
-		anchorY		= .5
+		fontSize 	= display.contentHeight * .1
 	}
 
 	local scoreTextOptions = {
@@ -91,27 +93,60 @@ function scene:create( event )
 	distanceText.anchorY = 0
 	sceneGroup:insert(distanceText)
 	
+	--[[
+		End: Setup the general information section of the lose screen.
+	]]
+
+	--[[
+		Start: Setup the achievement section of the lose screen.
+	]]
 	
-	local x = 2
+	-- Determine which achievemnt the player is working towards
+	-- achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
+
+	local achievementDistance 		= 1
+	local achievementName 			= 2
+	local achievementDescription 	= 3
+	local achievementImage 			= 4
+
+	local achievementTitleTextOptions = {
+		text 		= "", 
+		x 			= display.contentWidth  * .025, 
+		y 			= distanceTextOptions["y"] + (display.contentHeight * .05), 
+		font 		= "fonts/Rufscript010", 
+		fontSize 	= display.contentHeight * .05
+	}
+	
+	-- Initialize our nextAchievement at 1 - we will increment this until we find our true next achievement
+	local nextAchievement = 1
+	
+	-- Load distance so that we can determine what our next achievement is
 	local totalDist = loadDistance()
-	while totalDist > achievementTable[x][1] do
-		x = x+1
-	end
 	
-	if totalDist - distance < achievementTable[x-1][1] then
+	-- Loop until we find our true next achievement, the achievement we haven't yet achieved
+	while totalDist > achievementTable[nextAchievement][achievementDistance] do
+		nextAchievement = nextAchievement + 1
+	end
+
+	-- We get our current (most recent) achievement by going back one
+	local currentAchievement = nextAchievement - 1
+	
+	-- Check if we just unlocked the current achievement
+	if currentAchievement ~= 0 and (totalDist - distance) < achievementTable[currentAchievement][achievementDistance] then
 		composer.removeScene( "achievements" )
 		
-		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
+		achievementTitleTextOptions["text"] = "Achievement Unlocked!"
+		achievementText = display.newText(achievementTitleTextOptions)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementTable[x-1][2] .. "\n" .. achievementTable[x-1][1] .. "ft".."\n"..achievementTable[x-1][3] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementTable[currentAchievement][achievementName] .. "\n" .. achievementTable[currentAchievement][achievementDistance] .. "ft".."\n"..achievementTable[currentAchievement][achievementDescription] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementIcon = display.newImageRect( "achievements/"..achievementTable[x-1][4], display.contentHeight*.175, display.contentHeight*.15 )
+		achievementIcon = display.newImageRect( "achievements/"..achievementTable[currentAchievement][achievementImage], display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0
 		achievementIcon.anchorY = 0
 		achievementIcon.x = 0
@@ -123,12 +158,13 @@ function scene:create( event )
 		achievementIcon.maskScaleX = display.contentHeight*.175 /130
 		achievementIcon.maskScaleY = display.contentHeight*.175 /130
 	else	
-		achievementText = display.newText( "Next Achievement At" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
+		achievementTitleTextOptions["text"] = "Next Achievement At"
+		achievementText = display.newText(achievementTitleTextOptions)
 		achievementText.anchorX = 0
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementTable[x][1].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementTable[nextAchievement][achievementDistance].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
@@ -149,14 +185,15 @@ function scene:create( event )
 	
 	
 	replayBtn = widget.newButton{
-		label="Play Again",
-		font = "fonts/Rufscript010",
-		fontSize = display.contentWidth * .05,
-		labelColor = { default={255}, over={128} },
-		defaultFile="imgs/button.png",
-		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
-		onRelease = onReplayBtn
+		label 		= "Play Again",
+		font 		= "fonts/Rufscript010",
+		fontSize 	= display.contentWidth * .05,
+		labelColor 	= { default={255}, over={128} },
+		defaultFile = "imgs/button.png",
+		overFile 	= "imgs/button-over.png",
+		width 		= display.contentWidth * .50, 
+		height 		= display.contentHeight * .1,
+		onRelease 	= onReplayBtn
 	}
 	replayBtn.anchorX = .5
 	replayBtn.anchorY = .5
@@ -166,23 +203,21 @@ function scene:create( event )
 	
 	
 	quitBtn = widget.newButton{
-		label="Give up...",
-		font = "fonts/Rufscript010",
-		fontSize = display.contentWidth * .05,
-		labelColor = { default={255}, over={128} },
-		defaultFile="imgs/button.png",
-		overFile="imgs/button-over.png",
-		width=display.contentWidth * .50, height=display.contentHeight * .1,
-		onRelease = onQuitBtn
+		label 		= "Give up...",
+		font 		= "fonts/Rufscript010",
+		fontSize 	= display.contentWidth * .05,
+		labelColor 	= { default={255}, over={128} },
+		defaultFile = "imgs/button.png",
+		overFile 	= "imgs/button-over.png",
+		width 		= display.contentWidth * .50, 
+		height 		= display.contentHeight * .1,
+		onRelease 	= onQuitBtn
 	}
 	quitBtn.anchorX = .5
 	quitBtn.anchorY = .5
 	quitBtn.x = display.contentWidth * .75
 	quitBtn.y = display.contentHeight * .95
 	sceneGroup:insert(quitBtn)
-	
-	
-   -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
 
 -- "scene:show()"
@@ -195,7 +230,6 @@ function scene:show( event )
       -- Called when the scene is still off screen (but is about to come on screen).
 	  titleText.isVisible = true
 	  scoreText.isVisible = true
-	--   scoreT.isVisible = true
 	  distanceText.isVisible = true
 	  achievementText.isVisible = true
 	  achievementTitle.isVisible = true
@@ -222,7 +256,6 @@ function scene:hide( event )
       -- Insert code here to "pause" the scene.
       titleText.isVisible = false
 	  scoreText.isVisible = false
-	  scoreT.isVisible = false
 	  distanceText.isVisible = false
 	  achievementText.isVisible = false
 	  achievementTitle.isVisible = false
@@ -245,12 +278,8 @@ function scene:destroy( event )
 	titleText = nil
 	scoreText:removeSelf()
 	scoreText = nil
-	scoreT:removeSelf()
-	scoreT = nil
 	distanceText:removeSelf()
 	distanceText = nil
-	distanceT:removeSelf()
-	distanceT = nil
 	
 	achievementText:removeSelf()
 	achievementText = nil
