@@ -3,6 +3,7 @@ local score = require( "score" )
 local game = require( "game" )
 local scene = composer.newScene()
 local widget = require "widget"		-- include Corona's "widget" library
+require "achievements.achievementTable"
 ---------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE
 -- unless "composer.removeScene()" is called.
@@ -12,91 +13,7 @@ local widget = require "widget"		-- include Corona's "widget" library
 local replayBtn, quitBtn
 local titleText, scoreText, highScore, distanceText, scoreT, distanceT
 local achievementText, achievementIcon, achievementTitle, achivementSubtext, achievementBorder
---Array of the distances that relate to an achievement
-local achievementDistance = {
-	2,		8,
-	26,		60,
-	100,	141,
-	176,	286,
-	305,	316,
-	360,	379,
-	455,	555,
-	841,	986,
-	1250,	1451,
-	2717,	3000,
-	5280,	9001,
-	10663,	28000,
-	29029,	35000,
-	327000,	1360000,
-	5443680, 1200000000,
-	9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
---Array of achievement names
-local achievementNames = {
-	"Tree Sapling",
-	"Tallest Man",
-	"Great Wall of China",
-	"Average Oak Tree",
-	"Rockefeller Xmas Tree",
-	"New Years Eve Ball",
-	"Pine Tree",
-	"Giant Sequoia Tree",
-	"Statue of Liberty",
-	"Big Ben",
-	"Football Field",
-	"Record Breaking Redwood",
-	"Great Pyramid of Giza",
-	"Washington Monument",
-	"U.S. Steel Tower",
-	"Eiffel Tower",
-	"Empire State Building",
-	"Sears Tower",
-	"Burj Khalifa",
-	"Cumulus Clouds",
-	"1 Mile Up",
-	"Power Level",
-	"Mt. Botzer",
-	"Lost Balloon",
-	"Mt. Everest",
-	"Boeing 757",
-	"Space",
-	"International Space Station",
-	"Sputnik 2",
-	"Moon",
-	"Good Luck..."	}
---Array of achievement descriptions
-local achievementDescriptions = {
-	"Just a sapling",
-	"High five, mate",
-	"Squirrels > Mongols",
-	"I AM GROOT!",
-	"Rockin' Around the \nChristmas Tree",
-	"Dropping the Ball",
-	"Pine cones aren't enough",
-	"Neighborhood has really\n gone downhill",
-	"Emancipate the squirrels",
-	"Up high, wanker!",
-	"The whole 100 yards",
-	"Big Red",
-	"On your way to Ra",
-	"The rent at the top is\n too dang high",
-	"Developers! Developers!",
-	"Do squirrels like \ncheese?",
-	"More like Empire \nSquirrel Building",
-	"Wish I had brought my \nwindbreaker",
-	"Are there even squirrels\n in Dubai?",
-	"Into the Clouds",
-	"Mile High Club",
-	"What does the scouter \nsay?",
-	"Developers!",
-	"Super Squirrel will \nretrieve it",
-	"I should be hibernating\n right now",
-	"Now seating squirrels",
-	"Where no squirrel has\n gone before",
-	"No raccoons allowed",
-	"Squilnit the Soviet\n Squirrel",
-	"One small step for \nman, one giant leap \nfor a squirrel",
-	"I think you cheated..."}
-	
+
 --When the replay button is clicked, restart the game
 local function onReplayBtn()
 	audio.stop(2)
@@ -163,11 +80,11 @@ function scene:create( event )
 	
 	local x = 2
 	local totalDist = loadDistance()
-	while totalDist > achievementDistance[x] do
+	while totalDist > achievementTable[x][1] do
 		x = x+1
 	end
 	
-	if totalDist - distance < achievementDistance[x-1] then
+	if totalDist - distance < achievementTable[x-1][1] then
 		composer.removeScene( "achievements" )
 		
 		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
@@ -175,17 +92,12 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementNames[x-1] .. "\n" .. achievementDistance[x-1] .. "ft".."\n"..achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementTable[x-1][2] .. "\n" .. achievementTable[x-1][1] .. "ft".."\n"..achievementTable[x-1][3] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		--[[achievementSubtext = display.newText( achievementDescriptions[x-1] , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .02)
-		achievementSubtext.anchorX = 0
-		achievementSubtext.anchorY = 0
-		sceneGroup:insert(achievementSubtext)]]
-		
-		achievementIcon = display.newImageRect( "achievements/achievement" .. x-1 .. ".png", display.contentHeight*.175, display.contentHeight*.15 )
+		achievementIcon = display.newImageRect( "achievements/"..achievementTable[x-1][4], display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0
 		achievementIcon.anchorY = 0
 		achievementIcon.x = 0
@@ -202,15 +114,10 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementDistance[x].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementTable[x][1].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
-		--[[
-		achievementSubtext = display.newText( "" , display.contentWidth*.35, display.contentHeight *.535, "fonts/Rufscript010",  display.contentHeight * .035)
-		achievementSubtext.anchorX = 0
-		achievementSubtext.anchorY = 0
-		sceneGroup:insert(achievementSubtext)]]
 		
 		achievementIcon = display.newImageRect( "imgs/locked.png", display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0

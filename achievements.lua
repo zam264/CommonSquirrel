@@ -3,99 +3,11 @@ the players total distance traveled.]]
 local composer = require( "composer" )
 local score = require( "score" )
 local scene = composer.newScene()
-local widget = require "widget"		
-
+local widget = require "widget"
+require "achievements.achievementTable"
 -- local variable definitions
 local titleText1, scrollableachievements, achievementIcon, achievementBorder
 local backBtnBtn
-
---define the distance requirements to unlock achievements
-local distance = {
-2,		8,
-26,		60,
-100,	141,
-176,	286,
-305,	316,
-360,	379,
-455,	555,
-841,	986,
-1250,	1451,
-2717,	3000,
-5280,	9001,
-10663,	28000,
-29029,	35000,
-327000,	1360000,
-5443680, 1200000000,
-9999999999}--'unachievable' score necessary to avoid out of bounds error when testing
-
---achievement names
-local achievementNames = {
-"Tree Sapling",
-"Tallest Man",
-"Great Wall of China",
-"Average Oak Tree",
-"Rockefeller Xmas Tree",
-"New Years Eve Ball",
-"Pine Tree",
-"Giant Sequoia Tree",
-"Statue of Liberty",
-"Big Ben",
-"Football Field",
-"Record Breaking Redwood",
-"Great Pyramid of Giza",
-"Washington Monument",
-"U.S. Steel Tower",
-"Eiffel Tower",
-"Empire State Building",
-"Sears Tower",
-"Burj Khalifa",
-"Cumulus Clouds",
-"1 Mile Up",
-"Power Level",
-"Mt. Botzer",
-"Lost Balloon",
-"Mt. Everest",
-"Boeing 757",
-"Space",
-"ISS",
-"Sputnik 2",
-"Moon",
-"Good Luck..."
-}
-
---achievement descriptions
-local achievementDescriptions = {
-"Just a sapling",
-"High five, mate",
-"Squirrels > Mongols",
-"I AM GROOT!",
-"Rockin' Around the Christmas Tree",
-"Dropping the Ball",
-"Pine cones aren't enough",
-"Neighborhood has really gone downhill",
-"Emancipate the squirrels",
-"Up high, wanker!",
-"The whole 100 yards",
-"Big Red",
-"On your way to Ra",
-"The rent at the top is too dang high",
-"Developers! Developers!",
-"Do squirrels like cheese?",
-"More like Empire Squirrel Building",
-"Wish I had brought my windbreaker",
-"Are there even squirrels in Dubai?",
-"Into the Clouds",
-"Mile High Club",
-"What does the scouter say?",
-"Developers!",
-"Super Squirrel will retrieve it",
-"I should be hibernating right now",
-"Now seating squirrels",
-"Where no squirrel has gone before",
-"No raccoons allowed",
-"Squilnit the Soviet Squirrel",
-"One small step for man, one giant leap for a squirrel",
-"I think you cheated..."}
 
 --navigate back to main menu
 local function onBackBtn()
@@ -131,7 +43,7 @@ function scene:create( event )
 	
 	local i = 1  --used for achievement index
 	local j = 1  --used for achievement placement
-	while distance[i] < loadDistance()do --find the next unlockable achievement
+	while achievementTable[i][1] < loadDistance()do --find the next unlockable achievement
 		i = i+1
 	end
 
@@ -143,7 +55,7 @@ function scene:create( event )
 	achievementIcon.y = 0
 	scrollableachievements:insert( achievementIcon )
 	
-	local achievementsText = "LOCKED until " .. distance[i] .. "ft"
+	local achievementsText = "LOCKED until " .. achievementTable[i][1] .. "ft"
 	local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.2, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
 	achievementsTextObject.anchorX = 0	
 	achievementsTextObject.anchorY = 0
@@ -161,19 +73,19 @@ function scene:create( event )
 	j = j+1
 	--loop through and dynamically create each unlocked achievement using i and j for spacing and achievement names and images
 	while i>=1 do
-		local achievementsText = achievementNames[i] .. " " .. distance[i] .. "ft"
+		local achievementsText = achievementTable[i][2] .. " " .. achievementTable[i][1] .. "ft"
 		local achievementsTextObject = display.newText(achievementsText, display.contentHeight*.18, (display.contentHeight*.2*(j-1)), "fonts/Rufscript010" ,display.contentHeight * .025)
 		achievementsTextObject.anchorX = 0	
 		achievementsTextObject.anchorY = 0
 		achievementsTextObject:setTextColor(1,1,1)
 		scrollableachievements:insert(achievementsTextObject)
 		
-		local achievementDescriptionTextObject = display.newText(achievementDescriptions[i], display.contentHeight*.2, display.contentHeight*.2*(j-1)+display.contentHeight*.05, "fonts/Rufscript010", display.contentHeight * .02)
+		local achievementDescriptionTextObject = display.newText(achievementTable[i][3], display.contentHeight*.2, display.contentHeight*.2*(j-1)+display.contentHeight*.05, "fonts/Rufscript010", display.contentHeight * .02)
 		achievementDescriptionTextObject.anchorX = 0
 		achievementDescriptionTextObject.anchorY = 0
 		scrollableachievements:insert(achievementDescriptionTextObject)
 
-		achievementIcon = display.newImageRect( "achievements/achievement"..i..".png", display.contentHeight*.175, display.contentHeight*.175 )
+		achievementIcon = display.newImageRect( "achievements/"..achievementTable[i][4], display.contentHeight*.175, display.contentHeight*.175 )
 		achievementIcon.anchorX = 0
 		achievementIcon.anchorY = 0
 		achievementIcon.x = 0
