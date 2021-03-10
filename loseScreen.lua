@@ -94,7 +94,15 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementTable[nextAchievementIndex][2] .. "\n" .. achievementTable[nextAchievementIndex][1] .. "ft".."\n"..achievementTable[nextAchievementIndex][3] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitleOptions = {
+			text 		= achievementTable[nextAchievementIndex][2] .. "\n" .. achievementTable[nextAchievementIndex][1] .. "ft\n\"" .. achievementTable[nextAchievementIndex][3] .. "\"", 
+			x 			= display.contentWidth*.35, 
+			y 			= display.contentHeight *.48, 
+			width 		= display.contentWidth*.65, 
+			font 		= "fonts/Rufscript010",  
+			fontsize 	= display.contentHeight * .035
+		}
+		achievementTitle = display.newText(achievementTitleOptions)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
