@@ -78,13 +78,15 @@ function scene:create( event )
 	distanceT.anchorY = 0
 	sceneGroup:insert(distanceT)
 	
-	local x = 2
-	local totalDist = loadDistance()
-	while totalDist > achievementTable[x][1] do
-		x = x+1
+	local totalDistance = loadDistance()
+	local distanceBeforeRun = totalDistance - distance
+
+	local nextAchievementIndex = 1
+	while distanceBeforeRun > achievementTable[nextAchievementIndex][1] do
+		nextAchievementIndex = nextAchievementIndex+1
 	end
 	
-	if totalDist - distance < achievementTable[x-1][1] then
+	if totalDistance >= achievementTable[nextAchievementIndex][1] then
 		composer.removeScene( "achievements" )
 		
 		achievementText = display.newText( "Achievement Unlocked!" , display.contentWidth*.025, display.contentHeight *.41, "fonts/Rufscript010",  display.contentHeight * .05)
@@ -92,12 +94,12 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementTable[x-1][2] .. "\n" .. achievementTable[x-1][1] .. "ft".."\n"..achievementTable[x-1][3] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementTable[nextAchievementIndex][2] .. "\n" .. achievementTable[nextAchievementIndex][1] .. "ft".."\n"..achievementTable[nextAchievementIndex][3] , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
 		
-		achievementIcon = display.newImageRect( "achievements/"..achievementTable[x-1][4], display.contentHeight*.175, display.contentHeight*.15 )
+		achievementIcon = display.newImageRect( "achievements/"..achievementTable[nextAchievementIndex][4], display.contentHeight*.175, display.contentHeight*.15 )
 		achievementIcon.anchorX = 0
 		achievementIcon.anchorY = 0
 		achievementIcon.x = 0
@@ -114,7 +116,7 @@ function scene:create( event )
 		achievementText.anchorY = 0
 		sceneGroup:insert(achievementText)
 		
-		achievementTitle = display.newText( achievementTable[x][1].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
+		achievementTitle = display.newText( achievementTable[nextAchievementIndex][1].."ft" , display.contentWidth*.35, display.contentHeight *.48, "fonts/Rufscript010",  display.contentHeight * .035)
 		achievementTitle.anchorX = 0
 		achievementTitle.anchorY = 0
 		sceneGroup:insert(achievementTitle)
