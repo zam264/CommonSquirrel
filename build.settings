@@ -7,4 +7,13 @@ settings = {
         },
     },
 	
+    --
+	-- Project section
+	--
+	excludeFiles =
+	{
+		-- Exclude unnecessary files for each platform
+		all = { "Icon_orig.png", "ic_launcher_forground_orig", "heights.xlsx", ".gitignore", ".gitattributes", },
+		android = { "LaunchScreen.storyboardc", },
+	},
 }
