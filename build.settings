@@ -3,8 +3,28 @@ settings = {
     {
         usesPermissions =
         {
-            "android.permission.VIBRATE",
-        },
-    },
-	
+			"android.permission.VIBRATE",
+		},
+	},
+	splashScreen = 
+	{
+		enable = true,
+		image = "splash-screen.png"
+	},
+	excludeFiles =
+	{
+		all = {
+			"heights.xlsx",
+			".gitignore",
+			".gitattributes",
+			"ic_launcher_foreground.png",
+			"ic_launcher.png",
+			"ic_laungher.xcf",
+			"splash-screen.png",
+			"splash-screen.xcf",
+		},
+		android = {
+			"LaunchScreen.storyboardc",
+		},
+	},
 }
