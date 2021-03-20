@@ -3,17 +3,28 @@ settings = {
     {
         usesPermissions =
         {
-            "android.permission.VIBRATE",
-        },
-    },
-	
-    --
-	-- Project section
-	--
+			"android.permission.VIBRATE",
+		},
+	},
+	splashScreen = 
+	{
+		enable = true,
+		image = "splash-screen.png"
+	},
 	excludeFiles =
 	{
-		-- Exclude unnecessary files for each platform
-		all = { "Icon_orig.png", "ic_launcher_forground_orig", "heights.xlsx", ".gitignore", ".gitattributes", },
-		android = { "LaunchScreen.storyboardc", },
+		all = {
+			"heights.xlsx",
+			".gitignore",
+			".gitattributes",
+			"ic_launcher_foreground.png",
+			"ic_launcher.png",
+			"ic_laungher.xcf",
+			"splash-screen.png",
+			"splash-screen.xcf",
+		},
+		android = {
+			"LaunchScreen.storyboardc",
+		},
 	},
 }
